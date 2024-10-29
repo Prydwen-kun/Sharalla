@@ -3,3 +3,4 @@
 <template>
   content
 </template>
+<style scoped></style>
