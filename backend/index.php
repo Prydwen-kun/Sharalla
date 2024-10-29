@@ -5,12 +5,14 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Charger l'autoloader de Composer
+//start session
+session_start();
+
+// Charger l'autoloader
 require __DIR__ . '/vendor/autoload.php';
 
 // Charger les variables d'environnement
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
+require __DIR__ . '/config/config.php';
 
 // Définir les en-têtes pour l'API REST
 header("Access-Control-Allow-Origin: *");
@@ -24,4 +26,3 @@ require __DIR__ . '/routes/api.php';
 
 // Exemple de réponse pour vérifier que l'API fonctionne
 echo json_encode(["message" => "API is running"]);
-
