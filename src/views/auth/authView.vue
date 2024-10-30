@@ -1,6 +1,8 @@
 <script setup>
+import FormSign from '@/components/signup/FormSign.vue';
 </script>
 <template>
-  content
+  <FormSign>
+  </FormSign>
 </template>
 <style scoped></style>
