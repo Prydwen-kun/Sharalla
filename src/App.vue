@@ -2,6 +2,8 @@
 import { RouterView } from 'vue-router';
 
 import NavBar from './components/navigation/NavBar.vue'
+
+//check if user is connected and display navbar + redirect to dashboard
 </script>
 
 <template>
