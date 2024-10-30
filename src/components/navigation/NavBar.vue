@@ -5,9 +5,9 @@ import NavItem from './navbarItem/NavItem.vue'
 <template>
   <nav>
     <ul>
-      <NavItem/>
-      <NavItem/>
-      <NavItem/>
+      <NavItem :link-title="'Home'" :link="'/'" />
+      <NavItem :link-title="'Home'" :link="'/'" />
+      <NavItem :link-title="'Sign Out'" :link="'/'" />
     </ul>
   </nav>
 </template>
