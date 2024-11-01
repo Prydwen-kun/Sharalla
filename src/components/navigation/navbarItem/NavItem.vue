@@ -7,8 +7,12 @@ const props = defineProps({
 </script>
 
 <template>
-  <li>
+  <li class="navItem">
     <router-link :to="link">{{ linkTitle }}</router-link>
   </li>
 </template>
-<style scoped></style>
+<style scoped>
+.navItem{
+  grid-column: auto;
+}
+</style>

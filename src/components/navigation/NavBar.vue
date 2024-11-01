@@ -4,11 +4,23 @@ import NavItem from './navbarItem/NavItem.vue'
 
 <template>
   <nav>
-    <ul>
+    <ul class="navigation">
       <NavItem :link-title="'Home'" :link="'/'" />
       <NavItem :link-title="'Profile'" :link="'/'" />
       <NavItem :link-title="'Sign Out'" :link="'/'" />
     </ul>
   </nav>
 </template>
-<style scoped></style>
+<style scoped>
+nav {
+  grid-column: 1/13;
+  grid-row: span 3;
+  background-color: var(--light-blue-black);
+}
+
+.navigation {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  min-width: 100%;
+}
+</style>
