@@ -9,7 +9,7 @@ import NavBar from './components/navigation/NavBar.vue'
 <template>
   <header>
     <NavBar />
-    <div class="headerContainer">
+    <div class="headerTagContainer">
       <ul class="tags">
         <li><a href="">tag</a></li>
         <li><a href="">tag</a></li>
@@ -26,7 +26,7 @@ import NavBar from './components/navigation/NavBar.vue'
 </template>
 
 <style scoped>
-.headerContainer {
+.headerTagContainer {
   color: var(--light-rose);
   grid-column: 1/13;
   grid-row: span 1;
