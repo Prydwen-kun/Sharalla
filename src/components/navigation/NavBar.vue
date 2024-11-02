@@ -6,6 +6,8 @@ import NavItem from './navbarItem/NavItem.vue'
   <nav>
     <ul class="navigation">
       <NavItem :link-title="'Home'" :link="'/'" />
+      <label for="search">Search</label>
+      <input type="text" id="search" name="search">
       <NavItem :link-title="'Profile'" :link="'/'" />
       <NavItem :link-title="'Sign Out'" :link="'/'" />
     </ul>
@@ -14,7 +16,7 @@ import NavItem from './navbarItem/NavItem.vue'
 <style scoped>
 nav {
   grid-column: 1/13;
-  grid-row: span 3;
+  grid-row: span 2;
   background-color: var(--light-blue-black);
 }
 
