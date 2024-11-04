@@ -11,7 +11,9 @@ const props = defineProps({
 
 <template>
   <li class="navItem" :style="{ '--gridSpan': gridSpan }">
-    <router-link :to="link" class="nav-link">{{ linkTitle }}</router-link>
+    <router-link :to="link" class="nav-link">
+      <img src="" alt="User avatar" :title="linkTitle" class="userIcon" height="40" width="40">
+    </router-link>
   </li>
 </template>
 <style scoped>
@@ -26,7 +28,13 @@ const props = defineProps({
   height: 100%;
   width: 100%;
 }
-.nav-link:hover{
+
+.nav-link:hover {
   color: var(--white-mute);
+}
+
+.userIcon {
+  background-color: var(--white-mute);
+  border-radius: 50%;
 }
 </style>

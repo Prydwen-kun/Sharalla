@@ -8,4 +8,9 @@ const props = defineProps({
   <label :for="name">{{ name }}</label>
   <input :type="type" :id="name">
 </template>
-<style scoped></style>
+<style scoped>
+input{
+  border-radius: 1rem;
+  max-width: 10rem;
+}
+</style>

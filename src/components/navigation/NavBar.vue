@@ -1,15 +1,15 @@
 <script setup>
 import NavItem from './navbarItem/NavItem.vue'
+import SearchBar from './navbarItem/SearchBar.vue';
+import UserIcon from './navbarItem/UserIcon.vue';
 </script>
 
 <template>
-  <nav>
+  <nav class="navbar">
     <ul class="navigation">
-      <NavItem :link-title="'Home'" :link="'/'" />
-      <label for="search">Search</label>
-      <input type="text" id="search" name="search">
-      <NavItem :link-title="'Profile'" :link="'/'" />
-      <NavItem :link-title="'Sign Out'" :link="'/'" />
+      <NavItem :link-title="'Home'" :link="'/'" :grid-span="'1/3'" />
+      <SearchBar />
+      <UserIcon :link-title="'User Account'" :link="'/'" :grid-span="'11/12'" />
     </ul>
   </nav>
 </template>
@@ -20,9 +20,18 @@ nav {
   background-color: var(--light-blue-black);
 }
 
+.navbar {
+  min-width: 100%;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+}
+
 .navigation {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  min-width: 100%;
+  grid-column: 1/13;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 </style>

@@ -32,5 +32,7 @@ header {
 .content-view {
   grid-column: span 12;
   grid-row: auto;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
 }
 </style>
