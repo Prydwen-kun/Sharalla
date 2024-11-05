@@ -5,10 +5,15 @@ const props = defineProps({
 })
 </script>
 <template>
-  <label :for="name">{{ name }}</label>
+  <label :for="name" class="field_label">{{ name }}</label>
   <input :type="type" :id="name">
 </template>
 <style scoped>
+.field_label{
+color: var(--dark-blue-black);
+text-shadow:0px 0px 2px var(--dark-rose);
+}
+
 input {
   border-top: none;
   border-left: none;

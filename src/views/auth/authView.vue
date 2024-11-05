@@ -1,8 +1,6 @@
 <script setup>
 import FormSign from '@/components/signup/FormSign.vue';
 
-//catch form submit and make API call to signup
-
 </script>
 <template>
   <div class="authView">
@@ -10,8 +8,7 @@ import FormSign from '@/components/signup/FormSign.vue';
       <img src="" alt="logo" title="Sharalla logo" height="100" width="100">
       <h1>Create Account</h1>
     </div>
-    <FormSign>
-    </FormSign>
+    <FormSign form_id="signupForm" />
   </div>
 </template>
 <style scoped>
@@ -31,7 +28,7 @@ import FormSign from '@/components/signup/FormSign.vue';
   gap: 1rem;
 }
 
-.signupTitle>h1{
+.signupTitle>h1 {
   color: var(--rose);
 }
 

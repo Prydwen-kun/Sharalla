@@ -1,7 +1,6 @@
 <script setup>
 import { RouterView } from 'vue-router';
-
-import NavBar from './components/navigation/NavBar.vue'
+import NavBar from './components/navigation/NavBar.vue';
 import TagBar from './components/navigation/TagBar.vue';
 
 //check if user is connected and display navbar + redirect to dashboard

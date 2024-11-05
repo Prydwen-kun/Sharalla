@@ -1,8 +1,37 @@
 <script setup>
+import { onMounted } from 'vue';
 import FormField from './form-component/FormField.vue';
+import { Axios } from 'axios';
+
+const props = defineProps({
+  form_id: String,
+})
+
+onMounted(() => {
+  document.getElementById('signupForm').addEventListener('submit',
+    (event) => {
+      event.preventDefault();
+      const Username = document.getElementById('Username').value;
+      const Email = document.getElementById('Email').value;
+      const Password = document.getElementById('Password').value;
+      const PasswordConfirm = document.getElementById('PasswordConfirm').value;
+      if (Username === '' || Email === '' || Password === '' || PasswordConfirm === '') {
+        alert('Please fill in all fields.');
+
+      } else {
+        alert(`Form submitted with:\nName: ${Username}\nEmail: ${Email}`);
+      }
+    });
+  //catch form submit and make API call to signup
+})
+
+async function form_post() {
+  await Axios.post()
+}
+
 </script>
 <template>
-  <form class="signup-form" action="" method="post" enctype="multipart/form-data">
+  <form class="signup-form" action="" method="post" enctype="multipart/form-data" :id="form_id">
     <FormField name="Username" type="text" />
     <FormField name="Email" type="email" />
     <FormField name="Password" type="password" />
