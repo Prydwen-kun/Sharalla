@@ -6,7 +6,7 @@ import { Axios } from 'axios';
 const props = defineProps({
   form_id: String,
 })
-
+//onMounted assures that all DOM is rendered BEFORE searching for an element ID
 onMounted(() => {
   document.getElementById('signupForm').addEventListener('submit',
     (event) => {
@@ -19,14 +19,25 @@ onMounted(() => {
         alert('Please fill in all fields.');
 
       } else {
+        //catch form submit and make API call to signup
         alert(`Form submitted with:\nName: ${Username}\nEmail: ${Email}`);
+        //axios request to API endpoint
       }
     });
-  //catch form submit and make API call to signup
+
 })
 
 async function form_post() {
-  await Axios.post()
+  const form = document.querySelector('signupForm')
+  const formData = new FormData(form)
+  const formDataObject = Object.fromEntries(formData.entries())
+  const jsonData = JSON.stringify(formDataObject)
+
+  await Axios.post('API ENDPOINT', jsonData, { headers: { 'Content-Type': 'multipart/form-data' } })
+    .then((response) => {
+      alert(response)
+      //if good response then redirect to login
+    })
 }
 
 </script>
