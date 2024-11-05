@@ -11,7 +11,7 @@
 </template>
 
 <style scoped>
-.searchField{
+.searchField {
   grid-column: 5/9;
   display: flex;
   align-items: center;
@@ -19,19 +19,32 @@
   gap: 0.5rem;
 }
 
-.searchBar{
-  border-radius: 1rem;
+.searchBar {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid var(--dark-blue-black);
+  background-color: var(--light-blue-black);
+  color: var(--rose);
+  max-width: 10rem;
+  outline: none;
+  padding: 0.5rem;
 }
 
-.searchButton{
-  border-radius: 1rem;
+.searchBar:focus {
+  background-color: var(--dark-blue-black);
+}
+
+.searchButton {
+  border-radius: 2rem;
   color: var(--rose);
   background-color: var(--light-blue-black);
-  min-height: 2rem;
-  min-width: 5rem;
+  min-height: 4rem;
+  min-width: 8rem;
   border: 1px solid var(--dark-rose);
 }
-.searchButton:hover{
+
+.searchButton:hover {
   color: var(--white-mute);
   background-color: var(--dark-rose);
 }

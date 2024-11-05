@@ -14,25 +14,26 @@ import FormField from './form-component/FormField.vue';
 .signup-form {
   background-color: var(--light-blue-black);
   color: var(--rose);
-  grid-column: 3/11;
+  font-size: 2rem;
+  grid-column: span 3;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
   height: 100%;
   width: 100%;
   padding: 1rem;
 }
 
-.submit{
-  border-radius: 1rem;
+.submit {
+  border-radius: 2rem;
   color: var(--rose);
   background-color: var(--light-blue-black);
-  min-height: 2rem;
-  min-width: 5rem;
+  min-height: 4rem;
+  min-width: 8rem;
   border: 1px solid var(--dark-rose);
 }
-.submit:hover{
+
+.submit:hover {
   color: var(--white-mute);
   background-color: var(--dark-rose);
 }
