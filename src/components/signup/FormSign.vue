@@ -34,7 +34,7 @@ onMounted(() => {
 
         //axios request to API endpoint
         const response = await Axios.post(
-          `${config.APIbaseUrl}${config.endpoints.createUser}`,
+          `${config.APIbaseUrl}${config.endpoints.signup}`,
           jsonData,
           { headers: { 'Content-Type': 'multipart/form-data' } }
         )
