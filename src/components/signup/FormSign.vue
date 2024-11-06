@@ -2,43 +2,58 @@
 import { onMounted } from 'vue';
 import FormField from './form-component/FormField.vue';
 import { Axios } from 'axios';
+import config from '../../../config/config';
+import { useRouter } from 'vue-router';
 
 const props = defineProps({
   form_id: String,
 })
+
 //onMounted assures that all DOM is rendered BEFORE searching for an element ID
 onMounted(() => {
   document.getElementById('signupForm').addEventListener('submit',
-    (event) => {
+    async (event) => {
       event.preventDefault();
       const Username = document.getElementById('Username').value;
       const Email = document.getElementById('Email').value;
       const Password = document.getElementById('Password').value;
       const PasswordConfirm = document.getElementById('PasswordConfirm').value;
+
+      //form front-end validation
       if (Username === '' || Email === '' || Password === '' || PasswordConfirm === '') {
         alert('Please fill in all fields.');
-
       } else {
         //catch form submit and make API call to signup
-        alert(`Form submitted with:\nName: ${Username}\nEmail: ${Email}`);
+
+        //form data object
+        const form = document.querySelector('signupForm')
+        const formData = new FormData(form)
+        const formDataObject = Object.fromEntries(formData.entries())
+        //form object to text
+        const jsonData = JSON.stringify(formDataObject)
+
         //axios request to API endpoint
+        const response = await Axios.post(
+          `${config.APIbaseUrl}${config.endpoints.createUser}`,
+          jsonData,
+          { headers: { 'Content-Type': 'multipart/form-data' } }
+        )
+
+        if (response.status === 200) {
+          //user created
+          console.log('User created !')
+          const router = useRouter()
+          router.push('/login')
+        } else {
+          //error
+          alert('Error creating user !')
+        }
+
+
       }
     });
 
 })
-
-async function form_post() {
-  const form = document.querySelector('signupForm')
-  const formData = new FormData(form)
-  const formDataObject = Object.fromEntries(formData.entries())
-  const jsonData = JSON.stringify(formDataObject)
-
-  await Axios.post('API ENDPOINT', jsonData, { headers: { 'Content-Type': 'multipart/form-data' } })
-    .then((response) => {
-      alert(response)
-      //if good response then redirect to login
-    })
-}
 
 </script>
 <template>
