@@ -3,7 +3,7 @@
 function loadController(string $controller)
 {
     if (file_exists('app/controllers/' . $controller . '.php')) {
-        require_once 'app/controllers' . $controller . '.php';
+        require_once 'app/controllers/' . $controller . '.php';
     }
 }
 
