@@ -9,9 +9,9 @@ const props = defineProps({
   <input :type="type" :id="name">
 </template>
 <style scoped>
-.field_label{
-color: var(--dark-blue-black);
-text-shadow:0px 0px 2px var(--dark-rose);
+.field_label {
+  color: var(--light-rose);
+  text-shadow: 0px 0px 3px var(--dark-rose);
 }
 
 input {
