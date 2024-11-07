@@ -21,5 +21,14 @@ class UserController
         }
     }
 
-    public function signup() {}
+    public function signup()
+    {
+        if (!empty($_POST)) {
+            if ($this->user->signup(3, 'placeholder')) {
+                echo json_encode(['response' => 'user_created']);
+            } else {
+                echo json_encode(['response' => 'error']);
+            }
+        }
+    }
 }
