@@ -1,17 +1,17 @@
 <script setup>
-
+import LoginForm from '@/components/login/LoginForm.vue';
 </script>
 <template>
-  <div class="authView">
-    <div class="signupTitle">
+  <div class="LoginView">
+    <div class="LoginTitle">
       <img src="" alt="logo" title="Sharalla logo" height="100" width="100">
       <h1>Sign in</h1>
     </div>
-    <div>Login form</div>
+    <LoginForm />
   </div>
 </template>
 <style scoped>
-.authView {
+.LoginView {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   background-color: var(--light-blue-black);
@@ -19,7 +19,7 @@
   padding: 1rem;
 }
 
-.signupTitle {
+.LoginTitle {
   grid-column: span 2;
   display: flex;
   flex-direction: column;
@@ -27,11 +27,11 @@
   gap: 1rem;
 }
 
-.signupTitle>h1 {
+.LoginTitle>h1 {
   color: var(--rose);
 }
 
-.signupTitle>img {
+.LoginTitle>img {
   background-color: var(--white-mute);
 }
 </style>
