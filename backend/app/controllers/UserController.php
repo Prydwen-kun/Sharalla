@@ -29,6 +29,8 @@ class UserController
             } else {
                 echo json_encode(['response' => 'error']);
             }
+        } else {
+            echo json_encode(['response' => 'Form empty']);
         }
     }
 }
