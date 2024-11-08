@@ -7,7 +7,7 @@ import LoginForm from '@/components/login/LoginForm.vue';
       <img src="" alt="logo" title="Sharalla logo" height="100" width="100">
       <h1>Sign in</h1>
     </div>
-    <LoginForm />
+    <LoginForm form_id="loginForm" />
   </div>
 </template>
 <style scoped>

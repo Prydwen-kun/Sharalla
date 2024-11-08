@@ -39,7 +39,9 @@ onMounted(() => {
           { headers: { 'Content-Type': 'multipart/form-data' } }
         )
 
-        if (response.status === 200) {
+        const data = await response.json()
+
+        if (response.ok && data.response === 'user_created') {
           //user created
           console.log('User created !')
           const router = useRouter()

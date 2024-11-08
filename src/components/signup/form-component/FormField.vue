@@ -6,7 +6,7 @@ const props = defineProps({
 </script>
 <template>
   <label :for="name" class="field_label">{{ name }}</label>
-  <input :type="type" :id="name">
+  <input :type="type" :id="name" :name="name">
 </template>
 <style scoped>
 .field_label {
