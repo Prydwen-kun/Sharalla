@@ -162,7 +162,203 @@ class UserModel extends CoreModel
         return null;
     }
 
-    public function getAllUser($orderBy, $limit) {}
+    public function getAllUser($orderBy = 'id', $limit = 10)
+    {
+        switch ($orderBy) {
+            case 'id':
+                $sql = "SELECT users.id AS id,
+                username,
+                email,
+                last_login,
+                ranks.label AS rank,
+                users.avatar AS avatar
+            FROM users
+            LEFT JOIN ranks ON users.rank = ranks.id
+            ORDER BY id
+            LIMIT :list_limit";
 
-    public function deleteUser() {}
+                try {
+                    if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                        $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
+                        if ($this->_req->execute()) {
+                            $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
+                            return $data;
+                        }
+                    }
+                } catch (PDOException $e) {
+                    die($e->getMessage());
+                }
+                break;
+            case 'username':
+                $sql = "SELECT users.id AS id,
+                username,
+                email,
+                last_login,
+                ranks.label AS rank,
+                users.avatar AS avatar
+            FROM users
+            LEFT JOIN ranks ON users.rank = ranks.id
+            ORDER BY username
+            LIMIT :list_limit";
+
+                try {
+                    if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                        $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
+                        if ($this->_req->execute()) {
+                            $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
+                            return $data;
+                        }
+                    }
+                } catch (PDOException $e) {
+                    die($e->getMessage());
+                }
+                break;
+            case 'last_login':
+                $sql = "SELECT users.id AS id,
+                username,
+                email,
+                last_login,
+                ranks.label AS rank,
+                users.avatar AS avatar
+            FROM users
+            LEFT JOIN ranks ON users.rank = ranks.id
+            ORDER BY last_login
+            LIMIT :list_limit";
+
+                try {
+                    if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                        $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
+                        if ($this->_req->execute()) {
+                            $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
+                            return $data;
+                        }
+                    }
+                } catch (PDOException $e) {
+                    die($e->getMessage());
+                }
+                break;
+            case 'idDESC':
+                $sql = "SELECT users.id AS id,
+                username,
+                email,
+                last_login,
+                ranks.label AS rank,
+                users.avatar AS avatar
+            FROM users
+            LEFT JOIN ranks ON users.rank = ranks.id
+            ORDER BY id DESC
+            LIMIT :list_limit";
+
+                try {
+                    if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                        $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
+                        if ($this->_req->execute()) {
+                            $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
+                            return $data;
+                        }
+                    }
+                } catch (PDOException $e) {
+                    die($e->getMessage());
+                }
+                break;
+            case 'usernameDESC':
+                $sql = "SELECT users.id AS id,
+                username,
+                email,
+                last_login,
+                ranks.label AS rank,
+                users.avatar AS avatar
+            FROM users
+            LEFT JOIN ranks ON users.rank = ranks.id
+            ORDER BY username DESC
+            LIMIT :list_limit";
+
+                try {
+                    if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                        $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
+                        if ($this->_req->execute()) {
+                            $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
+                            return $data;
+                        }
+                    }
+                } catch (PDOException $e) {
+                    die($e->getMessage());
+                }
+                break;
+            case 'last_loginDESC':
+                $sql = "SELECT users.id AS id,
+                username,
+                email,
+                last_login,
+                ranks.label AS rank,
+                users.avatar AS avatar
+            FROM users
+            LEFT JOIN ranks ON users.rank = ranks.id
+            ORDER BY last_login DESC
+            LIMIT :list_limit";
+
+                try {
+                    if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                        $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
+                        if ($this->_req->execute()) {
+                            $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
+                            return $data;
+                        }
+                    }
+                } catch (PDOException $e) {
+                    die($e->getMessage());
+                }
+                break;
+        }
+    }
+
+    public function banUser($user_id) {}
+
+
+
+    public function deleteUser($user_id)
+    {
+
+        //FIRST UPDATE ALL CONTENT CONCERNED BY THE USER
+        $sql = "UPDATE files
+        SET files.uploader_id = (SELECT users.id FROM users WHERE users.username =:admin_name)
+        WHERE files.uploader_id =:user_id;";
+        //NEXT DELETE RELEVANT TABLES
+        $sql = $sql .
+            "DELETE
+        FROM friends
+        WHERE friends.user_id = :user_id;
+
+        DELETE
+        FROM liked_content
+        WHERE liked_content.user_id =:user_id;
+        
+        DELETE
+        FROM bookmarks
+        WHERE bookmarks.user_id =:user_id;
+        
+        DELETE
+        FROM comments
+        WHERE comments.author_id =:user_id;
+        
+        DELETE
+        FROM users
+        WHERE users.id =:user_id
+        ";
+
+        try {
+            if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+
+                $this->_req->bindParam('user_id', $user_id, PDO::PARAM_INT);
+                $admin_name = ADMIN_NAME;
+                $this->_req->bindParam('admin_name', $admin_name, PDO::PARAM_STR);
+                if ($this->_req->execute()) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (PDOException $e) {
+            die($e->getMessage());
+        }
+    }
 }
