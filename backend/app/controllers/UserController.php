@@ -16,8 +16,10 @@ class UserController
             $Password = $_POST['Password'];
 
             if ($this->user->login($Username, $Password)) {
-                echo json_encode(['response' => 'connected']);
+                require 'app/views/LoginView.php';
             }
+        } else {
+            require 'app/views/errorViews/RequestErrorView.php';
         }
     }
 
@@ -25,12 +27,12 @@ class UserController
     {
         if (!empty($_POST)) {
             if ($this->user->signup(3, 'placeholder')) {
-                echo json_encode(['response' => 'user_created']);
+                require 'app/views/AuthViews/SignupView.php';
             } else {
-                echo json_encode(['response' => 'error']);
+                require 'app/views/errorViews/SignupErrorView.php';
             }
         } else {
-            echo json_encode(['response' => 'Form empty']);
+            require 'app/views/errorViews/RequestErrorView.php';
         }
     }
 }
