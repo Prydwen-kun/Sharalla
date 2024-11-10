@@ -35,4 +35,24 @@ class UserController
             require 'app/views/errorViews/RequestErrorView.php';
         }
     }
+
+    public function getConnectedUserData()
+    {
+        $connected_user = $this->user->getCurrentUser();
+        if ($connected_user !== null) {
+            require 'app/views/UserViews/UserProfileView.php';
+        } else {
+            require 'app/views/errorViews/RequestErrorView.php';
+        }
+    }
+
+    public function getUserData($user_id)
+    {
+        $user = $this->user->getUser($user_id);
+        if ($user !== null) {
+            require 'app/views/UserViews/UserView.php';
+        } else {
+            require 'app/views/errorViews/RequestErrorView.php';
+        }
+    }
 }

@@ -1,5 +1,5 @@
 <?php
 echo json_encode([
-    'response' => $user,
+    'response' => $connected_user,
     'message' => 'Retrieval of user\'s data successful !'
 ]);

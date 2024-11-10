@@ -140,8 +140,10 @@ class UserModel extends CoreModel
 
     public function getUser($user_id)
     {
-        $query =
-            "SELECT users.id AS id,
+        if ($this->isLoggedIn()) {
+            //if profile private only admin should be able to access
+            $query =
+                "SELECT users.id AS id,
                 username,
                 password,
                 email,
@@ -153,9 +155,11 @@ class UserModel extends CoreModel
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
             WHERE users.id = :user_id";
-        $this->_req = $this->getDb()->prepare($query);
-        $this->_req->execute(['user_id' => $user_id]);
-        return $this->_req->fetch(PDO::FETCH_ASSOC);
+            $this->_req = $this->getDb()->prepare($query);
+            $this->_req->execute(['user_id' => $user_id]);
+            return $this->_req->fetch(PDO::FETCH_ASSOC);
+        }
+        return null;
     }
 
     public function getAllUser($orderBy, $limit) {}
