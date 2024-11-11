@@ -26,13 +26,28 @@ class UserController
     public function signup()
     {
         if (!empty($_POST)) {
-            if ($this->user->signup(3, 'placeholder')) {
+            if ($this->user->signup(R_USER, 'placeholder')) {
                 require 'app/views/AuthViews/SignupView.php';
             } else {
                 require 'app/views/errorViews/SignupErrorView.php';
             }
         } else {
             require 'app/views/errorViews/RequestErrorView.php';
+        }
+    }
+
+    public function isUserConnected()
+    {
+        if ($this->user->isLoggedIn()) {
+            echo json_encode([
+                'response' => 'connected',
+                'message' => 'User is connected !'
+            ]);
+        } else {
+            echo json_encode([
+                'response' => 'not_connected',
+                'message' => 'User isn\'t connected !'
+            ]);
         }
     }
 

@@ -34,7 +34,11 @@ class UserModel extends CoreModel
             return false;
         }
 
-        if (strlen($post['Password']) <= 8) {
+        if (strlen($post['Username']) < 3) {
+            return false;
+        }
+
+        if (strlen($post['Password']) < 8) {
             return false;
         }
 
@@ -312,7 +316,27 @@ class UserModel extends CoreModel
         }
     }
 
-    public function banUser($user_id) {}
+    public function banUser($user_id)
+    {
+        $sql = "UPDATE users
+        SET users.rank = :ban_rank
+        WHERE users.id =:user_id;";
+
+        try {
+            if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+
+                $this->_req->bindParam('user_id', $user_id, PDO::PARAM_INT);
+                $ban_rank = R_BAN;
+                $this->_req->bindParam('ban_rank', $ban_rank, PDO::PARAM_INT);
+                if ($this->_req->execute()) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (PDOException $e) {
+            die($e->getMessage());
+        }
+    }
 
 
 
