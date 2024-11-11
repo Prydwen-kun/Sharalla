@@ -3,6 +3,7 @@ import LoginForm from '@/components/login/LoginForm.vue';
 import { Axios } from 'axios';
 import config from '../../../config/config';
 import { useRouter } from 'vue-router';
+import LinkButton from '@/components/navigation/link_button/LinkButton.vue';
 
 //make API request to see if user already connected
 //redirect on dash if true
@@ -25,6 +26,8 @@ if (response.ok && data.response === 'connected') {
     <div class="LoginTitle">
       <img src="" alt="logo" title="Sharalla logo" height="100" width="100">
       <h1>Sign in</h1>
+      <h2>Need to create an account ?</h2>
+      <LinkButton button_class="form_button" button_text="Signup" button_link="/" />
     </div>
     <LoginForm form_id="loginForm" />
   </div>
@@ -47,6 +50,10 @@ if (response.ok && data.response === 'connected') {
 }
 
 .LoginTitle>h1 {
+  color: var(--rose);
+}
+
+.LoginTitle>h2 {
   color: var(--rose);
 }
 

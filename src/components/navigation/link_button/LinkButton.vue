@@ -9,11 +9,17 @@ const props = defineProps({
 
 </script>
 <template>
-  <button :class="button_class" :id="button_id">
-    <a :href="button_link">{{ button_text }}</a>
-  </button>
+  <a :href="button_link" :class="'inner_anchor '.concat(button_class)" :id="button_id">{{ button_text }}</a>
 </template>
 <style scoped>
+.inner_anchor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: max-content;
+  width: max-content;
+}
+
 .form_button {
   border-radius: 2rem;
   color: var(--rose);
