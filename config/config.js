@@ -5,6 +5,7 @@ const config = {
   endpoints:{
     signup:'user&action=signup',
     login:'user&action=login',
+    isConnected:'user&action=login',
     updateUser:'',
     deleteUser:'',
 

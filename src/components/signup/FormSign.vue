@@ -22,6 +22,10 @@ onMounted(() => {
       //form front-end validation
       if (Username === '' || Email === '' || Password === '' || PasswordConfirm === '') {
         alert('Please fill in all fields.');
+      } else if (Username.length < 3) {
+        alert('Username must be at least 3 characters long !')
+      } else if (Password.length < 8) {
+        alert('Password must be at least 8 characters long !')
       } else {
         //catch form submit and make API call to signup
 

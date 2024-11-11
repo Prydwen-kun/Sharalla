@@ -1,5 +1,9 @@
 <script setup>
 import LoginForm from '@/components/login/LoginForm.vue';
+
+//make API request to see if user already connected
+//redirect on dash if true
+
 </script>
 <template>
   <div class="LoginView">

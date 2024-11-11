@@ -1,6 +1,9 @@
 <script setup>
 import FormSign from '@/components/signup/FormSign.vue';
 
+//make API request to see if user already connected
+//redirect on dash if true
+
 </script>
 <template>
   <div class="authView">
