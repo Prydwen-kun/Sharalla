@@ -118,11 +118,9 @@ class UserModel extends CoreModel
 
     public function getCurrentUser()
     {
-        if ($this->isLoggedIn()) {
-            $query =
-                "SELECT users.id AS id,
+        $query =
+            "SELECT users.id AS id,
             username,
-            password,
             email,
             last_login,
             users.rank AS rank_id,
@@ -133,23 +131,20 @@ class UserModel extends CoreModel
              LEFT JOIN ranks ON users.rank = ranks.id 
              WHERE users.id = :user_id";
 
-            $this->_req = $this->getDb()->prepare($query);
-            $this->_req->execute(['user_id' => $_SESSION[APP_TAG]['user_id']]);
+        $this->_req = $this->getDb()->prepare($query);
+        if ($this->_req->execute(['user_id' => $_SESSION[APP_TAG]['user_id']])) {
             return $this->_req->fetch(PDO::FETCH_ASSOC);
+        } else {
+            return null;
         }
-        return null;
     }
-
-    public function updateUser() {}
 
     public function getUser($user_id)
     {
-        if ($this->isLoggedIn()) {
-            //if profile private only admin should be able to access
-            $query =
-                "SELECT users.id AS id,
+        //if profile private only admin should be able to access
+        $query =
+            "SELECT users.id AS id,
                 username,
-                password,
                 email,
                 last_login,
                 users.rank AS rank_id,
@@ -159,11 +154,13 @@ class UserModel extends CoreModel
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
             WHERE users.id = :user_id";
-            $this->_req = $this->getDb()->prepare($query);
-            $this->_req->execute(['user_id' => $user_id]);
+        $this->_req = $this->getDb()->prepare($query);
+
+        if ($this->_req->execute(['user_id' => $user_id])) {
             return $this->_req->fetch(PDO::FETCH_ASSOC);
+        } else {
+            return null;
         }
-        return null;
     }
 
     public function getAllUser($orderBy = 'id', $limit = 10)
@@ -314,6 +311,7 @@ class UserModel extends CoreModel
                 }
                 break;
         }
+        return null;
     }
 
     public function banUser($user_id)
@@ -338,11 +336,8 @@ class UserModel extends CoreModel
         }
     }
 
-
-
     public function deleteUser($user_id)
     {
-
         //FIRST UPDATE ALL CONTENT CONCERNED BY THE USER
         $sql = "UPDATE files
         SET files.uploader_id = (SELECT users.id FROM users WHERE users.username =:admin_name)
@@ -379,6 +374,40 @@ class UserModel extends CoreModel
                 if ($this->_req->execute()) {
                     return true;
                 }
+            }
+            return false;
+        } catch (PDOException $e) {
+            die($e->getMessage());
+        }
+    }
+
+    public function updateUser($user_id)
+    {
+        $post = $_POST;
+        $sql = "UPDATE users
+        SET username =:username,
+        password = COALESCE(:password, password),
+        email =:email,
+        WHERE id =:id
+        ";
+        //add update to profile private status after updating db struct
+
+        if ($post['Password'] !== $post['PasswordConfirm']) {
+            return false;
+        }
+
+        try {
+            if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                $this->_req->bindParam('id', $user_id, PDO::PARAM_INT);
+                $this->_req->bindParam('username', $post['Username'], PDO::PARAM_STR);
+                $this->_req->bindParam('email', $post['Email'], PDO::PARAM_STR);
+                $this->_req->bindParam('password', $post['Password'], PDO::PARAM_STR);
+                $this->_req->bindParam('avatar', $post['Avatar'], PDO::PARAM_STR);
+
+                if ($this->_req->execute()) {
+                    return true;
+                }
+                return false;
             }
             return false;
         } catch (PDOException $e) {

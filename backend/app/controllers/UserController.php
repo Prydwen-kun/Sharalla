@@ -36,7 +36,7 @@ class UserController
         }
     }
 
-    public function isUserConnected()
+    public function isUserConnected() #modify this to test friend connection
     {
         if ($this->user->isLoggedIn()) {
             echo json_encode([
@@ -53,58 +53,85 @@ class UserController
 
     public function getConnectedUserData()
     {
-        $connected_user = $this->user->getCurrentUser();
-        if ($connected_user !== null) {
-            require 'app/views/UserViews/UserProfileView.php';
+        if ($this->user->isLoggedIn()) {
+            $connected_user = $this->user->getCurrentUser();
+            if ($connected_user !== null) {
+                require 'app/views/UserViews/UserProfileView.php';
+            } else {
+                require 'app/views/errorViews/RequestErrorView.php';
+            }
         } else {
-            require 'app/views/errorViews/RequestErrorView.php';
+            require 'app/views/errorViews/ForbiddenErrorView.php';
         }
     }
 
     public function getUserData($user_id)
     {
-        $user = $this->user->getUser($user_id);
-        if ($user !== null) {
-            require 'app/views/UserViews/UserView.php';
+        if ($this->user->isLoggedIn() && ($this->user->getCurrentUserId() == $user_id || $this->user->getCurrentUserPower() == ADMIN)) {
+            $user = $this->user->getUser($user_id);
+            if ($user !== null) {
+                require 'app/views/UserViews/UserView.php';
+            } else {
+                require 'app/views/errorViews/RequestErrorView.php';
+            }
         } else {
-            require 'app/views/errorViews/RequestErrorView.php';
+            require 'app/views/errorViews/ForbiddenErrorView.php';
         }
     }
 
     public function getUserList()
     {
+        $orderTags = ['id', 'username', 'last_login', 'idDESC', 'usernameDESC', 'last_loginDESC'];
 
-        $userList = [];
-        if (isset($_GET['order']) && !isset($_GET['l_size'])) {
+        if ($this->user->isLoggedIn()) {
+            if (isset($_GET['order']) && !isset($_GET['l_size']) && in_array($_GET['order'], $orderTags)) {
 
-            $userList = $this->user->getAllUser($_GET['order']);
-        } else if (!isset($_GET['order']) && isset($_GET['l_size'])) {
-            $userList = $this->user->getAllUser('id', $_GET['l_size']);
-        } else if (isset($_GET['order']) && isset($_GET['l_size'])) {
-            $userList = $this->user->getAllUser($_GET['order'], $_GET['l_size']);
-        } else {
-            $userList = $this->user->getAllUser();
-        }
-
-        if (!empty($userList)) {
-            foreach ($userList as $user) {
-                $UserObjectList[] = new User($user);
+                $userList = $this->user->getAllUser($_GET['order']);
+            } else if (!isset($_GET['order']) && isset($_GET['l_size']) && is_numeric($_GET['l_size'])) {
+                $userList = $this->user->getAllUser('id', $_GET['l_size']);
+            } else if (isset($_GET['order']) && isset($_GET['l_size']) && in_array($_GET['order'], $orderTags) && is_numeric($_GET['l_size'])) {
+                $userList = $this->user->getAllUser($_GET['order'], $_GET['l_size']);
+            } else {
+                $userList = $this->user->getAllUser();
             }
 
-            require 'app/views/UserViews/UserListView.php';
+            if (isset($userList) && $userList !== null) {
+                foreach ($userList as $user) {
+                    $UserObjectList[] = new User($user);
+                }
+
+                require 'app/views/UserViews/UserListView.php';
+            } else {
+                require 'app/views/errorViews/RequestErrorView.php';
+            }
         } else {
-            require 'app/views/errorViews/RequestErrorView.php';
+            require 'app/views/errorViews/ForbiddenErrorView.php';
         }
     }
 
     public function userDelete($user_id)
     {
         if (is_numeric($user_id)) {
-            if ($this->user->isLoggedIn() && $this->user->getCurrentUserPower() == ADMIN) {
+            if ($this->user->isLoggedIn() && ($this->user->getCurrentUserId() == $user_id || $this->user->getCurrentUserPower() == ADMIN)) {
                 if ($this->user->deleteUser($user_id)) {
                     require 'app/views/successViews/deleteSuccessView.php';
                 } else {
                     require 'app/views/errorViews/userDeleteErrorView.php';
+                }
+            } else {
+                require 'app/views/errorViews/ForbiddenErrorView.php';
+            }
+        } else {
+            require 'app/views/errorViews/RequestErrorView.php';
+        }
+    }
+
+    public function userUpdate($user_id)
+    {
+        if (is_numeric($user_id)) {
+            if ($this->user->isLoggedIn() && ($this->user->getCurrentUserId() == $user_id || $this->user->getCurrentUserPower() == ADMIN)) {
+                if ($this->user->updateUser($user_id)) {
+                    require 'app/views/successViews/updateSuccessView.php';
                 }
             } else {
                 require 'app/views/errorViews/ForbiddenErrorView.php';
