@@ -46,7 +46,7 @@ class UserModel extends CoreModel
             return false;
         }
 
-        $query = "INSERT INTO users VALUES(DEFAULT,:email,:username,:password,DEFAULT,:rank,:avatar)";
+        $query = "INSERT INTO users VALUES(DEFAULT,:email,:username,:password,DEFAULT,:rank,:avatar,DEFAULT)";
 
         if (!$this->userExist($post['Username'])) {
             $this->_req = $this->getDb()->prepare($query);
@@ -82,6 +82,9 @@ class UserModel extends CoreModel
             $_SESSION[APP_TAG]['user_id'] = $this->_user['id'];
             $_SESSION[APP_TAG]['rank'] = $this->_user['rank'];
             $_SESSION[APP_TAG]['user_power'] = $this->_user['power'];
+
+            $this->lastLoginUpdate();
+
             return true;
         }
         return false;
