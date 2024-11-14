@@ -39,15 +39,24 @@ class UserController
     public function isUserConnected() #modify this to test friend connection
     {
         if ($this->user->isLoggedIn()) {
-            echo json_encode([
-                'response' => 'connected',
-                'message' => 'User is connected !'
-            ]);
+            if (isset($_GET['userId']) && is_numeric($_GET['userId'])) {
+                $status = $this->user->getUserStatus($_GET['userId']);
+                if ($status !== null) {
+                    echo json_encode([
+                        'response' => $status['status'],
+                        'message' => 'User status'
+                    ]);
+                } else {
+                    echo json_encode([
+                        'response' => 'error',
+                        'message' => 'Request error !'
+                    ]);
+                }
+            } else {
+                require 'app/views/errorViews/RequestErrorView.php';
+            }
         } else {
-            echo json_encode([
-                'response' => 'not_connected',
-                'message' => 'User isn\'t connected !'
-            ]);
+            require 'app/views/errorViews/ForbiddenErrorView.php';
         }
     }
 

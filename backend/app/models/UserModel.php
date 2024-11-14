@@ -101,7 +101,21 @@ class UserModel extends CoreModel
         $this->_req->bindParam('status_id', $status_id, PDO::PARAM_INT);
         $this->_req->execute();
     }
+    public function getUserStatus($user_id)
+    {
+        $sql = "SELECT status_label.label AS status
+        FROM status_label
+        JOIN status ON status_label.id = status.label_id
+        WHERE status.user_id =:user_id";
 
+        $this->_req = $this->getDb()->prepare($sql);
+        $this->_req->bindParam('user_id', $user_id, PDO::PARAM_INT);
+        if ($this->_req->execute()) {
+            return $this->_req->fetch(PDO::FETCH_ASSOC);
+        } else {
+            return null;
+        }
+    }
     public function lastLoginUpdate()
     {
         $query = "UPDATE users
@@ -141,7 +155,8 @@ class UserModel extends CoreModel
             users.rank AS rank_id,
             ranks.label AS rank,
             ranks.power AS power,
-            users.avatar AS avatar
+            users.avatar AS avatar,
+            users.signup_date
              FROM users
              LEFT JOIN ranks ON users.rank = ranks.id 
              WHERE users.id = :user_id";
@@ -165,7 +180,8 @@ class UserModel extends CoreModel
                 users.rank AS rank_id,
                 ranks.label AS rank,
                 ranks.power AS power,
-                users.avatar AS avatar
+                users.avatar AS avatar,
+                users.signup_date
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
             WHERE users.id = :user_id";

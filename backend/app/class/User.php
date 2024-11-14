@@ -9,6 +9,7 @@ class User
     private $rank;
     private $power;
     private $avatar;
+    private $signup_date;
 
     public function __construct(array $data)
     {
@@ -27,7 +28,7 @@ class User
 
     /**
      * Get the value of id
-     */ 
+     */
     public function getId()
     {
         return $this->id;
@@ -37,7 +38,7 @@ class User
      * Set the value of id
      *
      * @return  self
-     */ 
+     */
     public function setId($id)
     {
         $this->id = $id;
@@ -47,7 +48,7 @@ class User
 
     /**
      * Get the value of username
-     */ 
+     */
     public function getUsername()
     {
         return $this->username;
@@ -57,7 +58,7 @@ class User
      * Set the value of username
      *
      * @return  self
-     */ 
+     */
     public function setUsername($username)
     {
         $this->username = $username;
@@ -67,7 +68,7 @@ class User
 
     /**
      * Get the value of email
-     */ 
+     */
     public function getEmail()
     {
         return $this->email;
@@ -77,7 +78,7 @@ class User
      * Set the value of email
      *
      * @return  self
-     */ 
+     */
     public function setEmail($email)
     {
         $this->email = $email;
@@ -87,7 +88,7 @@ class User
 
     /**
      * Get the value of last_login
-     */ 
+     */
     public function getLast_login()
     {
         return $this->last_login;
@@ -97,7 +98,7 @@ class User
      * Set the value of last_login
      *
      * @return  self
-     */ 
+     */
     public function setLast_login($last_login)
     {
         $this->last_login = $last_login;
@@ -107,7 +108,7 @@ class User
 
     /**
      * Get the value of rank_id
-     */ 
+     */
     public function getRank_id()
     {
         return $this->rank_id;
@@ -117,7 +118,7 @@ class User
      * Set the value of rank_id
      *
      * @return  self
-     */ 
+     */
     public function setRank_id($rank_id)
     {
         $this->rank_id = $rank_id;
@@ -127,7 +128,7 @@ class User
 
     /**
      * Get the value of rank
-     */ 
+     */
     public function getRank()
     {
         return $this->rank;
@@ -137,7 +138,7 @@ class User
      * Set the value of rank
      *
      * @return  self
-     */ 
+     */
     public function setRank($rank)
     {
         $this->rank = $rank;
@@ -147,7 +148,7 @@ class User
 
     /**
      * Get the value of power
-     */ 
+     */
     public function getPower()
     {
         return $this->power;
@@ -157,7 +158,7 @@ class User
      * Set the value of power
      *
      * @return  self
-     */ 
+     */
     public function setPower($power)
     {
         $this->power = $power;
@@ -167,7 +168,7 @@ class User
 
     /**
      * Get the value of avatar
-     */ 
+     */
     public function getAvatar()
     {
         return $this->avatar;
@@ -177,10 +178,30 @@ class User
      * Set the value of avatar
      *
      * @return  self
-     */ 
+     */
     public function setAvatar($avatar)
     {
         $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of signup_date
+     */ 
+    public function getSignup_date()
+    {
+        return $this->signup_date;
+    }
+
+    /**
+     * Set the value of signup_date
+     *
+     * @return  self
+     */ 
+    public function setSignup_date($signup_date)
+    {
+        $this->signup_date = $signup_date;
 
         return $this;
     }
