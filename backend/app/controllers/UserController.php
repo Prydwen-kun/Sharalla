@@ -149,4 +149,23 @@ class UserController
             require 'app/views/errorViews/RequestErrorView.php';
         }
     }
+
+    public function logout()
+    {
+        if ($this->user->isLoggedIn()) {
+            if ($this->user->logout()) {
+                echo json_encode([
+                    'response' => 'success',
+                    'message' => 'Sign out successfully !'
+                ]);
+            } else {
+                echo json_encode([
+                    'response' => 'error',
+                    'message' => 'Error login out !'
+                ]);
+            }
+        } else {
+            require 'app/views/errorViews/ForbiddenErrorView.php';
+        }
+    }
 }

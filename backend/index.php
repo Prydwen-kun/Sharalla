@@ -24,9 +24,4 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 // Charger les routes
 require __DIR__ . '/routes/api.php';
 
-// Exemple de réponse pour vérifier que l'API fonctionne
-echo json_encode(["message" => "API is running"]);
-
-
-
 session_write_close();

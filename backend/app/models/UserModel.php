@@ -83,10 +83,12 @@ class UserModel extends CoreModel
             $_SESSION[APP_TAG]['rank'] = $this->_user['rank'];
             $_SESSION[APP_TAG]['user_power'] = $this->_user['power'];
 
-            $this->lastLoginUpdate();
-            $this->statusUpdate(STATUS_ONLINE);
-
-            return true;
+            if ($this->lastLoginUpdate()) {
+                return $this->statusUpdate(STATUS_ONLINE);
+            } else {
+                session_destroy();
+                return false;
+            }
         }
         return false;
     }
@@ -99,7 +101,7 @@ class UserModel extends CoreModel
         $this->_req = $this->getDb()->prepare($query);
         $this->_req->bindParam('user_id', $_SESSION[APP_TAG]['user_id'], PDO::PARAM_INT);
         $this->_req->bindParam('status_id', $status_id, PDO::PARAM_INT);
-        $this->_req->execute();
+        return $this->_req->execute();
     }
     public function getUserStatus($user_id)
     {
@@ -122,12 +124,18 @@ class UserModel extends CoreModel
         SET last_login = DEFAULT
         WHERE users.id = :user_id";
         $this->_req = $this->getDb()->prepare($query);
-        $this->_req->execute(['user_id' => $_SESSION[APP_TAG]['user_id']]);
+        return $this->_req->execute(['user_id' => $_SESSION[APP_TAG]['user_id']]);
     }
 
     public function logout()
     {
-        session_destroy();
+        if ($this->statusUpdate(STATUS_OFFLINE)) {
+            session_destroy();
+            return true;
+        } else {
+            session_destroy();
+            return false;
+        }
     }
 
     public function isLoggedIn()
