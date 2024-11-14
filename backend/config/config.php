@@ -9,6 +9,12 @@ define('USER', 20);
 define('BANNED_USER', 15);
 define('INVITE', 10);
 
+#ONLINE STATUS
+define('STATUS_ONLINE', 1);
+define('STATUS_OFFLINE', 2);
+define('STATUS_AWAY', 3);
+define('STATUS_NOTDISTURB', 4);
+
 #USER RANK
 define('R_ADMIN', 1);
 define('R_MOD', 2);

@@ -84,10 +84,22 @@ class UserModel extends CoreModel
             $_SESSION[APP_TAG]['user_power'] = $this->_user['power'];
 
             $this->lastLoginUpdate();
+            $this->statusUpdate(STATUS_ONLINE);
 
             return true;
         }
         return false;
+    }
+
+    public function statusUpdate($status_id)
+    {
+        $query = "UPDATE status
+        SET label_id = :status_id
+        WHERE status.user_id =:user_id";
+        $this->_req = $this->getDb()->prepare($query);
+        $this->_req->bindParam('user_id', $_SESSION[APP_TAG]['user_id'], PDO::PARAM_INT);
+        $this->_req->bindParam('status_id', $status_id, PDO::PARAM_INT);
+        $this->_req->execute();
     }
 
     public function lastLoginUpdate()
