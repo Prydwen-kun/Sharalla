@@ -430,8 +430,11 @@ class UserModel extends CoreModel
         WHERE id =:id
         ";
         //add update to profile private status after updating db struct
+        if (!(isset($post['Password']) && isset($post['PasswordConfirm']))) {
+            return false;
+        }
 
-        if ($post['Password'] !== $post['PasswordConfirm']) {
+        if ($post['Password'] !== null && $post['Password'] !== $post['PasswordConfirm']) {
             return false;
         }
 

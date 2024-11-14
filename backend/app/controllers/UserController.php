@@ -63,8 +63,9 @@ class UserController
     public function getConnectedUserData()
     {
         if ($this->user->isLoggedIn()) {
-            $connected_user = $this->user->getCurrentUser();
-            if ($connected_user !== null) {
+            $data = $this->user->getCurrentUser();
+            if ($data !== null) {
+                $connected_user = new User($data);
                 require 'app/views/UserViews/UserProfileView.php';
             } else {
                 require 'app/views/errorViews/RequestErrorView.php';
@@ -74,17 +75,23 @@ class UserController
         }
     }
 
-    public function getUserData($user_id)
+    public function getUserData()
     {
-        if ($this->user->isLoggedIn() && ($this->user->getCurrentUserId() == $user_id || $this->user->getCurrentUserPower() == ADMIN)) {
-            $user = $this->user->getUser($user_id);
-            if ($user !== null) {
-                require 'app/views/UserViews/UserView.php';
+        if (isset($_GET['userId']) && is_numeric($_GET['userId'])) {
+            $user_id = $_GET['userId'];
+            if ($this->user->isLoggedIn()) {
+                $data = $this->user->getUser($user_id);
+                if ($data !== null) {
+                    $user = new User($data);
+                    require 'app/views/UserViews/UserView.php';
+                } else {
+                    require 'app/views/errorViews/RequestErrorView.php';
+                }
             } else {
-                require 'app/views/errorViews/RequestErrorView.php';
+                require 'app/views/errorViews/ForbiddenErrorView.php';
             }
         } else {
-            require 'app/views/errorViews/ForbiddenErrorView.php';
+            require 'app/views/errorViews/RequestErrorView.php';
         }
     }
 
@@ -118,9 +125,10 @@ class UserController
         }
     }
 
-    public function userDelete($user_id)
+    public function userDelete()
     {
-        if (is_numeric($user_id)) {
+        if (isset($_GET['userId']) && is_numeric($_GET['userId'])) {
+            $user_id = $_GET['userId'];
             if ($this->user->isLoggedIn() && ($this->user->getCurrentUserId() == $user_id || $this->user->getCurrentUserPower() == ADMIN)) {
                 if ($this->user->deleteUser($user_id)) {
                     require 'app/views/successViews/deleteSuccessView.php';
@@ -135,9 +143,10 @@ class UserController
         }
     }
 
-    public function userUpdate($user_id)
+    public function userUpdate()
     {
-        if (is_numeric($user_id)) {
+        if (isset($_GET['userId']) && is_numeric($_GET['userId']) && !empty($_POST)) {
+            $user_id = $_GET['userId'];
             if ($this->user->isLoggedIn() && ($this->user->getCurrentUserId() == $user_id || $this->user->getCurrentUserPower() == ADMIN)) {
                 if ($this->user->updateUser($user_id)) {
                     require 'app/views/successViews/updateSuccessView.php';
