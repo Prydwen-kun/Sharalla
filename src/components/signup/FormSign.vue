@@ -9,6 +9,7 @@ const props = defineProps({
   form_id: String,
 })
 
+const router = useRouter()//injection outside of onMounted !!
 //onMounted assures that all DOM is rendered BEFORE searching for an element ID
 onMounted(() => {
   document.getElementById('signupForm').addEventListener('submit',
@@ -40,10 +41,10 @@ onMounted(() => {
         )
         const data = await response.data
         console.log(data.response, data.message)
-        if (response.ok && data.response === 'user_created') {
+        if (data.response === 'user_created') {
           //user created
           console.log('User created !')
-          const router = useRouter()
+
           router.push('/login')
         } else {
           //error
