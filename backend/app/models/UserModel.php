@@ -76,7 +76,7 @@ class UserModel extends CoreModel
         ranks.label AS rank
         ranks.power AS power 
         FROM users 
-        JOIN rank ON users.rank = rank.id 
+        JOIN ranks ON users.rank = ranks.id 
         WHERE username = :username";
         $this->_req = $this->getDb()->prepare($query);
         $this->_req->execute(['username' => $username]);
