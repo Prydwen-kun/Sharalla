@@ -12,8 +12,8 @@ class UserController
     {
         if (!empty($_POST)) {
             //extract post create var for each key
-            $Username = $_POST['Username'];
-            $Password = $_POST['Password'];
+            $Username = $_POST['UserLogin'];
+            $Password = $_POST['UserPwd'];
 
             if ($this->user->login($Username, $Password)) {
                 require 'app/views/LoginView.php';
