@@ -46,7 +46,8 @@ class UserModel extends CoreModel
             return false;
         }
 
-        $query = "INSERT INTO users VALUES(DEFAULT,:email,:username,:password,DEFAULT,:rank,:avatar,DEFAULT);
+        $query = "INSERT INTO users(id,email,username,password,last_login,rank,avatar,signup_date)
+         VALUES(DEFAULT,:email,:username,:password,DEFAULT,:rank,:avatar,CURRENT_TIMESTAMP);
         INSERT INTO status 
         VALUES(DEFAULT,
         2,
@@ -58,7 +59,7 @@ class UserModel extends CoreModel
             $this->_req->bindValue("email", $post['Email'], PDO::PARAM_STR);
             $this->_req->bindValue("password", password_hash($post['Password'], PASSWORD_BCRYPT), PDO::PARAM_STR);
             $this->_req->bindValue("rank", $rank, PDO::PARAM_INT);
-            $this->_req->bindValue("avatar", $avatar, PDO::PARAM_INT);
+            $this->_req->bindValue("avatar", $avatar, PDO::PARAM_STR);
             return $this->_req->execute();
         } else {
             return false;
