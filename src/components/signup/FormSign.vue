@@ -40,7 +40,6 @@ onMounted(() => {
           formData
         )
         const data = await response.data
-        console.log(data.response, data.message)
         if (data.response === 'user_created') {
           //user created
           console.log('User created !')
