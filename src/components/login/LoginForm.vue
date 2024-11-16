@@ -1,7 +1,7 @@
 <script setup>
 import FormField from '../signup/form-component/FormField.vue';
 import { onMounted } from 'vue';
-import { Axios } from 'axios';
+import axios from 'axios';
 import config from '../../../config/config';
 import { useRouter } from 'vue-router';
 
@@ -9,6 +9,7 @@ const props = defineProps({
   form_id: String,
 })
 
+const router = useRouter()
 //onMounted assures that all DOM is rendered BEFORE searching for an element ID
 onMounted(() => {
   document.getElementById('loginForm').addEventListener('submit',
@@ -22,27 +23,18 @@ onMounted(() => {
         alert('Please fill in all fields.');
       } else {
         //catch form submit and make API call to signup
-
         //form data object
-        const form = document.querySelector('signupForm')
+        const form = document.getElementById('loginForm')
         const formData = new FormData(form)
-        const formDataObject = Object.fromEntries(formData.entries())
-        //form object to text
-        const jsonData = JSON.stringify(formDataObject)
-
         //axios request to API endpoint
-        const response = await Axios.post(
+        const response = await axios.post(
           `${config.APIbaseUrl}${config.endpoints.login}`,
-          jsonData,
-          { headers: { 'Content-Type': 'multipart/form-data' } }
+          formData
         )
-
-        const data = await response.json()
-
-        if (response.ok && data.response === 'connected') {
+        const data = await response.data
+        if (data.response === 'connected') {
           //user created
           console.log('Login Success !')
-          const router = useRouter()
           router.push('/dashboard')
         } else {
           //error
