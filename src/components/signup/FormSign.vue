@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted } from 'vue';
 import FormField from './form-component/FormField.vue';
-import { Axios } from 'axios';
+import axios from 'axios';
 import config from '../../../config/config';
 import { useRouter } from 'vue-router';
 
@@ -26,25 +26,20 @@ onMounted(() => {
         alert('Username must be at least 3 characters long !')
       } else if (Password.length < 8) {
         alert('Password must be at least 8 characters long !')
+      } else if (Password !== PasswordConfirm) {
+        alert('Please confirm your password by typing it a second time !')
       } else {
         //catch form submit and make API call to signup
-
         //form data object
-        const form = document.querySelector('signupForm')
+        const form = document.getElementById('signupForm')
         const formData = new FormData(form)
-        const formDataObject = Object.fromEntries(formData.entries())
-        //form object to text
-        const jsonData = JSON.stringify(formDataObject)
-
         //axios request to API endpoint
-        const response = await Axios.post(
+        const response = await axios.post(
           `${config.APIbaseUrl}${config.endpoints.signup}`,
-          jsonData,
-          { headers: { 'Content-Type': 'multipart/form-data' } }
+          formData
         )
-
-        const data = await response.json()
-
+        const data = await response.data
+        console.log(data.response, data.message)
         if (response.ok && data.response === 'user_created') {
           //user created
           console.log('User created !')
