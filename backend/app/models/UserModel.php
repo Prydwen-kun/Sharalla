@@ -46,7 +46,11 @@ class UserModel extends CoreModel
             return false;
         }
 
-        $query = "INSERT INTO users VALUES(DEFAULT,:email,:username,:password,DEFAULT,:rank,:avatar,DEFAULT)";
+        $query = "INSERT INTO users VALUES(DEFAULT,:email,:username,:password,DEFAULT,:rank,:avatar,DEFAULT);
+        INSERT INTO status 
+        VALUES(DEFAULT,
+        2,
+        (SELECT users.id FROM users WHERE username=:username));";
 
         if (!$this->userExist($post['Username'])) {
             $this->_req = $this->getDb()->prepare($query);
