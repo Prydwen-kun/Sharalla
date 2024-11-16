@@ -16,7 +16,7 @@ class UserController
             $Password = $_POST['UserPwd'];
 
             if ($this->user->login($Username, $Password)) {
-                require 'app/views/LoginView.php';
+                require 'app/views/AuthViews/LoginView.php';
             }
         } else {
             require 'app/views/errorViews/RequestErrorView.php';
