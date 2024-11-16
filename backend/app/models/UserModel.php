@@ -72,8 +72,8 @@ class UserModel extends CoreModel
         $query = "SELECT users.id AS id,
         users.password AS password,
         users.email AS email,
-        last_login,
-        ranks.label AS rank
+        users.last_login AS last_login,
+        ranks.label AS rank,
         ranks.power AS power 
         FROM users 
         JOIN ranks ON users.rank = ranks.id 
