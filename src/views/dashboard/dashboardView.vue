@@ -1,21 +1,21 @@
 <script setup>
 
-import { Axios } from 'axios';
+import axios from 'axios';
 import config from '../../../config/config';
 import { useRouter } from 'vue-router';
 
 //make API request to see if user not connected
 //redirect to login if true
+const router = useRouter()
 const response = async () => {
-  return await Axios.get(
+  return await axios.get(
     `${config.APIbaseUrl}${config.endpoints.isConnected}`
   )
 }
 
-const data = async () => { return await response.json() }
+const data = async () => { return await response.data }
 
-if (response.ok && data.response === 'not_connected') {
-  const router = useRouter()
+if (data.response === 'not_connected') {
   router.push('/login')
 }
 
