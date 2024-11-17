@@ -36,6 +36,21 @@ class UserController
         }
     }
 
+    public function isConnected()
+    {
+        if ($this->user->isLoggedIn()) {
+            echo json_encode([
+                'response' => 'connected',
+                'message' => 'You are connected !'
+            ]);
+        } else {
+            echo json_encode([
+                'response' => 'not_connected',
+                'message' => 'You are not connected !'
+            ]);
+        }
+    }
+
     public function isUserConnected() #modify this to test friend connection
     {
         if ($this->user->isLoggedIn()) {
