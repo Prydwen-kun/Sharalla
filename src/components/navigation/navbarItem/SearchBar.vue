@@ -12,7 +12,7 @@
 
 <style scoped>
 .searchField {
-  grid-column: 5/9;
+  grid-column: 3/7;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -26,7 +26,7 @@
   border-bottom: 1px solid var(--dark-blue-black);
   background-color: var(--light-blue-black);
   color: var(--rose);
-  max-width: 10rem;
+  min-width: max-content;
   outline: none;
   padding: 0.5rem;
 }

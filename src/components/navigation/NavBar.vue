@@ -1,7 +1,21 @@
 <script setup>
+import { onMounted } from 'vue';
+import config from '../../../config/config';
 import NavItem from './navbarItem/NavItem.vue'
 import SearchBar from './navbarItem/SearchBar.vue';
 import UserIcon from './navbarItem/UserIcon.vue';
+import axios from 'axios';
+
+onMounted(async () => {
+  const response = await axios.get(
+    `${config.APIbaseUrl}${config.endpoints.getConnectedUserData}`
+  )
+  const data = response.data
+  const usernameGreet = document.getElementById('userGreet')
+  if (data.response !== 'error' || data.response !== 'forbidden') {
+    usernameGreet.innerHTML = data.response
+  }
+})
 </script>
 
 <template>
@@ -9,6 +23,7 @@ import UserIcon from './navbarItem/UserIcon.vue';
     <ul class="navigation">
       <NavItem :link-title="'Home'" :link="'/'" :grid-span="'1/3'" />
       <SearchBar />
+      <p class="usernameGreet" id="userGreet">TEST</p>
       <UserIcon :link-title="'User Account'" :link="'/'" :grid-span="'11/12'" />
     </ul>
   </nav>
@@ -33,5 +48,13 @@ nav {
   list-style-type: none;
   padding: 0;
   margin: 0;
+}
+
+.usernameGreet {
+  grid-column: 10/11;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--rose);
 }
 </style>

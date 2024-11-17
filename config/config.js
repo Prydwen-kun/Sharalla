@@ -5,12 +5,14 @@ const config = {
   endpoints: {
     signup: 'user&action=signup',
     login: 'user&action=login',
-    isConnected: 'user&action=isUserConnected',
+    isConnected: 'user&action=isConnected',
+    isUserConnected: 'user&action=isUserConnected',
     getConnectedUserData: 'user&action=getConnectedUserData',
     getUserData: 'user&action=getUserData',
     getUserList: 'user&action=getUserList',
-    updateUser: '',
+    updateUser: 'user&action=userUpdate',
     deleteUser: 'user&action=userDelete',
+    logout: 'user&action=logout',
   },
 }
 

@@ -15,12 +15,18 @@ const response = async () => {
 
 const data = async () => { return await response.data }
 
-if (data.response === 'not_connected') {
+if (data.response !== 'connected') {
   router.push('/login')
 }
 
 </script>
 <template>
-  <main>Dashboard</main>
+  <main class="dashboard_container">Dashboard</main>
 </template>
-<style scoped></style>
+<style scoped>
+.dashboard_container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+
+}
+</style>
