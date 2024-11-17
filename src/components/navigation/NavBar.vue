@@ -10,10 +10,14 @@ onMounted(async () => {
   const response = await axios.get(
     `${config.APIbaseUrl}${config.endpoints.getConnectedUserData}`
   )
-  const data = response.data
+  const data = await response.data
+  console.log(data)
   const usernameGreet = document.getElementById('userGreet')
-  if (data.response !== 'error' || data.response !== 'forbidden') {
+
+  if (data.response !== 'error' && data.response !== 'forbidden') {
     usernameGreet.innerHTML = data.response
+  } else {
+    usernameGreet.innerHTML = 'Not connected'
   }
 })
 </script>

@@ -4,23 +4,26 @@ import axios from 'axios';
 import config from '../../../config/config';
 import { useRouter } from 'vue-router';
 import LinkButton from '@/components/navigation/link_button/LinkButton.vue';
+import { onMounted } from 'vue';
 
 //make API request to see if user already connected
 //redirect on dash if true
 const router = useRouter()
+onMounted(async () => {
+  const getResponse = async () => {
+    return await axios.get(
+      `${config.APIbaseUrl}${config.endpoints.isConnected}`
+    )
+  }
+  const response = await getResponse()
+  const data = await response.data
 
-const response = async () => {
-  return await axios.get(
-    `${config.APIbaseUrl}${config.endpoints.isConnected}`
-  )
-}
+  if (data.response === 'connected') {
 
-const data = async () => { return await response.data }
+    router.push('/dashboard')
+  }
+})
 
-if (data.response === 'connected') {
-
-  router.push('/dashboard')
-}
 
 </script>
 <template>

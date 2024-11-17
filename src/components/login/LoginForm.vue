@@ -32,7 +32,7 @@ onMounted(() => {
           formData
         )
         const data = await response.data
-        console.log(data.response, data.message)
+
         if (data.response === 'connected') {
           //user created
           console.log('Login Success !')
