@@ -17,6 +17,7 @@ onMounted(async () => {
   }
   const response = await getResponse()
   const data = response.data
+  console.log(data)
 
   if (data.response !== 'connected') {
     router.push('/login')
