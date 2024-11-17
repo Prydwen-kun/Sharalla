@@ -189,7 +189,11 @@ class UserController
                 ]);
             }
         } else {
-            require 'app/views/errorViews/ForbiddenErrorView.php';
+            $this->user->logout();
+            echo json_encode([
+                'response' => 'session_destroy',
+                'message' => 'The session has been cleaned'
+            ]);
         }
     }
 }
