@@ -1,22 +1,24 @@
 <script setup>
 import FormSign from '@/components/signup/FormSign.vue';
-import { Axios } from 'axios';
+import axios from 'axios';
 import config from '../../../config/config';
 import { useRouter } from 'vue-router';
 import LinkButton from '@/components/navigation/link_button/LinkButton.vue';
 
 //make API request to see if user already connected
 //redirect on dash if true
+const router = useRouter()
+
 const response = async () => {
-  return await Axios.get(
+  return await axios.get(
     `${config.APIbaseUrl}${config.endpoints.isConnected}`
   )
 }
 
-const data = async () => { return await response.json() }
+const data = async () => { return await response.data }
 
-if (response.ok && data.response === 'connected') {
-  const router = useRouter()
+if (data.response === 'connected') {
+
   router.push('/dashboard')
 }
 
