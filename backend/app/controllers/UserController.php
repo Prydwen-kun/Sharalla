@@ -122,6 +122,8 @@ class UserController
             } else {
                 response('forbidden', 'Sign in to use this ressource !');
             }
+        } else {
+            response('post_error', 'Invalid POST');
         }
     }
 
