@@ -22,32 +22,32 @@ class UserModel extends CoreModel
         return count($response) == 1 ? true : false;
     }
 
-    public function signup(int $rank, string $avatar): bool
+    public function signup(int $rank, string $avatar)
     {
         if (!empty($_POST)) {
             $post = $_POST;
         } else {
-            return false;
+            return POST_EMPTY;
         }
 
         if ($post['Password'] !== $post['PasswordConfirm']) {
-            return false;
+            return PWD_CONFIRM_ERROR;
         }
 
         if (strlen($post['Username']) < 3) {
-            return false;
+            return USERNAME_LENGTH_ERROR;
         }
 
         if (strlen($post['Password']) < 8) {
-            return false;
+            return PWD_LENGTH_ERROR;
         }
 
         if (!filter_var($post['Email'], FILTER_VALIDATE_EMAIL)) {
-            return false;
+            return EMAIL_ERROR;
         }
 
         $query = "INSERT INTO users(id,email,username,password,last_login,rank,avatar,signup_date)
-         VALUES(DEFAULT,:email,:username,:password,DEFAULT,:rank,:avatar,CURRENT_TIMESTAMP);
+         VALUES(DEFAULT,:email,:username,:password,DEFAULT,:rank,:avatar,DEFAULT,NULL);
         INSERT INTO status 
         VALUES(DEFAULT,
         2,
@@ -60,9 +60,13 @@ class UserModel extends CoreModel
             $this->_req->bindValue("password", password_hash($post['Password'], PASSWORD_BCRYPT), PDO::PARAM_STR);
             $this->_req->bindValue("rank", $rank, PDO::PARAM_INT);
             $this->_req->bindValue("avatar", $avatar, PDO::PARAM_STR);
-            return $this->_req->execute();
+            if ($this->_req->execute()) {
+                return RETURN_OK;
+            } else {
+                return REQ_ERROR;
+            }
         } else {
-            return false;
+            return USERNAME_TAKEN_ERROR;
         }
     }
 
@@ -79,32 +83,98 @@ class UserModel extends CoreModel
         JOIN ranks ON users.rank = ranks.id 
         WHERE username = :username";
         $this->_req = $this->getDb()->prepare($query);
-        $this->_req->execute(['username' => $username]);
+        if (!$this->_req->execute(['username' => $username])) {
+            return REQ_ERROR;
+        }
         $this->_user = $this->_req->fetch(PDO::FETCH_ASSOC);
         $this->_req->closeCursor();
 
         if ($this->_user && password_verify($password, $this->_user['password'])) {
-            $_SESSION[APP_TAG]['user_id'] = $this->_user['id'];
-            $_SESSION[APP_TAG]['rank'] = $this->_user['rank'];
-            $_SESSION[APP_TAG]['user_power'] = $this->_user['power'];
-
             if ($this->lastLoginUpdate()) {
-                return $this->statusUpdate(STATUS_ONLINE);
+                //generate token to client
+                do {
+                    $auth_token = generateToken();
+                    $continue = $this->updateUserToken($auth_token, $this->_user['id']);
+                    if ($continue === false) {
+                        return REQ_ERROR;
+                    }
+                } while ($continue !== true);
+                //repeat if key already in use
+                if ($this->statusUpdate(STATUS_ONLINE, $this->_user['id'])) {
+                    return [
+                        'auth_token' => $auth_token
+                    ];
+                } else {
+                    return REQ_ERROR;
+                }
             } else {
-                session_destroy();
+                return REQ_ERROR;
+            }
+        } else {
+            return CREDENTIALS_ERROR;
+        }
+    }
+    public function updateUserToken($auth_token, $user_id)
+    {
+        $sql = "SELECT users.id 
+        FROM users 
+        WHERE users.auth_token =:auth_token";
+        $this->_req = $this->getDb()->prepare($sql);
+        $this->_req->bindParam('auth_token', $auth_token, PDO::PARAM_STR);
+        $this->_req->execute();
+        $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
+        $this->_req->closeCursor();
+
+        if (count($data) !== 0) {
+            return -1;
+        }
+
+        $sql = "UPDATE users 
+        SET users.auth_token =:auth_token
+        WHERE users.id=:user_id";
+
+        $this->_req = $this->getDb()->prepare($sql);
+        $this->_req->bindParam('user_id', $user_id, PDO::PARAM_INT);
+        $this->_req->bindParam('auth_token', $auth_token, PDO::PARAM_STR);
+        return $this->_req->execute();
+    }
+    public function getUserIdFromToken($auth_token)
+    {
+        $sql = "SELECT users.id as user_id
+        FROM users WHERE users.auth_token =:auth_token";
+        $this->_req = $this->getDb()->prepare($sql);
+        $this->_req->bindParam('auth_token', $auth_token, PDO::PARAM_STR);
+        if ($this->_req->execute()) {
+            $data = $this->_req->fetch(PDO::FETCH_ASSOC);
+            return $data['user_id'];
+        } else {
+            return false;
+        }
+    }
+
+    public function getUserPowerFromToken($auth_token)
+    { {
+            $sql = "SELECT ranks.power as power
+            FROM users
+            JOIN ranks ON users.rank = ranks.id
+            WHERE users.auth_token =:auth_token";
+            $this->_req = $this->getDb()->prepare($sql);
+            $this->_req->bindParam('auth_token', $auth_token, PDO::PARAM_STR);
+            if ($this->_req->execute()) {
+                $data = $this->_req->fetch(PDO::FETCH_ASSOC);
+                return $data['power'];
+            } else {
                 return false;
             }
         }
-        return false;
     }
-
-    public function statusUpdate($status_id)
+    public function statusUpdate($status_id, $user_id)
     {
         $query = "UPDATE status
         SET label_id = :status_id
         WHERE status.user_id =:user_id";
         $this->_req = $this->getDb()->prepare($query);
-        $this->_req->bindParam('user_id', $_SESSION[APP_TAG]['user_id'], PDO::PARAM_INT);
+        $this->_req->bindParam('user_id', $user_id, PDO::PARAM_INT);
         $this->_req->bindParam('status_id', $status_id, PDO::PARAM_INT);
         return $this->_req->execute();
     }
@@ -132,50 +202,76 @@ class UserModel extends CoreModel
         return $this->_req->execute(['user_id' => $_SESSION[APP_TAG]['user_id']]);
     }
 
-    public function logout()
+    public function logout($auth_token)
     {
-        if ($this->statusUpdate(STATUS_OFFLINE)) {
-            session_destroy();
-            return true;
+        $user_id = $this->getUserIdFromToken($auth_token);
+        if ($user_id !== false) {
+            $sql = "UPDATE users
+            SET auth_token = NULL
+            WHERE users.auth_token =:auth_token";
+            $this->_req = $this->getDb()->prepare($sql);
+            if ($this->_req->execute(['auth_token' => $auth_token])) {
+                return $this->statusUpdate(STATUS_OFFLINE, $user_id);
+            } else {
+                return REQ_ERROR;
+            }
         } else {
-            session_destroy();
+            return REQ_ERROR;
+        }
+    }
+
+    public function isLoggedIn($auth_token)
+    {
+        $sql = "SELECT users.username AS username
+        FROM users
+        WHERE users.auth_token =:auth_token";
+        $this->_req = $this->getDb()->prepare($sql);
+        $this->_req->bindParam('auth_token', $auth_token, PDO::PARAM_STR);
+        $this->_req->execute();
+        $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
+        $this->_req->closeCursor();
+        return count($data) === 1 ? true : false;
+    }
+
+    public function getCurrentUserId($auth_token)
+    {
+        $current_user_id = $this->getUserIdFromToken($auth_token);
+        if ($current_user_id !== false && $current_user_id !== null) {
+            return $current_user_id;
+        } else {
             return false;
         }
     }
 
-    public function isLoggedIn()
+    public function getCurrentUserPower($auth_token)
     {
-        return isset($_SESSION[APP_TAG]['user_id']);
+        $current_user_power = $this->getUserPowerFromToken($auth_token);
+        if ($current_user_power !== false && $current_user_power !== null) {
+            return $current_user_power;
+        } else {
+            return false;
+        }
     }
 
-    public function getCurrentUserId()
-    {
-        return $_SESSION[APP_TAG]['user_id'];
-    }
-
-    public function getCurrentUserPower()
-    {
-        return $_SESSION[APP_TAG]['user_power'];
-    }
-
-    public function getCurrentUser()
+    public function getCurrentUser($auth_token)
     {
         $query =
             "SELECT users.id AS id,
-            username,
-            email,
-            last_login,
+            users.username AS username,
+            users.email AS email,
+            users.last_login AS last_login,
             users.rank AS rank_id,
             ranks.label AS rank,
             ranks.power AS power,
             users.avatar AS avatar,
-            users.signup_date
+            users.signup_date AS signup_date
              FROM users
              LEFT JOIN ranks ON users.rank = ranks.id 
-             WHERE users.id = :user_id";
+             WHERE users.auth_token = :auth_token";
 
         $this->_req = $this->getDb()->prepare($query);
-        if ($this->_req->execute(['user_id' => $_SESSION[APP_TAG]['user_id']])) {
+        $this->_req->bindParam('auth_token', $auth_token, PDO::PARAM_STR);
+        if ($this->_req->execute()) {
             return $this->_req->fetch(PDO::FETCH_ASSOC);
         } else {
             return null;
@@ -411,7 +507,6 @@ class UserModel extends CoreModel
 
         try {
             if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
-
                 $this->_req->bindParam('user_id', $user_id, PDO::PARAM_INT);
                 $admin_name = ADMIN_NAME;
                 $this->_req->bindParam('admin_name', $admin_name, PDO::PARAM_STR);
@@ -432,15 +527,16 @@ class UserModel extends CoreModel
         SET username =:username,
         password = COALESCE(:password, password),
         email =:email,
+        avatar =:avatar
         WHERE id =:id
         ";
         //add update to profile private status after updating db struct
         if (!(isset($post['Password']) && isset($post['PasswordConfirm']))) {
-            return false;
+            return PWD_CONFIRM_ERROR;
         }
 
         if ($post['Password'] !== null && $post['Password'] !== $post['PasswordConfirm']) {
-            return false;
+            return PWD_CONFIRM_ERROR;
         }
 
         try {
@@ -452,11 +548,11 @@ class UserModel extends CoreModel
                 $this->_req->bindParam('avatar', $post['Avatar'], PDO::PARAM_STR);
 
                 if ($this->_req->execute()) {
-                    return true;
+                    return RETURN_OK;
                 }
-                return false;
+                return REQ_ERROR;
             }
-            return false;
+            return REQ_ERROR;
         } catch (PDOException $e) {
             die($e->getMessage());
         }

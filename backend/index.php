@@ -11,8 +11,12 @@ session_start();
 // Charger l'autoloader
 require __DIR__ . '/vendor/autoload.php';
 
-// Charger les variables d'environnement
+// Charger les constantes de config
 require __DIR__ . '/config/config.php';
+
+//Charger utils function
+require __DIR__ . '/utils/responseFormat.php';
+require __DIR__ . '/utils/Auth_token_generator.php';
 
 // Définir les en-têtes pour l'API REST
 header("Access-Control-Allow-Origin: *");

@@ -32,3 +32,20 @@ define('DB_PWD', '');
 
 #ADMIN FALLBACK NAME
 define('ADMIN_NAME', 'admin');
+
+#FUNCTION RETURN CODE
+//signup error
+define('PWD_CONFIRM_ERROR', 10);
+define('USERNAME_LENGTH_ERROR', 11);
+define('PWD_LENGTH_ERROR', 12);
+define('EMAIL_ERROR', 13);
+define('USERNAME_TAKEN_ERROR', 15);
+define('POST_EMPTY', 30);
+
+//login error
+define('CREDENTIALS_ERROR', 16);
+//request error
+define('REQ_ERROR', 35);
+
+//function OK
+define('RETURN_OK', 201);
