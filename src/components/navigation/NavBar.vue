@@ -7,8 +7,11 @@ import UserIcon from './navbarItem/UserIcon.vue';
 import axios from 'axios';
 
 onMounted(async () => {
-  const response = await axios.get(
-    `${config.APIbaseUrl}${config.endpoints.getConnectedUserData}`
+  const response = await axios.post(
+    `${config.APIbaseUrl}${config.endpoints.getConnectedUserData}`,
+    {
+      auth_token:$auth_token,
+    }
   )
   const data = await response.data
   console.log(data)

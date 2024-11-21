@@ -13,6 +13,19 @@ const config = {
     updateUser: 'user&action=userUpdate',
     deleteUser: 'user&action=userDelete',
     logout: 'user&action=logout',
+    GET: {
+      userId: '&userId=',
+      order: '&order=',
+      l_size: '&l_size=',
+    },
+  },
+  filter: {
+    id: 'id',
+    username: 'username',
+    last_login: 'last_login',
+    idDESC: 'idDESC',
+    usernameDESC: 'usernameDESC',
+    last_loginDESC: 'last_loginDESC',
   },
 }
 
