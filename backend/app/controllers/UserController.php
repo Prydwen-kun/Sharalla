@@ -17,7 +17,21 @@ class UserController
                 switch (true) {
                     case is_array($return):
                         $user_token = $return['auth_token'];
-                        response('connected', 'Connected do not share your key !', $user_token);
+                        //send cookie http-only with auth token
+                        setcookie(
+                            'auth_token',
+                            $user_token,
+                            [
+                                'expires' => time() + 86400,
+                                'path' => '/',
+                                'domain' => DOMAIN_NAME,
+                                'secure' => HTTPS_FLAG,
+                                'httponly' => true,
+                                'samesite' => 'Strict'
+                            ]
+                        );
+
+                        response('connected', 'Connected !');
                         break;
                     case $return === CREDENTIALS_ERROR:
                         response('credentials_error', 'Wrong credentials !');
@@ -72,22 +86,22 @@ class UserController
 
     public function isConnected()
     {
-        if (!empty($_POST) && isset($_POST['auth_token'])) {
-            $auth_token = $_POST['auth_token'];
+        if (isset($_COOKIE['auth_token'])) {
+            $auth_token = $_COOKIE['auth_token'];
             if ($this->user->isLoggedIn($auth_token)) {
                 response('connected', 'Logged in !');
             } else {
                 response('not_connected', 'Disconnected !');
             }
         } else {
-            response('post_empty', 'No POST provided !');
+            response('no_cookie', 'No cookie provided !');
         }
     }
 
     public function isUserConnected() #modify this to test friend connection
     {
-        if (!empty($_POST) && isset($_POST['auth_token'])) {
-            $auth_token = $_POST['auth_token'];
+        if (isset($_COOKIE['auth_token'])) {
+            $auth_token = $_COOKIE['auth_token'];
             if ($this->user->isLoggedIn($auth_token)) {
                 if (isset($_GET['userId']) && is_numeric($_GET['userId'])) {
                     $status = $this->user->getUserStatus($_GET['userId']);
@@ -103,14 +117,14 @@ class UserController
                 response('forbidden', 'Sign in to use this ressource !');
             }
         } else {
-            response('post_error', 'No POST provided !');
+            response('no_cookie', 'No cookie provided !');
         }
     }
 
     public function getConnectedUserData()
     {
-        if (!empty($_POST) && isset($_POST['auth_token'])) {
-            $auth_token = $_POST['auth_token'];
+        if (isset($_COOKIE['auth_token'])) {
+            $auth_token = $_COOKIE['auth_token'];
             if ($this->user->isLoggedIn($auth_token)) {
                 $data = $this->user->getCurrentUser($auth_token);
                 if ($data !== null) {
@@ -123,7 +137,7 @@ class UserController
                 response('forbidden', 'Sign in to use this ressource !');
             }
         } else {
-            response('post_error', 'Invalid POST');
+            response('no_cookie', 'Invalid cookie');
         }
     }
 
@@ -131,8 +145,8 @@ class UserController
     {
         if (isset($_GET['userId']) && is_numeric($_GET['userId'])) {
             $user_id = $_GET['userId'];
-            if (!empty($_POST) && isset($_POST['auth_token'])) {
-                $auth_token = $_POST['auth_token'];
+            if (isset($_COOKIE['auth_token'])) {
+                $auth_token = $_COOKIE['auth_token'];
                 if ($this->user->isLoggedIn($auth_token)) {
                     $data = $this->user->getUser($user_id);
                     if ($data !== null) {
@@ -144,6 +158,8 @@ class UserController
                 } else {
                     response('forbidden', 'Sign in to use this ressource !');
                 }
+            } else {
+                response('no_cookie', 'No cookie');
             }
         } else {
             response('get_error', 'Invalid GET params !');
@@ -154,8 +170,8 @@ class UserController
     {
         $orderTags = ['id', 'username', 'last_login', 'idDESC', 'usernameDESC', 'last_loginDESC'];
 
-        if (!empty($_POST) && isset($_POST['auth_token'])) {
-            $auth_token = $_POST['auth_token'];
+        if (isset($_COOKIE['auth_token'])) {
+            $auth_token = $_COOKIE['auth_token'];
             if ($this->user->isLoggedIn($auth_token)) {
                 if (isset($_GET['order']) && !isset($_GET['l_size']) && in_array($_GET['order'], $orderTags)) {
 
@@ -181,7 +197,7 @@ class UserController
                 response('forbidden', 'Sign in to use this ressource !');
             }
         } else {
-            response('post_error', 'Invalid POST !');
+            response('no_cookie', 'Invalid cookie !');
         }
     }
 
@@ -189,8 +205,8 @@ class UserController
     {
         if (isset($_GET['userId']) && is_numeric($_GET['userId'])) {
             $user_id = $_GET['userId'];
-            if (!empty($_POST) && isset($_POST['auth_token'])) {
-                $auth_token = $_POST['auth_token'];
+            if (isset($_COOKIE['auth_token'])) {
+                $auth_token = $_COOKIE['auth_token'];
                 if ($this->user->isLoggedIn($auth_token) && ($this->user->getCurrentUserId($auth_token) === $user_id || $this->user->getCurrentUserPower($auth_token) === ADMIN)) {
                     if ($this->user->deleteUser($user_id)) {
                         response('delete_success', 'User deleted');
@@ -201,7 +217,7 @@ class UserController
                     response('forbidden', 'Sign in to use this ressource !');
                 }
             } else {
-                response('post_error', 'Invalid POST');
+                response('no_cookie', 'Invalid cookie');
             }
         } else {
             response('get_error', 'Invalid GET params !');
@@ -212,8 +228,8 @@ class UserController
     {
         if (isset($_GET['userId']) && is_numeric($_GET['userId'])) {
             $user_id = $_GET['userId'];
-            if (!empty($_POST) && isset($_POST['auth_token'])) {
-                $auth_token = $_POST['auth_token'];
+            if (isset($_COOKIE['auth_token'])) {
+                $auth_token = $_COOKIE['auth_token'];
                 if ($this->user->isLoggedIn($auth_token) && ($this->user->getCurrentUserId($auth_token) === $user_id || $this->user->getCurrentUserPower($auth_token) === ADMIN)) {
                     switch ($this->user->updateUser($user_id)) {
                         case RETURN_OK:
@@ -233,7 +249,7 @@ class UserController
                     response('forbidden', 'Sign in to gain access');
                 }
             } else {
-                response('post_error', 'Invalid POST');
+                response('no_cookie', 'Invalid cookie');
             }
         } else {
             response('get_error', 'Invalid GET params');
@@ -242,8 +258,8 @@ class UserController
 
     public function logout()
     {
-        if (!empty($_POST) && isset($_POST['auth_token'])) {
-            $auth_token = $_POST['auth_token'];
+        if (isset($_COOKIE['auth_token'])) {
+            $auth_token = $_COOKIE['auth_token'];
             if ($this->user->isLoggedIn($auth_token)) {
                 switch ($this->user->logout($auth_token)) {
                     case true:
@@ -260,7 +276,7 @@ class UserController
                 response('no_user_connected', 'No user connected !');
             }
         } else {
-            response('post_error', 'No POST provided !');
+            response('no_cookie', 'No cookie !');
         }
     }
 }

@@ -49,3 +49,8 @@ define('REQ_ERROR', 35);
 
 //function OK
 define('RETURN_OK', 201);
+
+//HTTPS config
+define('HTTPS_FLAG', false);
+define('HTTP_PROTO', 'http://');
+define('DOMAIN_NAME', $_SERVER['HTTP_HOST']);
