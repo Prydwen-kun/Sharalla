@@ -8,10 +8,7 @@ import axios from 'axios';
 
 onMounted(async () => {
   const response = await axios.post(
-    `${config.APIbaseUrl}${config.endpoints.getConnectedUserData}`,
-    {
-      auth_token:$auth_token,
-    }
+    `${config.APIbaseUrl}${config.endpoints.getConnectedUserData}`
   )
   const data = await response.data
   console.log(data)
