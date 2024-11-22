@@ -3,6 +3,7 @@ import { onMounted } from 'vue';
 import config from '../../../config/config';
 import NavItem from './navbarItem/NavItem.vue'
 import SearchBar from './navbarItem/SearchBar.vue';
+import BurgerMenu from './navbarItem/BurgerMenu.vue';
 import UserIcon from './navbarItem/UserIcon.vue';
 import axios from 'axios';
 
@@ -25,7 +26,8 @@ onMounted(async () => {
 <template>
   <nav class="navbar">
     <ul class="navigation">
-      <NavItem :link-title="'Home'" :link="'/'" :grid-span="'1/3'" />
+      <BurgerMenu :grid-span="'1/2'" />
+      <NavItem :link-title="'Home'" :link="'/'" :grid-span="'2/3'" />
       <SearchBar />
       <p class="usernameGreet" id="userGreet">TEST</p>
       <UserIcon :link-title="'User Account'" :link="'/'" :grid-span="'11/12'" />
@@ -60,5 +62,20 @@ nav {
   justify-content: center;
   align-items: center;
   color: var(--rose);
+}
+
+@media (max-width: 805px) {
+  .usernameGreet {
+    display: none;
+  }
+
+  .navItem {
+    display: none;
+  }
+
+  .searchField {
+    grid-column: 6/12;
+  }
+
 }
 </style>
