@@ -49,7 +49,7 @@
   background-color: var(--dark-rose);
 }
 
-@media (max-width:400px) {
+@media (max-width:600px) {
   .searchButton {
     min-width: 6rem;
     min-height: 3rem;
