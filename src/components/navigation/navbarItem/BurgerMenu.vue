@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted } from 'vue';
-
+import AsideButton from '../link_button/AsideButton.vue';
+import AlertWindow from '@/components/alerts/AlertWindow.vue';
 
 const props = defineProps({
   gridSpan: String
@@ -16,6 +17,7 @@ function toggleMenu() {
   const rect3 = document.getElementById('rect3')
   const menu = document.getElementById('menuBurger')
   const aside = document.getElementById('asideMenu')
+  const shadow_blocker = document.getElementById('shadow_blocker')
 
   //html body
   const htmlElementCollection = document.getElementsByTagName('html')
@@ -28,6 +30,7 @@ function toggleMenu() {
     rect2.setAttribute('style', 'display: none')
     rect1.setAttribute('style', 'transform: rotate(45deg) translateY(7px)')
     rect3.setAttribute('style', 'transform: rotate(-45deg) translateY(-7px)')
+    shadow_blocker.setAttribute('style', 'display: block')
 
     //handling aside
     aside.setAttribute('style', 'left: 0')
@@ -39,6 +42,7 @@ function toggleMenu() {
     rect2.setAttribute('style', 'display: block')
     rect1.setAttribute('style', 'transform: rotate(0deg)')
     rect3.setAttribute('style', 'transform: rotate(0deg)')
+    shadow_blocker.setAttribute('style', 'display: none')
 
     if (htmlElement.clientWidth <= 600) {
       aside.setAttribute('style', 'left: -100vw')
@@ -49,6 +53,14 @@ function toggleMenu() {
   }
 
 }
+
+function logout() {
+  //display confirmation box to logout
+  const alert_popup = document.getElementById('alert_popup')
+  const alert_blocker = document.getElementById('alert_blocker')
+  alert_popup.setAttribute('style', 'display: flex')
+  alert_blocker.setAttribute('style', 'display: block')
+}
 </script>
 <template>
   <div id="menuBurger" class="menu closed" @click="toggleMenu" :style="'grid-column={{gridSpan}}'">
@@ -57,12 +69,14 @@ function toggleMenu() {
     <div class="rect" id="rect3"></div>
   </div>
   <aside class="asideMenu" id="asideMenu">
-    <button class="asideButtons">Home</button>
-    <button class="asideButtons">Profile</button>
-    <button class="asideButtons">Settings</button>
-    <button class="asideButtons">Friends</button>
-    <button class="asideButtons">Log out</button>
+    <AsideButton class="asideButtons" :button_link="'/'" :button_text="'Home'" :button_id="'asideHome'" />
+    <AsideButton class="asideButtons" :button_link="'/'" :button_text="'Profile'" :button_id="'asideProfile'" />
+    <AsideButton class="asideButtons" :button_link="'/'" :button_text="'Settings'" :button_id="'asideSettings'" />
+    <AsideButton class="asideButtons" :button_link="'/'" :button_text="'Friends'" :button_id="'asideFriends'" />
+    <button class="asideButtons" @click="logout">Log out</button>
   </aside>
+  <div class="shadow_blocker" id="shadow_blocker" @click="toggleMenu"></div>
+  <AlertWindow :alert-title="'Confirm'" :alert-text="'Do you want to log out ?'" :alert-call="'alert_confirm_logout'" />
 </template>
 <style scoped>
 .asideMenu {
@@ -77,6 +91,7 @@ function toggleMenu() {
   top: 6rem;
   left: -16.6vw;
   transition: all 0.5s ease-in-out;
+  z-index: 99;
 }
 
 .asideButtons {
@@ -84,6 +99,7 @@ function toggleMenu() {
   color: var(--rose);
   background-color: var(--dark-blue-black);
   min-height: 4rem;
+  padding: 0;
 }
 
 .asideButtons:hover {
@@ -101,6 +117,7 @@ function toggleMenu() {
   align-items: center;
   gap: 5px;
   padding: 1rem;
+  z-index: 100;
 }
 
 .menu:hover {
@@ -112,6 +129,15 @@ function toggleMenu() {
   height: 0.5rem;
   background-color: var(--rose);
   transition: all 0.25s ease-in;
+}
+
+.shadow_blocker {
+  display: none;
+  position: absolute;
+  z-index: 98;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.31);
 }
 
 @media (max-width:600px) {
