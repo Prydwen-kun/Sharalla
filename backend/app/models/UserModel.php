@@ -90,7 +90,7 @@ class UserModel extends CoreModel
         $this->_req->closeCursor();
 
         if ($this->_user && password_verify($password, $this->_user['password'])) {
-            if ($this->lastLoginUpdate()) {
+            if ($this->lastLoginUpdate($this->_user['id'])) {
                 //generate token to client
                 do {
                     $auth_token = generateToken();
@@ -193,13 +193,13 @@ class UserModel extends CoreModel
             return null;
         }
     }
-    public function lastLoginUpdate()
+    public function lastLoginUpdate($user_id)
     {
         $query = "UPDATE users
         SET last_login = DEFAULT
         WHERE users.id = :user_id";
         $this->_req = $this->getDb()->prepare($query);
-        return $this->_req->execute(['user_id' => $_SESSION[APP_TAG]['user_id']]);
+        return $this->_req->execute(['user_id' => $user_id]);
     }
 
     public function logout($auth_token)
