@@ -19,8 +19,7 @@ onMounted(async () => {
   const data = await response.data
 
   if (data.response === 'connected') {
-
-    router.push('/dashboard')
+    router.push('/loginProcessing')
   }
 })
 
