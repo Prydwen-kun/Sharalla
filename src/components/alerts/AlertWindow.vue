@@ -22,6 +22,7 @@ async function alert_confirm_logout() {
   const data = await response.data
   console.log(data)
   if (data.response === 'login_out') {
+    closeAlert()
     router.push('/')
   } else {
     alert('Error login out ! No user connected or an error occured with the request')
@@ -33,7 +34,6 @@ function closeAlert() {
   const alert_blocker = document.getElementById('alert_blocker')
   alert_popup.setAttribute('style', 'display: none')
   alert_blocker.setAttribute('style', 'display: none')
-  console.log('call')
 }
 
 </script>
