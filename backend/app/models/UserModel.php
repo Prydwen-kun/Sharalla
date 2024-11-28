@@ -46,7 +46,7 @@ class UserModel extends CoreModel
             return EMAIL_ERROR;
         }
 
-        $query = "INSERT INTO users(id,email,username,password,last_login,rank,avatar,signup_date)
+        $query = "INSERT INTO users(id,email,username,password,last_login,rank,avatar,signup_date,auth_token)
          VALUES(DEFAULT,:email,:username,:password,DEFAULT,:rank,:avatar,DEFAULT,NULL);
         INSERT INTO status 
         VALUES(DEFAULT,
