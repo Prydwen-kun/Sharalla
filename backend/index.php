@@ -19,12 +19,12 @@ require __DIR__ . '/utils/responseFormat.php';
 require __DIR__ . '/utils/Auth_token_generator.php';
 
 // Définir les en-têtes pour l'API REST
-header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Origin: " . ORIGIN_DOMAIN);
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-
+header("Access-Control-Allow-Credentials: true");
 // Charger les routes
 require __DIR__ . '/routes/api.php';
 

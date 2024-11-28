@@ -54,3 +54,4 @@ define('RETURN_OK', 201);
 define('HTTPS_FLAG', false);
 define('HTTP_PROTO', 'http://');
 define('DOMAIN_NAME', $_SERVER['HTTP_HOST']);
+define('ORIGIN_DOMAIN','http://localhost:5173');

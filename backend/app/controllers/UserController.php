@@ -18,7 +18,7 @@ class UserController
                     case is_array($return):
                         $user_token = $return['auth_token'];
                         //send cookie http-only with auth token
-                        setcookie(
+                        if (setcookie(
                             'auth_token',
                             $user_token,
                             [
@@ -29,9 +29,11 @@ class UserController
                                 'httponly' => true,
                                 'samesite' => 'Strict'
                             ]
-                        );
-
-                        response('connected', 'Connected !');
+                        )) {
+                            response('connected', 'Connected !');
+                        } else {
+                            response('cookie_set_error', 'cookie not created !');
+                        }
                         break;
                     case $return === CREDENTIALS_ERROR:
                         response('credentials_error', 'Wrong credentials !');
@@ -129,7 +131,7 @@ class UserController
                 $data = $this->user->getCurrentUser($auth_token);
                 if ($data !== null) {
                     $connected_user = new User($data);
-                    response($connected_user, 'User\'s data');
+                    response($connected_user->getUsername(), 'User\'s data');
                 } else {
                     response('req_error', 'Request error !');
                 }
@@ -278,5 +280,10 @@ class UserController
         } else {
             response('no_cookie', 'No cookie !');
         }
+    }
+
+    public function cookie()
+    {
+        response($_COOKIE['auth_token'], 'cookie list');
     }
 }
