@@ -65,4 +65,14 @@ onMounted(async () => {
 .LoginTitle>img {
   background-color: var(--white-mute);
 }
+
+@media (max-width:600px) {
+  .LoginTitle>img {
+    display: none;
+  }
+
+  .LoginView {
+    grid-column: 1/13;
+  }
+}
 </style>

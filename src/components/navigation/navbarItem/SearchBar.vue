@@ -5,7 +5,7 @@
 
 <template>
   <form action="" method="post" enctype="application/x-www-form-urlencoded" class="searchField">
-    <input type="text" id="search" class="searchBar" name="search">
+    <input type="text" id="search" class="searchBar" name="search" placeholder="Search...">
     <button class="searchButton">Search</button>
   </form>
 </template>
@@ -47,5 +47,19 @@
 .searchButton:hover {
   color: var(--white-mute);
   background-color: var(--dark-rose);
+}
+
+@media (max-width:600px) {
+  .searchButton {
+    min-width: 6rem;
+    min-height: 3rem;
+    font-size: 1rem;
+  }
+
+  .searchBar {
+    min-width: 5rem;
+    max-width: 7.5rem;
+  }
+
 }
 </style>

@@ -40,6 +40,7 @@ onMounted(() => {
           formData
         )
         const data = await response.data
+        console.log(data)
         if (data.response === 'user_created') {
           //user created
           console.log('User created !')
@@ -59,10 +60,10 @@ onMounted(() => {
 </script>
 <template>
   <form class="signup-form" action="" method="post" enctype="multipart/form-data" :id="form_id">
-    <FormField name="Username" type="text" />
-    <FormField name="Email" type="email" />
-    <FormField name="Password" type="password" />
-    <FormField name="PasswordConfirm" type="password" />
+    <FormField name="Username" type="text" label="Username" />
+    <FormField name="Email" type="email" label="Email" />
+    <FormField name="Password" type="password" label="Password" />
+    <FormField name="PasswordConfirm" type="password" label="Confirm Password" />
     <button type="submit" class="submit">SUBMIT</button>
   </form>
 </template>

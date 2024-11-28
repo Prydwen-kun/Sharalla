@@ -65,4 +65,13 @@ onMounted(async () => {
 .signupTitle>img {
   background-color: var(--white-mute);
 }
+
+@media (max-width:600px) {
+  .signupTitle>img {
+    display: none;
+  }
+  .authView{
+    grid-column: 1/13;
+  }
+}
 </style>

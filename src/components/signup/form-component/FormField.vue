@@ -2,10 +2,11 @@
 const props = defineProps({
   type: String,
   name: String,
+  label: String
 })
 </script>
 <template>
-  <label :for="name" class="field_label">{{ name }}</label>
+  <label :for="name" class="field_label">{{ label }}</label>
   <input :type="type" :id="name" :name="name">
 </template>
 <style scoped>
