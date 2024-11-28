@@ -52,8 +52,8 @@ onMounted(() => {
 </script>
 <template>
   <form class="login-form" action="" method="post" enctype="multipart/form-data" :id="form_id">
-    <FormField name="UserLogin" type="text" />
-    <FormField name="UserPwd" type="password" />
+    <FormField name="UserLogin" type="text" label="Username" />
+    <FormField name="UserPwd" type="password" label="Password" />
     <button type="submit" class="submit">Login</button>
   </form>
 </template>
