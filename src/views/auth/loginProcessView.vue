@@ -21,13 +21,15 @@ onMounted(async () => {
   console.log(document.cookie)
   if (data.response !== 'connected') {
     router.push('/login')
+  } else {
+    router.push('/dashboard')
   }
 })
 
 
 </script>
 <template>
-  <main class="dashboard_container">Dashboard</main>
+  <main class="dashboard_container">Login Processing</main>
 </template>
 <style scoped>
 .dashboard_container {

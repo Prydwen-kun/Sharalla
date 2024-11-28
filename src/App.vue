@@ -2,8 +2,12 @@
 import { RouterView } from 'vue-router';
 import NavBar from './components/navigation/NavBar.vue';
 import TagBar from './components/navigation/TagBar.vue';
+import axios from 'axios';
 
 //check if user is connected and display navbar + redirect to dashboard
+
+//important for setting cookies 
+axios.defaults.withCredentials = true
 </script>
 
 <template>
