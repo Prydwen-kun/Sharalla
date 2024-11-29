@@ -16,7 +16,7 @@ onMounted(async () => {
   const usernameGreet = document.getElementById('userGreet')
 
   if (data.response !== 'req_error' && data.response !== 'forbidden' && data.response !== 'no_cookie') {
-    usernameGreet.innerHTML = data.response
+    usernameGreet.innerHTML = data.response.username
   } else {
     usernameGreet.innerHTML = 'Not connected'
   }

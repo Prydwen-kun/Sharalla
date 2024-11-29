@@ -73,7 +73,7 @@ function logout() {
     <AsideButton class="asideButtons" :button_link="'/'" :button_text="'Profile'" :button_id="'asideProfile'" />
     <AsideButton class="asideButtons" :button_link="'/'" :button_text="'Settings'" :button_id="'asideSettings'" />
     <AsideButton class="asideButtons" :button_link="'/'" :button_text="'Friends'" :button_id="'asideFriends'" />
-    <button class="asideButtons" @click="logout">Log out</button>
+    <button class="asideButtons" @click="logout" id="logoutButton">Log out</button>
   </aside>
   <div class="shadow_blocker" id="shadow_blocker" @click="toggleMenu"></div>
   <AlertWindow :alert-title="'Confirm'" :alert-text="'Do you want to log out ?'" :alert-call="'alert_confirm_logout'" />
