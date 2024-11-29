@@ -14,3 +14,18 @@ function response($response = 'ok', $message = 'No message', ...$addParam)
     }
     echo json_encode($responseBody);
 }
+
+function object_to_array(Object $object)
+{
+    $reflector = new ReflectionClass(get_class($object));
+
+    $properties = $reflector->getProperties();
+    $array = [];
+
+    foreach ($properties as $property) {
+        $getter = 'get' . ucfirst($property->getName());
+        $array[$property->getName()] = $object->$getter();
+    }
+
+    return $array;
+}

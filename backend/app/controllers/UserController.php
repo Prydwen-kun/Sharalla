@@ -131,7 +131,8 @@ class UserController
                 $data = $this->user->getCurrentUser($auth_token);
                 if ($data !== null) {
                     $connected_user = new User($data);
-                    response($connected_user->getUsername(), 'User\'s data');
+                    $response_array_to_json = object_to_array($connected_user);
+                    response($response_array_to_json, 'User\'s data');
                 } else {
                     response('req_error', 'Request error !');
                 }
@@ -153,7 +154,8 @@ class UserController
                     $data = $this->user->getUser($user_id);
                     if ($data !== null) {
                         $user = new User($data);
-                        response($user, 'User data');
+                        $response_array_to_json = object_to_array($user);
+                        response($response_array_to_json, 'User data');
                     } else {
                         response('req_error', 'Request error !');
                     }
@@ -190,8 +192,11 @@ class UserController
                     foreach ($userList as $user) {
                         $UserObjectList[] = new User($user);
                     }
+                    foreach ($UserObjectList as $object) {
+                        $array_to_json[] = object_to_array($object);
+                    }
 
-                    response($UserObjectList, 'Users Data list');
+                    response($array_to_json, 'Users Data list');
                 } else {
                     response('req_error', 'Request error !');
                 }
@@ -280,10 +285,5 @@ class UserController
         } else {
             response('no_cookie', 'No cookie !');
         }
-    }
-
-    public function cookie()
-    {
-        response($_COOKIE['auth_token'], 'cookie list');
     }
 }
