@@ -222,15 +222,19 @@ class UserModel extends CoreModel
 
     public function isLoggedIn($auth_token)
     {
-        $sql = "SELECT users.username AS username
-        FROM users
-        WHERE users.auth_token =:auth_token";
-        $this->_req = $this->getDb()->prepare($sql);
-        $this->_req->bindParam('auth_token', $auth_token, PDO::PARAM_STR);
-        $this->_req->execute();
-        $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
-        $this->_req->closeCursor();
-        return count($data) === 1 ? true : false;
+        if ($auth_token !== null) {
+            $sql = "SELECT users.username AS username
+                    FROM users
+                    WHERE users.auth_token =:auth_token";
+            $this->_req = $this->getDb()->prepare($sql);
+            $this->_req->bindParam('auth_token', $auth_token, PDO::PARAM_STR);
+            $this->_req->execute();
+            $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
+            $this->_req->closeCursor();
+            return count($data) === 1 ? true : false;
+        } else {
+            return false;
+        }
     }
 
     public function getCurrentUserId($auth_token)
