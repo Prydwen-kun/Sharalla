@@ -6,13 +6,13 @@ import axios from 'axios';
 
 //check if user is connected and display navbar + redirect to dashboard
 
-//important for setting cookies 
+//important for setting cookies
 axios.defaults.withCredentials = true
 </script>
 
 <template>
   <header>
-    <NavBar />
+    <NavBar :key="navbar_key"/>
     <TagBar />
   </header>
 
@@ -20,6 +20,30 @@ axios.defaults.withCredentials = true
     <RouterView />
   </main>
 </template>
+
+<script>
+export default {
+  components: {
+    NavBar, TagBar
+  },
+  data() {
+    return {
+      navbar_key: 0
+    }
+  },
+  methods: {
+    reloadComponent() {
+      this.navbar_key += 1
+    }
+  },
+  watch: {
+    '$route'(to, from) {
+      // This will be triggered when the route changes
+      this.reloadComponent()
+    }
+  }
+};
+</script>
 
 <style scoped>
 header {
