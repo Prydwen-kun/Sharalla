@@ -12,7 +12,6 @@ onMounted(async () => {
     `${config.APIbaseUrl}${config.endpoints.getConnectedUserData}`
   )
   const data = await response.data
-  console.log(data)
   const usernameGreet = document.getElementById('userGreet')
 
   if (data.response !== 'req_error' && data.response !== 'forbidden' && data.response !== 'no_cookie') {
@@ -30,7 +29,7 @@ onMounted(async () => {
       <NavItem :link-title="'Home'" :link="'/'" :grid-span="'2/3'" />
       <SearchBar />
       <p class="usernameGreet" id="userGreet">TEST</p>
-      <UserIcon :link-title="'User Account'" :link="'/'" :grid-span="'11/12'" />
+      <UserIcon :link-title="'User Account'" :link="'/profile'" :grid-span="'11/12'" />
     </ul>
   </nav>
 </template>
