@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'vue-router';
 
 const router = useRouter()
+let users = {}
 
 onMounted(async () => {
   const getResponse = async () => {
@@ -24,12 +25,22 @@ onMounted(async () => {
     if (data2.response === 'no_cookie' || data2.response === 'req_error' || data2.response === 'forbidden') {
       alert('You\'re not connected or an error occured !')
     } else {
-      const users = data2.response
+      users = data2.response
       console.log(users)
     }
   }
 
   l_slider_created()
+
+  const ul_users = document.getElementById('ul_users')
+  for (const user of users) {
+    ul_users.innerHTML +=
+      `<div class="list_item">
+          <img src="${user.avatar}" height="40" width="40" :alt="${user.avatar}" />
+          <p>${user.username}</p>
+          <p>${user.rank}</p>
+        </div>`
+  }
 })
 
 function l_slider_created() {
@@ -38,10 +49,31 @@ function l_slider_created() {
   displayed_num.innerHTML = 'Displayed - ' + l_size_slider.value
 }
 
-function l_slider_update() {
+async function l_slider_update() {
   let l_size_slider = document.getElementById('l_slider')
   let displayed_num = document.getElementById('displayed_num')
   displayed_num.innerHTML = 'Displayed - ' + l_size_slider.value
+
+  let orderBy = document.getElementById('orderBy')
+
+  //userlist data request
+  const response = await axios.get(`${config.APIbaseUrl}${config.endpoints.getUserList}${config.endpoints.GET.l_size}${l_size_slider.value}${config.endpoints.GET.order}${orderBy.value}`)
+  const data = response.data
+  if (data.response === 'no_cookie' || data.response === 'req_error' || data.response === 'forbidden') {
+    alert('You\'re not connected or an error occured !')
+  } else {
+    users = data.response
+    const ul_users = document.getElementById('ul_users')
+    ul_users.innerHTML = ''
+    for (const user of users) {
+      ul_users.innerHTML +=
+        `<div class="list_item">
+          <img src="${user.avatar}" height="40" width="40" :alt="${user.avatar}" />
+          <p>${user.username}</p>
+          <p>${user.rank}</p>
+        </div>`
+    }
+  }
 
   //request update
 }
@@ -53,7 +85,7 @@ function l_slider_update() {
       <div class="u_filter">
         <div>Order by</div>
         <div>
-          <select name="orderBy" id="orderBy" class="filter_select">
+          <select @change="l_slider_update" name="orderBy" id="orderBy" class="filter_select">
             <option value="" disabled>---Select a filter---</option>
             <option :value="value" v-for="(value, index) in config.filter" :key="index">{{ value }}</option>
           </select>
@@ -68,23 +100,11 @@ function l_slider_update() {
     <div class="list_container">
       <div class="u_list">
         <h3 class="list_title">Users list</h3>
-        <ul>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-        </ul>
+        <div id="ul_users" class="list_inject"></div>
       </div>
       <div class="friend_list">
         <h2 class="list_title">Friends list</h2>
-        <ul>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-        </ul>
+        <div id="ul_friends" class="list_inject"></div>
       </div>
     </div>
   </div>
@@ -165,16 +185,11 @@ function l_slider_update() {
   padding: 0.5rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 0.25rem;
 }
 
 .list_container>div {
   padding: 5px;
-}
-
-.list_container ul {
-  background-color: var(--light-blue-black);
-  border-radius: 2.5px;
-  list-style: none;
 }
 
 .list_title {
@@ -182,9 +197,31 @@ function l_slider_update() {
   text-align: center;
 }
 
+.list_inject {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 @media (max-width:600px) {
   .friend_container {
     grid-column: span 12;
   }
+}
+</style>
+<style>
+.list_item {
+  padding: 0.2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--light-blue-black);
+  border-radius: 5px;
+}
+
+.list_item>img {
+  background-color: var(--light-rose);
+  border-radius: 5px;
 }
 </style>
