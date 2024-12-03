@@ -313,7 +313,6 @@ class UserModel extends CoreModel
             case 'id':
                 $sql = "SELECT users.id AS id,
                 username,
-                email,
                 last_login,
                 ranks.label AS rank,
                 users.avatar AS avatar
@@ -337,7 +336,6 @@ class UserModel extends CoreModel
             case 'username':
                 $sql = "SELECT users.id AS id,
                 username,
-                email,
                 last_login,
                 ranks.label AS rank,
                 users.avatar AS avatar
@@ -361,7 +359,6 @@ class UserModel extends CoreModel
             case 'last_login':
                 $sql = "SELECT users.id AS id,
                 username,
-                email,
                 last_login,
                 ranks.label AS rank,
                 users.avatar AS avatar
@@ -385,7 +382,6 @@ class UserModel extends CoreModel
             case 'idDESC':
                 $sql = "SELECT users.id AS id,
                 username,
-                email,
                 last_login,
                 ranks.label AS rank,
                 users.avatar AS avatar
@@ -409,7 +405,6 @@ class UserModel extends CoreModel
             case 'usernameDESC':
                 $sql = "SELECT users.id AS id,
                 username,
-                email,
                 last_login,
                 ranks.label AS rank,
                 users.avatar AS avatar
@@ -433,7 +428,6 @@ class UserModel extends CoreModel
             case 'last_loginDESC':
                 $sql = "SELECT users.id AS id,
                 username,
-                email,
                 last_login,
                 ranks.label AS rank,
                 users.avatar AS avatar
