@@ -309,6 +309,13 @@ class UserModel extends CoreModel
 
     public function getAllUser($orderBy = 'id', $limit = 10)
     {
+        if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] >= 1) {
+            $page = $_GET['page'];
+        } else {
+            $page = 1;
+        }
+        $offset = ($page - 1) * $limit;
+
         switch ($orderBy) {
             case 'id':
                 $sql = "SELECT users.id AS id,
@@ -318,11 +325,12 @@ class UserModel extends CoreModel
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
             ORDER BY id
-            LIMIT :list_limit";
+            LIMIT :list_limit OFFSET :offset";
 
                 try {
                     if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
                         $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
+                        $this->_req->bindParam('offset', $offset, PDO::PARAM_INT);
                         if ($this->_req->execute()) {
                             $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
                             return $data;
@@ -340,11 +348,12 @@ class UserModel extends CoreModel
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
             ORDER BY username
-            LIMIT :list_limit";
+            LIMIT :list_limit OFFSET :offset";
 
                 try {
                     if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
                         $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
+                        $this->_req->bindParam('offset', $offset, PDO::PARAM_INT);
                         if ($this->_req->execute()) {
                             $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
                             return $data;
@@ -362,11 +371,12 @@ class UserModel extends CoreModel
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
             ORDER BY last_login
-            LIMIT :list_limit";
+            LIMIT :list_limit OFFSET :offset";
 
                 try {
                     if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
                         $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
+                        $this->_req->bindParam('offset', $offset, PDO::PARAM_INT);
                         if ($this->_req->execute()) {
                             $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
                             return $data;
@@ -384,11 +394,12 @@ class UserModel extends CoreModel
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
             ORDER BY id DESC
-            LIMIT :list_limit";
+            LIMIT :list_limit OFFSET :offset";
 
                 try {
                     if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
                         $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
+                        $this->_req->bindParam('offset', $offset, PDO::PARAM_INT);
                         if ($this->_req->execute()) {
                             $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
                             return $data;
@@ -406,11 +417,12 @@ class UserModel extends CoreModel
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
             ORDER BY username DESC
-            LIMIT :list_limit";
+            LIMIT :list_limit OFFSET :offset";
 
                 try {
                     if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
                         $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
+                        $this->_req->bindParam('offset', $offset, PDO::PARAM_INT);
                         if ($this->_req->execute()) {
                             $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
                             return $data;
@@ -428,11 +440,12 @@ class UserModel extends CoreModel
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
             ORDER BY last_login DESC
-            LIMIT :list_limit";
+            LIMIT :list_limit OFFSET :offset";
 
                 try {
                     if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
                         $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
+                        $this->_req->bindParam('offset', $offset, PDO::PARAM_INT);
                         if ($this->_req->execute()) {
                             $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
                             return $data;
