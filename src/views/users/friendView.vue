@@ -1,4 +1,5 @@
 <script setup>
+// DO NOT AUTO FORMAT THIS FILE !!
 import config from '../../../config/config';
 import { onMounted } from 'vue';
 import axios from 'axios';
@@ -38,7 +39,6 @@ onMounted(async () => {
       `<div class="list_item">
           <img src="${user.avatar}" height="40" width="40" :alt="${user.avatar}" />
           <p>${user.username}</p>
-          <p>${user.rank}</p>
         </div>`
   }
 })
@@ -53,11 +53,13 @@ async function l_slider_update() {
   let l_size_slider = document.getElementById('l_slider')
   let displayed_num = document.getElementById('displayed_num')
   displayed_num.innerHTML = 'Displayed - ' + l_size_slider.value
-
   let orderBy = document.getElementById('orderBy')
 
+  //pagination
+  const page_input_ = document.getElementById('page_number')
+  let page_value = page_input_.value
   //userlist data request
-  const response = await axios.get(`${config.APIbaseUrl}${config.endpoints.getUserList}${config.endpoints.GET.l_size}${l_size_slider.value}${config.endpoints.GET.order}${orderBy.value}`)
+  const response = await axios.get(`${config.APIbaseUrl}${config.endpoints.getUserList}${config.endpoints.GET.l_size}${l_size_slider.value}${config.endpoints.GET.order}${orderBy.value}${config.endpoints.GET.page}${page_value}`)
   const data = response.data
   if (data.response === 'no_cookie' || data.response === 'req_error' || data.response === 'forbidden') {
     alert('You\'re not connected or an error occured !')
@@ -70,7 +72,6 @@ async function l_slider_update() {
         `<div class="list_item">
           <img src="${user.avatar}" height="40" width="40" :alt="${user.avatar}" />
           <p>${user.username}</p>
-          <p>${user.rank}</p>
         </div>`
     }
   }
@@ -78,9 +79,22 @@ async function l_slider_update() {
   //request update
 }
 
+function page_plus() {
+  const page_input = document.getElementById('page_number')
+  page_input.value++
+  l_slider_update()
+}
+
+function page_minus() {
+  const page_input = document.getElementById('page_number')
+  page_input.value--
+  l_slider_update()
+}
+
 </script>
 <template>
   <div class="friend_container">
+    <!-- FILTERS -->
     <div class="u_filters">
       <div class="u_filter">
         <div>Order by</div>
@@ -91,12 +105,21 @@ async function l_slider_update() {
           </select>
         </div>
       </div>
-      <div class="u_filters no_padding">
+      <div class="u_filter">
         <div id="displayed_num">Displayed</div>
         <div><input @change="l_slider_update" id="l_slider" class="l_size_slider" type="range" min="5" max="100"
             step="5" value="10" name="list_size"></div>
       </div>
+      <div class="u_filter">
+        <p class="pagin_title">--Page--</p>
+        <div class="pagination">
+          <button class="page_button" @click="page_minus"><<</button>
+          <input type="number" class="page_input" name="page_number" id="page_number" value="1" min="1">
+          <button class="page_button" @click="page_plus">>></button>
+        </div>
+      </div>
     </div>
+    <!-- LIST -->
     <div class="list_container">
       <div class="u_list">
         <h3 class="list_title">Users list</h3>
@@ -135,7 +158,13 @@ async function l_slider_update() {
   padding: 0.25rem;
 }
 
+.filter_select:hover {
+  cursor: pointer;
+  border: 2px solid var(--light-rose);
+}
+
 .filter_select:focus {
+  outline: none;
   border: 3px solid var(--rose);
 }
 
@@ -178,14 +207,84 @@ async function l_slider_update() {
   border-radius: 25%;
 }
 
+.pagin_title {
+  text-align: center;
+  width: 100%;
+}
+
+.pagination {
+  display: flex;
+  flex-direction: row;
+  margin-top: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.page_button {
+  border: 1px solid var(--rose);
+  border-radius: 5px;
+  background-color: var(--light-blue-black);
+  color: var(--rose);
+  width: 4rem;
+  height: 3.5rem;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+}
+
+.page_button:hover {
+  cursor: pointer;
+  background-color: var(--light-rose);
+  color: var(--white-mute);
+}
+
+.page_input {
+  width: 4rem;
+  height: 3.5rem;
+  border: none;
+  border-bottom: 3px solid var(--light-blue-black);
+  color: var(--rose);
+  background-color: var(--dark-blue-black);
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.page_input:focus {
+  outline: none;
+  background-color: var(--light-blue-black);
+  border-radius: 5px;
+  border-bottom: 3px solid var(--light-rose);
+}
+
+/* Hide the arrows for WebKit browsers */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* For a more consistent look, also hide the arrows in Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+
+/* list style */
 .list_container {
   grid-column: span 4;
   background-color: var(--dark-blue-black);
   border-radius: 5px;
   padding: 0.5rem;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 2fr;
   gap: 0.25rem;
+}
+
+.u_list {
+  border-right: 2px solid var(--light-blue-black);
 }
 
 .list_container>div {
@@ -214,10 +313,16 @@ async function l_slider_update() {
   padding: 0.2rem;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
   background-color: var(--light-blue-black);
   border-radius: 5px;
+  gap: 0.5rem;
+}
+
+.list_item:hover {
+  background-color: var(--light-rose);
+  color: var(--white-mute);
+  cursor: pointer;
 }
 
 .list_item>img {
