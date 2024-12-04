@@ -314,7 +314,6 @@ class UserModel extends CoreModel
                 $sql = "SELECT users.id AS id,
                 username,
                 last_login,
-                ranks.label AS rank,
                 users.avatar AS avatar
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
@@ -337,7 +336,6 @@ class UserModel extends CoreModel
                 $sql = "SELECT users.id AS id,
                 username,
                 last_login,
-                ranks.label AS rank,
                 users.avatar AS avatar
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
@@ -360,7 +358,6 @@ class UserModel extends CoreModel
                 $sql = "SELECT users.id AS id,
                 username,
                 last_login,
-                ranks.label AS rank,
                 users.avatar AS avatar
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
@@ -383,7 +380,6 @@ class UserModel extends CoreModel
                 $sql = "SELECT users.id AS id,
                 username,
                 last_login,
-                ranks.label AS rank,
                 users.avatar AS avatar
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
@@ -406,7 +402,6 @@ class UserModel extends CoreModel
                 $sql = "SELECT users.id AS id,
                 username,
                 last_login,
-                ranks.label AS rank,
                 users.avatar AS avatar
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
@@ -429,7 +424,6 @@ class UserModel extends CoreModel
                 $sql = "SELECT users.id AS id,
                 username,
                 last_login,
-                ranks.label AS rank,
                 users.avatar AS avatar
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
