@@ -208,6 +208,39 @@ class UserController
         }
     }
 
+    public function getUsersFromSearch()
+    {
+        if (isset($_COOKIE['auth_token'])) {
+            $auth_token = $_COOKIE['auth_token'];
+            if ($this->user->isLoggedIn($auth_token)) {
+                if (isset($_GET['search'])) {
+                    //sanitize search
+                    $search = htmlspecialchars($_GET['search']);
+                    $userList = $this->user->getUsersFromKeyWord($search);
+
+                    if (isset($userList) && $userList !== null) {
+                        foreach ($userList as $user) {
+                            $UserObjectList[] = new User($user);
+                        }
+                        foreach ($UserObjectList as $object) {
+                            $array_to_json[] = object_to_array($object);
+                        }
+
+                        response($array_to_json, 'Users Data list');
+                    } else {
+                        response('no_result', 'No entry found or DB did not respond !');
+                    }
+                } else {
+                    response('no_search', 'Requested nothing!');
+                }
+            } else {
+                response('forbidden', 'Sign in !');
+            }
+        } else {
+            response('no_cookie', 'Invalid cookie !');
+        }
+    }
+
     public function userDelete()
     {
         if (isset($_GET['userId']) && is_numeric($_GET['userId'])) {

@@ -459,6 +459,34 @@ class UserModel extends CoreModel
         return null;
     }
 
+    public function getUsersFromKeyWord(string $search)
+    {
+        $keyword = '%' . $search . '%';
+        $sql = "SELECT users.id AS id,
+        username,
+        last_login,
+        users.avatar AS avatar
+        FROM users
+        LEFT JOIN ranks ON users.rank = ranks.id
+        WHERE username LIKE :keyword
+        ORDER BY username
+        LIMIT 10";
+
+        try {
+            if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                $this->_req->bindParam('keyword', $keyword, PDO::PARAM_STR);
+                if ($this->_req->execute()) {
+                    $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
+                    return $data;
+                }
+            } else {
+                return null;
+            }
+        } catch (PDOException $e) {
+            die($e->getMessage());
+        }
+    }
+
     public function banUser($user_id)
     {
         $sql = "UPDATE users
