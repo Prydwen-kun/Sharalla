@@ -17,6 +17,7 @@ const config = {
       userId: '&userId=',
       order: '&order=',
       l_size: '&l_size=',
+      page: '&page=',
     },
   },
   filter: {

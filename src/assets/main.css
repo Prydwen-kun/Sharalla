@@ -18,6 +18,38 @@ a,
   padding: 0.1rem;
 }
 
+/* patchwork for the time being until the weird thing is found */
+body {
+  overflow-x: hidden;
+}
+
+/* WebKit Browsers */
+::-webkit-scrollbar {
+  width: 1rem;
+  background: rgba(0, 0, 0, 0);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--rose);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--rose);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--light-blue-black);
+  border-radius: 6px;
+}
+
+/* Firefox */
+body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--light-blue-black) var(--rose);
+}
+
+
 @media (hover: hover) {
   a:hover {
     background-color: var(--dark-rose);
