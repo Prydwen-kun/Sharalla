@@ -27,7 +27,6 @@ onMounted(async () => {
       alert('You\'re not connected or an error occured !')
     } else {
       users = data2.response
-      console.log(users)
     }
   }
 
