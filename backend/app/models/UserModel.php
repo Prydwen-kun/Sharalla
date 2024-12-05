@@ -316,6 +316,14 @@ class UserModel extends CoreModel
         }
         $offset = ($page - 1) * $limit;
 
+        if (isset($_GET['search'])) {
+            $search = htmlspecialchars($_GET['search']);
+        } else {
+            $search = '';
+        }
+
+        $keyword = '%' . $search . '%';
+
         switch ($orderBy) {
             case 'id':
                 $sql = "SELECT users.id AS id,
@@ -324,6 +332,7 @@ class UserModel extends CoreModel
                 users.avatar AS avatar
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
+            WHERE username LIKE :keyword
             ORDER BY id
             LIMIT :list_limit OFFSET :offset";
 
@@ -331,6 +340,7 @@ class UserModel extends CoreModel
                     if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
                         $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
                         $this->_req->bindParam('offset', $offset, PDO::PARAM_INT);
+                        $this->_req->bindParam('keyword', $keyword, PDO::PARAM_STR);
                         if ($this->_req->execute()) {
                             $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
                             return $data;
@@ -347,6 +357,7 @@ class UserModel extends CoreModel
                 users.avatar AS avatar
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
+            WHERE username LIKE :keyword
             ORDER BY username
             LIMIT :list_limit OFFSET :offset";
 
@@ -354,6 +365,7 @@ class UserModel extends CoreModel
                     if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
                         $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
                         $this->_req->bindParam('offset', $offset, PDO::PARAM_INT);
+                        $this->_req->bindParam('keyword', $keyword, PDO::PARAM_STR);
                         if ($this->_req->execute()) {
                             $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
                             return $data;
@@ -370,6 +382,7 @@ class UserModel extends CoreModel
                 users.avatar AS avatar
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
+            WHERE username LIKE :keyword
             ORDER BY last_login
             LIMIT :list_limit OFFSET :offset";
 
@@ -377,6 +390,7 @@ class UserModel extends CoreModel
                     if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
                         $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
                         $this->_req->bindParam('offset', $offset, PDO::PARAM_INT);
+                        $this->_req->bindParam('keyword', $keyword, PDO::PARAM_STR);
                         if ($this->_req->execute()) {
                             $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
                             return $data;
@@ -393,6 +407,7 @@ class UserModel extends CoreModel
                 users.avatar AS avatar
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
+            WHERE username LIKE :keyword
             ORDER BY id DESC
             LIMIT :list_limit OFFSET :offset";
 
@@ -400,6 +415,7 @@ class UserModel extends CoreModel
                     if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
                         $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
                         $this->_req->bindParam('offset', $offset, PDO::PARAM_INT);
+                        $this->_req->bindParam('keyword', $keyword, PDO::PARAM_STR);
                         if ($this->_req->execute()) {
                             $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
                             return $data;
@@ -416,6 +432,7 @@ class UserModel extends CoreModel
                 users.avatar AS avatar
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
+            WHERE username LIKE :keyword
             ORDER BY username DESC
             LIMIT :list_limit OFFSET :offset";
 
@@ -423,6 +440,7 @@ class UserModel extends CoreModel
                     if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
                         $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
                         $this->_req->bindParam('offset', $offset, PDO::PARAM_INT);
+                        $this->_req->bindParam('keyword', $keyword, PDO::PARAM_STR);
                         if ($this->_req->execute()) {
                             $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
                             return $data;
@@ -439,6 +457,7 @@ class UserModel extends CoreModel
                 users.avatar AS avatar
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
+            WHERE username LIKE :keyword
             ORDER BY last_login DESC
             LIMIT :list_limit OFFSET :offset";
 
@@ -446,6 +465,7 @@ class UserModel extends CoreModel
                     if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
                         $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
                         $this->_req->bindParam('offset', $offset, PDO::PARAM_INT);
+                        $this->_req->bindParam('keyword', $keyword, PDO::PARAM_STR);
                         if ($this->_req->execute()) {
                             $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
                             return $data;
