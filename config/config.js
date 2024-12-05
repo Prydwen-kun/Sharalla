@@ -18,6 +18,7 @@ const config = {
       order: '&order=',
       l_size: '&l_size=',
       page: '&page=',
+      search: '&search=',
     },
   },
   filter: {

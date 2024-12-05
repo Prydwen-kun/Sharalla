@@ -58,8 +58,13 @@ async function l_slider_update() {
   //pagination
   const page_input_ = document.getElementById('page_number')
   let page_value = page_input_.value
+
+  //SearchBar data to send
+  const search = document.getElementById('u_search')
+  let search_value = search.value
+
   //userlist data request
-  const response = await axios.get(`${config.APIbaseUrl}${config.endpoints.getUserList}${config.endpoints.GET.l_size}${l_size_slider.value}${config.endpoints.GET.order}${orderBy.value}${config.endpoints.GET.page}${page_value}`)
+  const response = await axios.get(`${config.APIbaseUrl}${config.endpoints.getUserList}${config.endpoints.GET.l_size}${l_size_slider.value}${config.endpoints.GET.order}${orderBy.value}${config.endpoints.GET.page}${page_value}${config.endpoints.GET.search}${search_value}`)
   const data = response.data
   if (data.response === 'no_cookie' || data.response === 'req_error' || data.response === 'forbidden') {
     alert('You\'re not connected or an error occured !')
@@ -67,22 +72,31 @@ async function l_slider_update() {
     users = data.response
     const ul_users = document.getElementById('ul_users')
     ul_users.innerHTML = ''
-    for (const user of users) {
-      ul_users.innerHTML +=
-        `<div class="list_item">
-          <img src="${user.avatar}" height="40" width="40" :alt="${user.avatar}" />
-          <p>${user.username}</p>
-        </div>`
+    if(users !== undefined){
+      for (const user of users) {
+        ul_users.innerHTML +=
+          `<div class="list_item">
+            <img src="${user.avatar}" height="40" width="40" :alt="${user.avatar}" />
+            <p>${user.username}</p>
+          </div>`
+      }
+    } else {
+      ul_users.innerHTML = '<div class="list_item">No result...</div>'
     }
   }
 
-  //request update
+  return users
 }
 
-function page_plus() {
+async function page_plus() {
   const page_input = document.getElementById('page_number')
   page_input.value++
-  l_slider_update()
+  let update_return = null
+  update_return = await l_slider_update()
+  if(update_return === undefined){
+    page_input.value--
+    l_slider_update()
+  }
 }
 
 function page_minus() {
@@ -95,11 +109,34 @@ function page_minus() {
   l_slider_update()
 }
 
+function clear_filters(){
+  //clear all values
+  const l_size_slider = document.getElementById('l_slider')
+  const displayed_num = document.getElementById('displayed_num')
+  const orderBy = document.getElementById('orderBy')
+  const page_input_ = document.getElementById('page_number')
+  const search = document.getElementById('u_search')
+
+  l_size_slider.value = 10
+  page_input_.value = 1
+  orderBy.value = 'id'
+  displayed_num.innerHTML = 'Displayed - ' + l_size_slider.value
+  search.value = ''
+
+  l_slider_update()
+}
+
 </script>
 <template>
   <div class="friend_container">
     <!-- FILTERS -->
     <div class="u_filters">
+      <div class="u_filter">
+        <div class="search_bar">
+          <input type="text" class="u_search" name="search" id="u_search" placeholder="Search...">
+          <button @click="l_slider_update" class="u_search_button">></button>
+        </div>
+      </div>
       <div class="u_filter">
         <div>Order by</div>
         <div>
@@ -121,6 +158,9 @@ function page_minus() {
           <input type="number" class="page_input" name="page_number" id="page_number" value="1" min="1">
           <button class="page_button" @click="page_plus">>></button>
         </div>
+      </div>
+      <div class="u_filter c_button_container">
+        <button @click="clear_filters" class="clear_button">Clear</button>
       </div>
     </div>
     <!-- LIST -->
@@ -275,6 +315,79 @@ input[type=number] {
     -moz-appearance: textfield;
 }
 
+.search_bar {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.u_search {
+  background-color: var(--dark-blue-black);
+  border: none;
+  border-bottom: 2px solid var(--rose);
+  color: var(--rose);
+  font-size: 1.5rem;
+  padding: 0;
+  max-width: 8rem;
+}
+
+.u_search::placeholder {
+  color: var(--dark-rose);
+}
+
+.u_search:focus {
+  outline: none;
+  background-color: var(--light-blue-black);
+  border-radius: 5px;
+}
+
+.u_search_button {
+  color: var(--rose);
+  border: 2px solid var(--rose);
+  border-radius: 50%;
+  background-color: var(--dark-blue-black);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 4rem;
+  width: 4rem;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.5rem;
+  text-align: center;
+}
+
+.u_search_button:hover {
+  background-color: var(--light-rose);
+  color: var(--white-mute);
+  cursor: pointer;
+}
+
+.c_button_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.clear_button {
+  color: var(--rose);
+  background-color: var(--dark-blue-black);
+  border-radius: 2rem;
+  border: 2px solid var(--rose);
+  height: 4rem;
+  width: 8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.clear_button:hover {
+  color: var(--white-mute);
+  background-color: var(--light-rose);
+  cursor: pointer;
+}
 
 /* list style */
 .list_container {
