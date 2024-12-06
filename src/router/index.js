@@ -7,6 +7,7 @@ import Login from '@/views/auth/loginView.vue'
 import LoginProcessView from '@/views/auth/loginProcessView.vue'
 import ProfileView from '@/views/users/profileView.vue'
 import Friend from '@/views/users/friendView.vue'
+import UserView from '@/views/users/userView.vue'
 
 const routes = [
   { path: '/', name: 'Signup', component: Signup },
@@ -19,6 +20,7 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/profile', name: 'Profile', component: ProfileView },
   { path: '/friend', name: 'Friend', component: Friend },
+  { path: '/users/:id', name: 'Users', component: UserView },
   //catch-all route for 404 need to stay as last route
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
 ]
