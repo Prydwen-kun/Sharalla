@@ -1,12 +1,14 @@
 <script setup>
 // DO NOT AUTO FORMAT THIS FILE !!
 import config from '../../../config/config';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
 const router = useRouter()
-let users = {}
+
+//use ref
+let users = ref({})
 
 onMounted(async () => {
   const getResponse = async () => {
@@ -26,19 +28,15 @@ onMounted(async () => {
     if (data2.response === 'no_cookie' || data2.response === 'req_error' || data2.response === 'forbidden') {
       alert('You\'re not connected or an error occured !')
     } else {
-      users = data2.response
+      users.value = data2.response
     }
   }
 
   l_slider_created()
 
   const ul_users = document.getElementById('ul_users')
-  for (const user of users) {
-    ul_users.innerHTML +=
-      `<div class="list_item">
-          <img src="${user.avatar}" height="40" width="40" :alt="${user.avatar}" />
-          <p>${user.username}</p>
-        </div>`
+  if (users.value === undefined) {
+    ul_users.innerHTML = '<div class="list_item">No result...</div>'
   }
 })
 
@@ -68,23 +66,10 @@ async function l_slider_update() {
   if (data.response === 'no_cookie' || data.response === 'req_error' || data.response === 'forbidden') {
     alert('You\'re not connected or an error occured !')
   } else {
-    users = data.response
-    const ul_users = document.getElementById('ul_users')
-    ul_users.innerHTML = ''
-    if(users !== undefined){
-      for (const user of users) {
-        ul_users.innerHTML +=
-          `<div class="list_item">
-            <img src="${user.avatar}" height="40" width="40" :alt="${user.avatar}" />
-            <p>${user.username}</p>
-          </div>`
-      }
-    } else {
-      ul_users.innerHTML = '<div class="list_item">No result...</div>'
-    }
+    users.value = data.response
   }
 
-  return users
+  return users.value
 }
 
 async function page_plus() {
@@ -92,7 +77,7 @@ async function page_plus() {
   page_input.value++
   let update_return = null
   update_return = await l_slider_update()
-  if(update_return === undefined){
+  if (update_return === undefined) {
     page_input.value--
     l_slider_update()
   }
@@ -100,7 +85,7 @@ async function page_plus() {
 
 function page_minus() {
   const page_input = document.getElementById('page_number')
-  if(page_input > 1){
+  if (page_input > 1) {
     page_input.value--
   } else {
     page_input.value = 1
@@ -108,7 +93,7 @@ function page_minus() {
   l_slider_update()
 }
 
-function clear_filters(){
+function clear_filters() {
   //clear all values
   const l_size_slider = document.getElementById('l_slider')
   const displayed_num = document.getElementById('displayed_num')
@@ -123,6 +108,10 @@ function clear_filters(){
   search.value = ''
 
   l_slider_update()
+}
+
+function routeToUserView(id) {
+  router.push({ name: 'Users', params: { id: id } })
 }
 
 </script>
@@ -154,8 +143,8 @@ function clear_filters(){
         <p class="pagin_title">--Page--</p>
         <div class="pagination">
           <button class="page_button" @click="page_minus"><<</button>
-          <input type="number" class="page_input" name="page_number" id="page_number" value="1" min="1">
-          <button class="page_button" @click="page_plus">>></button>
+              <input type="number" class="page_input" name="page_number" id="page_number" value="1" min="1">
+              <button class="page_button" @click="page_plus">>></button>
         </div>
       </div>
       <div class="u_filter c_button_container">
@@ -166,7 +155,12 @@ function clear_filters(){
     <div class="list_container">
       <div class="u_list">
         <h3 class="list_title">Users list</h3>
-        <div id="ul_users" class="list_inject"></div>
+        <div id="ul_users" class="list_inject">
+          <div v-for="user in users" :key="user.id" class="list_item" @click="routeToUserView(user.id)">
+            <img :src="user.avatar" height="40" width="40" :alt="user.avatar" />
+            <p>{{ user.username }}</p>
+          </div>
+        </div>
       </div>
       <div class="friend_list">
         <h2 class="list_title">Friends list</h2>
@@ -305,13 +299,13 @@ function clear_filters(){
 /* Hide the arrows for WebKit browsers */
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* For a more consistent look, also hide the arrows in Firefox */
 input[type=number] {
-    -moz-appearance: textfield;
+  -moz-appearance: textfield;
 }
 
 .search_bar {
@@ -418,13 +412,6 @@ input[type=number] {
   gap: 0.5rem;
 }
 
-@media (max-width:600px) {
-  .friend_container {
-    grid-column: span 12;
-  }
-}
-</style>
-<style>
 .list_item {
   padding: 0.2rem;
   display: flex;
@@ -444,5 +431,11 @@ input[type=number] {
 .list_item>img {
   background-color: var(--light-rose);
   border-radius: 5px;
+}
+
+@media (max-width:600px) {
+  .friend_container {
+    grid-column: span 12;
+  }
 }
 </style>
