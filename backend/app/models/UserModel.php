@@ -288,13 +288,10 @@ class UserModel extends CoreModel
         $query =
             "SELECT users.id AS id,
                 username,
-                email,
                 last_login,
-                users.rank AS rank_id,
                 ranks.label AS rank,
-                ranks.power AS power,
                 users.avatar AS avatar,
-                users.signup_date
+                users.signup_date AS signup_date
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
             WHERE users.id = :user_id";
