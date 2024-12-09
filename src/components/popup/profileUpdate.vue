@@ -48,7 +48,11 @@ function close_profile() {
       </div>
       <div class="input_wrapper">
         <label for="Avatar">Avatar</label>
-        <input type="file" name="Avatar" id="Avatar">
+        <div class="avatar">
+          <label for="Avatar">Change avatar</label>
+          <input type="file" name="Avatar" id="Avatar">
+        </div>
+
       </div>
 
     </form>
@@ -115,38 +119,52 @@ function close_profile() {
   transition: all 0.25s ease-in;
 }
 
-.profile_form{
+.profile_form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.input_wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-.input_wrapper{
+.avatar {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: column-reverse;
   justify-content: center;
-}
-
-#Avatar{
-  appearance: none;
-  display: flex;
-  flex-direction: column;
+  align-items: center;
   color: var(--rose);
   background-color: var(--dark-blue-black);
   min-height: 4rem;
   padding: 0.5rem;
   border: 3px solid rgba(0, 0, 0, 0);
-  border-radius: 3px;
+  border-radius: 25%;
+  height: 10rem;
+  width: 10rem;
 }
 
-#Avatar:hover{
+.avatar:hover {
   background-color: var(--dark-rose);
   color: var(--white-mute);
   border: 3px solid var(--dark-blue-black);
-  border-radius: 3px;
+  border-radius: 25%;
   transition: all 0.25s ease-in;
+}
+
+.avatar>label{
+  font-size: 1.2rem;
+}
+
+#Avatar{
+  opacity: 0;
+  height: inherit;
+  width: inherit;
 }
 
 @media (max-width:600px) {
