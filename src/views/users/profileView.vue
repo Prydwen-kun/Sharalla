@@ -2,7 +2,8 @@
 import axios from 'axios';
 import config from '../../../config/config';
 import { useRouter } from 'vue-router';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
+import UpdatePopup from '@/components/popup/profileUpdate.vue';
 
 //make API request to see if user not connected
 //redirect to login if true
@@ -46,14 +47,21 @@ onMounted(async () => {
   }
 })
 
+let popup_flag = ref(false)
+function popup() {
+  popup_flag.value = !popup_flag.value
+}
 
 </script>
 <template>
+  <Suspense>
+    <UpdatePopup v-if="popup_flag" @closePopup="popup" />
+  </Suspense>
   <div class="profile_container">
     <div class="profile_head">
       <div class="userprofile_name" id="p_username"></div>
       <div class="profile_action">
-        <button class="modify_button">Modify</button>
+        <button class="modify_button" @click="popup">Modify</button>
       </div>
     </div>
     <div class="side_stats_container">
