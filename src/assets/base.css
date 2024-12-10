@@ -16,6 +16,7 @@
   --rose: #ff85ae;
   --dark-rose: #e59daf;
   --light-rose: #fecbc8;
+  --rose-inactive:rgb(203, 140, 182);
 
   --text-light-1: var(--light-rose);
   --text-dark-1: var(--light-blue-black);

@@ -25,6 +25,21 @@ async function save_profile() {
 function close_profile() {
   emit('closePopup')
 }
+
+onMounted(() => {
+  const fileInput = document.getElementById('Avatar')
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length > 0) {
+      const fileName = fileInput.files[0].name
+      const file = fileInput.files[0]
+      const avatar_wrap = document.getElementById('avatar_wrap')
+      const back_img_url = `background-image: url(${URL.createObjectURL(file)});`
+      avatar_wrap.setAttribute('style', back_img_url)
+    }
+
+
+  })
+})
 </script>
 <template>
   <div class="popup">
@@ -48,9 +63,9 @@ function close_profile() {
       </div>
       <div class="input_wrapper">
         <label for="Avatar">Avatar</label>
-        <div class="avatar">
+        <div class="avatar" id="avatar_wrap">
           <label for="Avatar">Change avatar</label>
-          <input type="file" name="Avatar" id="Avatar">
+          <input type="file" accept="image/*" name="Avatar" id="Avatar">
         </div>
 
       </div>
@@ -81,6 +96,7 @@ function close_profile() {
   border: 3px solid var(--rose);
   border-radius: 3px;
   gap: 2rem;
+  padding: 1rem;
 }
 
 .blocker {
@@ -91,6 +107,25 @@ function close_profile() {
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.452);
+}
+
+.input_wrapper>input {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid var(--dark-blue-black);
+  background-color: var(--light-blue-black);
+  color: var(--dark-rose);
+  outline: none;
+  padding: 0.5rem;
+}
+
+.input_wrapper>input:focus {
+  background-color: var(--dark-blue-black);
+}
+
+.input_wrapper>input::placeholder {
+  color: var(--rose-inactive);
 }
 
 .confirm {
@@ -147,6 +182,9 @@ function close_profile() {
   border-radius: 25%;
   height: 10rem;
   width: 10rem;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .avatar:hover {
@@ -157,11 +195,11 @@ function close_profile() {
   transition: all 0.25s ease-in;
 }
 
-.avatar>label{
+.avatar>label {
   font-size: 1.2rem;
 }
 
-#Avatar{
+#Avatar {
   opacity: 0;
   height: inherit;
   width: inherit;
