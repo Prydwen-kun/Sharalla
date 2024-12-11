@@ -33,7 +33,7 @@ define('DB_PWD', '');
 #ADMIN FALLBACK NAME
 define('ADMIN_NAME', 'admin');
 
-#FUNCTION RETURN CODE
+#FUNCTION RETURN CODE[plage 0-99]
 //signup error
 define('PWD_CONFIRM_ERROR', 10);
 define('USERNAME_LENGTH_ERROR', 11);
@@ -54,4 +54,14 @@ define('RETURN_OK', 201);
 define('HTTPS_FLAG', false);
 define('HTTP_PROTO', 'http://');
 define('DOMAIN_NAME', $_SERVER['HTTP_HOST']);
-define('ORIGIN_DOMAIN','http://localhost:5173');
+define('ORIGIN_DOMAIN', 'http://localhost:5173');
+
+//DIR CONST
+#for files upload
+#target directory
+define('UPLOAD_DIR', 'files/');
+
+//FILES FUNCTION RETURN CODE[plage 100-200]
+define('FILE_SIZE_ERROR', 100);
+define('FILE_OK', 199);
+define('FILE_EXT_ERROR', 101);
