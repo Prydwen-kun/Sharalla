@@ -16,10 +16,55 @@ const user = await fetch_user()
 const emit = defineEmits(['closePopup'])
 
 async function save_profile() {
-  const response = await axios.post(
-    `${config.APIbaseUrl}${config.endpoints.updateUser}${config.endpoints.GET.userId}${user.id}`
-  )
-  const data = await response.data
+  //recup input value to transmit
+  const Username = document.getElementById('Username').value
+  const Email = document.getElementById('Email').value
+  const Password = document.getElementById('Password').value
+  const PasswordConfirm = document.getElementById('PwdConfirm').value
+  const Avatar = document.getElementById('Avatar')
+
+  //form data object
+  const form = document.getElementById('profile_form')
+  const formData = new FormData(form)
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  let alertArray = []
+
+  if (Username.length < 3) {
+    alertArray.push('Username must be at least 3 characters !')
+  }
+  if (!emailRegex.test(Email)) {
+    alertArray.push('Enter a valid email !')
+  }
+  if (Password.length < 8 && Password !== '') {
+    alertArray.push('Password minimum length is 8 !')
+  }
+  if (Password !== PasswordConfirm) {
+    alertArray.push('Enter the same password twice to confirm !')
+  }
+  if (Avatar.files.length > 0) {
+    const file = Avatar.files[0]
+    if (file.size >= 5000000) {
+      alertArray.push('Image size must be under 5 Mo !')
+    }
+  }
+
+  if (alertArray.length === 0) {
+    const response = await axios.post(
+      `${config.APIbaseUrl}${config.endpoints.updateUser}${config.endpoints.GET.userId}${user.id}`,
+      formData
+    )
+    const data = await response.data
+  } else {
+    //can use alertString = alertArray.join() too
+    let alertString = ''
+    alertArray.forEach((alert) => {
+      alertString += alert + '\n'
+    })
+    alert(alertString)
+  }
+
 }
 
 function close_profile() {
@@ -44,7 +89,7 @@ onMounted(() => {
 <template>
   <div class="popup">
     <h2>Profile Update</h2>
-    <form action="" method="post" class="profile_form">
+    <form action="" method="post" class="profile_form" id="profile_form" enctype="multipart/form-data">
       <div class="input_wrapper">
         <label for="Username">Username</label>
         <input type="text" name="Username" id="Username" :value="user.username" :placeholder="user.username">
