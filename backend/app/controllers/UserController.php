@@ -2,10 +2,12 @@
 class UserController
 {
     private $user;
+    private $file;
 
     public function __construct()
     {
         $this->user = new UserModel();
+        $this->file = new FileModel();
     }
 
     public function login()
@@ -271,7 +273,15 @@ class UserController
             if (isset($_COOKIE['auth_token'])) {
                 $auth_token = $_COOKIE['auth_token'];
                 if ($this->user->isLoggedIn($auth_token) && ($this->user->getCurrentUserId($auth_token) === $user_id || $this->user->getCurrentUserPower($auth_token) === ADMIN)) {
-                    switch ($this->user->updateUser($user_id)) {
+
+                    //recup file path after handling and pass it to update user
+                    if (isset($_FILES['Avatar'])) {
+                        $filePath = $this->file->createFile();
+                    } else {
+                        $filePath = 'No path';
+                    }
+
+                    switch ($this->user->updateUser($user_id, $filePath)) {
                         case RETURN_OK:
                             response('update_success', 'User updated');
                             break;
@@ -280,6 +290,21 @@ class UserController
                             break;
                         case PWD_CONFIRM_ERROR:
                             response('pwd_confirm_error', 'Enter the same password twice !');
+                            break;
+                        case POST_EMPTY:
+                            response('post_empty', 'No post provided');
+                            break;
+                        case USERNAME_LENGTH_ERROR:
+                            response('u_name_length', 'Wrong username length !');
+                            break;
+                        case PWD_LENGTH_ERROR:
+                            response('pwd_length', 'Wrong Password length');
+                            break;
+                        case EMAIL_ERROR:
+                            response('email_error', 'Invalid email provided !');
+                            break;
+                        case USERNAME_TAKEN_ERROR:
+                            response('u_name_taken', 'Username is taken !');
                             break;
                         default:
                             response('error', 'Unknown error');

@@ -570,9 +570,8 @@ class UserModel extends CoreModel
         }
     }
 
-    public function updateUser($user_id)
+    public function updateUser($user_id, $avatar_path = 'No file')
     {
-        $post = $_POST;
         $sql = "UPDATE users
         SET username =:username,
         password = COALESCE(:password, password),
@@ -581,8 +580,34 @@ class UserModel extends CoreModel
         WHERE id =:id
         ";
         //add update to profile private status after updating db struct
-        if (!(isset($post['Password']) && isset($post['PasswordConfirm']))) {
+
+        if (!empty($_POST)) {
+            $post = $_POST;
+        } else {
+            return POST_EMPTY;
+        }
+
+        if (!isset($post['Username'], $post['Email'], $post['Password'], $post['PasswordConfirm'])) {
+            return POST_EMPTY;
+        }
+        if ($this->userExist($post['Username'])) {
+            return USERNAME_TAKEN_ERROR;
+        }
+
+        if ($post['Password'] !== $post['PasswordConfirm']) {
             return PWD_CONFIRM_ERROR;
+        }
+
+        if (strlen($post['Username']) < 3) {
+            return USERNAME_LENGTH_ERROR;
+        }
+
+        if (strlen($post['Password']) < 8) {
+            return PWD_LENGTH_ERROR;
+        }
+
+        if (!filter_var($post['Email'], FILTER_VALIDATE_EMAIL)) {
+            return EMAIL_ERROR;
         }
 
         if ($post['Password'] !== null && $post['Password'] !== $post['PasswordConfirm']) {
@@ -595,7 +620,7 @@ class UserModel extends CoreModel
                 $this->_req->bindParam('username', $post['Username'], PDO::PARAM_STR);
                 $this->_req->bindParam('email', $post['Email'], PDO::PARAM_STR);
                 $this->_req->bindParam('password', $post['Password'], PDO::PARAM_STR);
-                $this->_req->bindParam('avatar', $post['Avatar'], PDO::PARAM_STR);
+                $this->_req->bindParam('avatar', $avatar_path, PDO::PARAM_STR);
 
                 if ($this->_req->execute()) {
                     return RETURN_OK;
