@@ -284,7 +284,7 @@ class UserController
                             case FILE_EXT_ERROR:
                                 response('file_ext_error', 'Wrong extension');
                                 return;
-                            case FILE_OK:
+                            default:
                                 response('file_ok', 'File uploaded');
                                 break;
                         }
