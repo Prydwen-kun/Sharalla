@@ -125,12 +125,11 @@ onMounted(() => {
 </template>
 <style scoped>
 .popup {
-  height: 50vw;
-  width: 33vw;
   background-color: var(--light-blue-black);
   color: var(--rose);
   position: absolute;
-  top: calc(50vh - 25vw);
+  min-width: 33vw;
+  max-width: 33vw;
   left: calc(50vw - 16.5vw);
   z-index: 92;
 
@@ -250,12 +249,32 @@ onMounted(() => {
   width: inherit;
 }
 
-@media (max-width:600px) {
+@media (max-width:1280px) {
   .popup {
-    height: 120vw;
-    width: 66vw;
-    top: calc(50vh - 60vw);
-    left: calc(50vw - 33vw);
+    min-width: 33vw;
+    max-width: 33vw;
+    left: calc(50vw - 16.5vw);
+    top: 10vh;
+  }
+}
+
+@media (max-width:850px) {
+  .popup {
+    min-width: 100vw;
+    left: 0;
+    min-height: 90vh;
+    justify-content: space-evenly;
+  }
+
+  .profile_form {
+    justify-content: space-evenly;
+  }
+}
+
+@media (max-width:620px) {
+  .popup {
+    min-width: 100vw;
+    left: 0;
   }
 }
 </style>
