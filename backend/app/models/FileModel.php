@@ -11,7 +11,7 @@ class FileModel extends CoreModel
         }
     }
 
-    public function createAvatarFile()
+    public function createAvatarFile(int $user_id = 0)
     {
         $target_dir = UPLOAD_DIR;
         $target_file = $target_dir . basename($_FILES['Avatar']['name']);
@@ -36,7 +36,39 @@ class FileModel extends CoreModel
             return FILE_EXT_ERROR;
         }
 
-        $sql = 'INSERT INTO files';
+        $sql = 'INSERT INTO files(id, title, description, size, path,upload_date, uploader_id, extension_id, type_id)
+        VALUES(
+        DEFAULT,
+        :title,
+        :description,
+        :size,
+        :path,
+        :upload_date,
+        :uploader_id,
+        :extension_id,
+        :type_id
+        )';
+
+        try {
+            if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                //bind param
+                $title = 'Avatar' . $user_id;
+                $description = 'Avatar of user ' . $user_id;
+
+                $this->_req->bindParam('title', $title, PDO::PARAM_STR);
+                $this->_req->bindParam('description', $description, PDO::PARAM_STR);
+                $this->_req->bindParam('size', $_FILES['Avatar']['size'], PDO::PARAM_INT);
+
+
+                if ($this->_req->execute()) {
+                    return RETURN_OK;
+                }
+                return REQ_ERROR;
+            }
+            return REQ_ERROR;
+        } catch (PDOException $e) {
+            die($e->getMessage());
+        }
 
         //if sql request success
         //move_uploaded_file(from: ,to: )

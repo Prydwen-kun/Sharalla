@@ -276,13 +276,16 @@ class UserController
 
                     //recup file path after handling and pass it to update user
                     if (isset($_FILES['Avatar'])) {
-                        $filePath = $this->file->createAvatarFile();
+                        $filePath = $this->file->createAvatarFile($user_id);
                         switch ($filePath) {
                             case FILE_SIZE_ERROR:
                                 response('file_size_error', 'File too big for avatar');
                                 return;
                             case FILE_EXT_ERROR:
                                 response('file_ext_error', 'Wrong extension');
+                                return;
+                            case REQ_ERROR:
+                                response('req_error', 'Request error !');
                                 return;
                             default:
                                 response('file_ok', 'File uploaded');
