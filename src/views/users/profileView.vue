@@ -52,6 +52,9 @@ function popup() {
   popup_flag.value = !popup_flag.value
 }
 
+//event update to use => reset to need_update = false
+let need_update = ref(false)
+
 </script>
 <template>
   <Suspense>

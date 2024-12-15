@@ -13,7 +13,7 @@ async function fetch_user() {
 
 const user = await fetch_user()
 
-const emit = defineEmits(['closePopup'])
+const emit = defineEmits(['closePopup','need_update'])
 
 async function save_profile() {
   //recup input value to transmit
@@ -56,6 +56,7 @@ async function save_profile() {
       formData
     )
     const data = await response.data
+    emit('need_update')
   } else {
     //can use alertString = alertArray.join() too
     let alertString = ''
@@ -112,14 +113,14 @@ onMounted(() => {
           <label for="Avatar">Change avatar</label>
           <input type="file" accept="image/*" name="Avatar" id="Avatar">
         </div>
-
       </div>
-
     </form>
     <div class="confirm">
       <button @click="save_profile">Save</button>
       <button @click="close_profile">Close</button>
     </div>
+    <!-- Save confirmation -->
+
   </div>
   <div class="blocker" @click="close_profile"></div>
 </template>
