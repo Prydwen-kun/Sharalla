@@ -278,6 +278,9 @@ class UserController
                     if (isset($_FILES['Avatar'])) {
                         $filePath = $this->file->createAvatarFile($user_id);
                         switch ($filePath) {
+                            case FILE_UPLOAD_ERROR:
+                                response('file_upload_error', 'An error occured during the upload !');
+                                return;
                             case FILE_SIZE_ERROR:
                                 response('file_size_error', 'File too big for avatar');
                                 return;

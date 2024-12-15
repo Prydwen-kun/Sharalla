@@ -64,4 +64,5 @@ define('UPLOAD_DIR', 'files/');
 //FILES FUNCTION RETURN CODE[plage 100-200]
 define('FILE_SIZE_ERROR', 100);
 define('FILE_OK', 199);
+define('FILE_UPLOAD_ERROR', 147);
 define('FILE_EXT_ERROR', 101);
