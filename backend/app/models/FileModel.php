@@ -54,18 +54,58 @@ class FileModel extends CoreModel
         //Si toute la valid passe move_file =>
         move_uploaded_file($temp_filepath, $target_file);
 
-        $sql = 'INSERT INTO files(id, title, description, size, path,upload_date, uploader_id, extension_id, type_id)
-        VALUES(
-        DEFAULT,
-        :title,
-        :description,
-        :size,
-        :path,
-        DEFAULT,
-        :uploader_id,
-        :extension_id,
-        :type_id
-        )';
+        //req check if ext exist in ext table
+        $sql = 'INSERT INTO extension(label) 
+                VALUES(:label)
+                ON DUPLICATE KEY UPDATE id = id';
+
+        try {
+            if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                $this->_req->bindParam('label', $target_file_ext, PDO::PARAM_STR);
+                if (!$this->_req->execute()) {
+                    return REQ_ERROR;
+                }
+            } else {
+                return REQ_ERROR;
+            }
+        } catch (PDOException $e) {
+            die($e->getMessage());
+        }
+        //if not create new insert
+
+        //check MIME broader type and insert new type if not already existing
+        $file_type = explode('/', $fileMimeType)[0];
+
+        $sql = 'INSERT INTO content_type(label) 
+        VALUES(:label)
+        ON DUPLICATE KEY UPDATE id = id';
+
+        try {
+            if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                $this->_req->bindParam('label', $file_type, PDO::PARAM_STR);
+                if (!$this->_req->execute()) {
+                    return REQ_ERROR;
+                }
+            } else {
+                return REQ_ERROR;
+            }
+        } catch (PDOException $e) {
+            die($e->getMessage());
+        }
+        //insert file table
+        $sql =
+            'INSERT INTO files(id, title, description, size, path,upload_date, uploader_id, extension_id, type_id)
+            VALUES(
+                DEFAULT,
+                :title,
+                :description,
+                :size,
+                :path,
+                DEFAULT,
+                :uploader_id,
+                (SELECT extension.id FROM extension WHERE label =:ext_label),
+                (SELECT content_type.id FROM content_type WHERE label =:type_label)
+                )';
 
         try {
             if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
@@ -78,6 +118,8 @@ class FileModel extends CoreModel
                 $this->_req->bindParam('size', $fileSize, PDO::PARAM_INT);
                 $this->_req->bindParam('path', $target_file, PDO::PARAM_STR);
                 $this->_req->bindParam('uploader_id', $user_id, PDO::PARAM_STR);
+                $this->_req->bindParam('ext_label', $target_file_ext, PDO::PARAM_STR);
+                $this->_req->bindParam('type_label', $file_type, PDO::PARAM_STR);
 
                 if ($this->_req->execute()) {
                     return RETURN_OK;
