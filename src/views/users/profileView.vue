@@ -55,29 +55,29 @@ function popup() {
 }
 
 //event update
-async function data_update(){
-//request connected user data
-const response = await axios.post(
-      `${config.APIbaseUrl}${config.endpoints.getConnectedUserData}`
-    )
-    const data = await response.data
+async function data_update() {
+  //request connected user data
+  const response = await axios.post(
+    `${config.APIbaseUrl}${config.endpoints.getConnectedUserData}`
+  )
+  const data = await response.data
 
-    //retrieve elements
-    const p_username = document.getElementById('p_username')
-    const p_last_online = document.getElementById('p_last_online')
-    const p_signup_date = document.getElementById('p_signup_date')
+  //retrieve elements
+  const p_username = document.getElementById('p_username')
+  const p_last_online = document.getElementById('p_last_online')
+  const p_signup_date = document.getElementById('p_signup_date')
 
-    if (data.response !== 'req_error' && data.response !== 'forbidden' && data.response !== 'no_cookie') {
-      p_username.innerHTML = `${data.response.username}'s profile`
-      p_last_online.innerHTML = data.response.last_login.slice(0, 10)
-      p_signup_date.innerHTML = data.response.signup_date.slice(0, 10)
-      avatar.value = data.response.avatar
-    } else {
-      //handle error
-      p_username.innerHTML = 'No user'
-      p_last_online.innerHTML = 'No user'
-      p_signup_date.innerHTML = 'No user'
-    }
+  if (data.response !== 'req_error' && data.response !== 'forbidden' && data.response !== 'no_cookie') {
+    p_username.innerHTML = `${data.response.username}'s profile`
+    p_last_online.innerHTML = data.response.last_login.slice(0, 10)
+    p_signup_date.innerHTML = data.response.signup_date.slice(0, 10)
+    avatar.value = data.response.avatar
+  } else {
+    //handle error
+    p_username.innerHTML = 'No user'
+    p_last_online.innerHTML = 'No user'
+    p_signup_date.innerHTML = 'No user'
+  }
 }
 </script>
 <template>
@@ -93,7 +93,7 @@ const response = await axios.post(
     </div>
     <div class="side_stats_container">
       <div class="stat_row">
-        <img :src="avatar" alt="avatar" class="p_avatar">
+        <img :src="config.AvatarBaseUrl + avatar" alt="avatar" class="p_avatar">
       </div>
       <div class="stat_row">
         <div>Last Online</div>

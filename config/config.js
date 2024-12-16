@@ -21,6 +21,7 @@ const config = {
       search: '&search=',
     },
   },
+  AvatarBaseUrl: 'http://localhost/Sharalla/backend/',
   filter: {
     id: 'id',
     username: 'username',
