@@ -13,7 +13,7 @@ async function fetch_user() {
 
 const user = await fetch_user()
 
-const emit = defineEmits(['closePopup','need_update'])
+const emit = defineEmits(['closePopup', 'need_update'])
 
 async function save_profile() {
   //recup input value to transmit
@@ -56,6 +56,7 @@ async function save_profile() {
       formData
     )
     const data = await response.data
+    console.log(data)
     emit('need_update')
   } else {
     //can use alertString = alertArray.join() too
