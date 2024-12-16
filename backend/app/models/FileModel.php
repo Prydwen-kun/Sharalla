@@ -29,7 +29,7 @@ class FileModel extends CoreModel
 
         //check if dir exist
         if (!is_dir($target_directory)) {
-            mkdir($target_directory,0777,true);
+            mkdir($target_directory, 0777, true);
         }
 
         //replace file since it's supposed to be unique
@@ -129,7 +129,7 @@ class FileModel extends CoreModel
                 $this->_req->bindParam('type_label', $file_type, PDO::PARAM_STR);
 
                 if ($this->_req->execute()) {
-                    return RETURN_OK;
+                    return $target_file;
                 }
                 return REQ_ERROR;
             }
