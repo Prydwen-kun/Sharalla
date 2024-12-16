@@ -590,7 +590,7 @@ class UserModel extends CoreModel
         if (!isset($post['Username'], $post['Email'], $post['Password'], $post['PasswordConfirm'])) {
             return POST_EMPTY;
         }
-        if ($this->userExist($post['Username'])) {
+        if ($this->userExist($post['Username']) && $this->getCurrentUser($_COOKIE['auth_token'])['username'] !== $post['Username']) {
             return USERNAME_TAKEN_ERROR;
         }
 
@@ -602,7 +602,7 @@ class UserModel extends CoreModel
             return USERNAME_LENGTH_ERROR;
         }
 
-        if (strlen($post['Password']) < 8) {
+        if (strlen($post['Password']) < 8 && $post['Password'] !== null) {
             return PWD_LENGTH_ERROR;
         }
 
