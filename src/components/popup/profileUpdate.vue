@@ -56,7 +56,7 @@ async function save_profile() {
       formData
     )
     const data = await response.data
-    console.log(data)
+    console.log(data,Password)
     emit('need_update')
   } else {
     //can use alertString = alertArray.join() too
