@@ -291,7 +291,6 @@ class UserController
                                 response('req_error', 'Request error !');
                                 return;
                             default:
-                                response('file_ok', 'File uploaded');
                                 break;
                         }
                     } else {
