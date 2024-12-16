@@ -22,9 +22,15 @@ class FileModel extends CoreModel
         $upload_name = $_FILES['Avatar']['name'];
         $target_file_ext = strtolower(pathinfo($upload_name, PATHINFO_EXTENSION));
 
+        $target_directory = $target_dir . 'Users/' . $user_id . '/';
         $target_file = $target_dir . 'Users/' . $user_id . '/Avatar' . $user_id . '.' . $target_file_ext;
 
         $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tif', 'tiff', 'svg'];
+
+        //check if dir exist
+        if (!is_dir($target_directory)) {
+            mkdir($target_directory,0777,true);
+        }
 
         //replace file since it's supposed to be unique
         //test size info first
@@ -104,7 +110,7 @@ class FileModel extends CoreModel
                 DEFAULT,
                 :uploader_id,
                 (SELECT extension.id FROM extension WHERE label =:ext_label),
-                (SELECT content_type.id FROM content_types WHERE label =:type_label)
+                (SELECT content_types.id FROM content_types WHERE label =:type_label)
                 )';
 
         try {
