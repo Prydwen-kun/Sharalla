@@ -22,7 +22,7 @@ class FileModel extends CoreModel
         $upload_name = $_FILES['Avatar']['name'];
         $target_file_ext = strtolower(pathinfo($upload_name, PATHINFO_EXTENSION));
 
-        $target_file = $target_dir . 'Users/' . $user_id . '/Avatar' . $user_id . $target_file_ext;
+        $target_file = $target_dir . 'Users/' . $user_id . '/Avatar' . $user_id . '.' . $target_file_ext;
 
         $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tif', 'tiff', 'svg'];
 
@@ -76,7 +76,7 @@ class FileModel extends CoreModel
         //check MIME broader type and insert new type if not already existing
         $file_type = explode('/', $fileMimeType)[0];
 
-        $sql = 'INSERT INTO content_type(label) 
+        $sql = 'INSERT INTO content_types(label) 
         VALUES(:label)
         ON DUPLICATE KEY UPDATE id = id';
 
@@ -104,7 +104,7 @@ class FileModel extends CoreModel
                 DEFAULT,
                 :uploader_id,
                 (SELECT extension.id FROM extension WHERE label =:ext_label),
-                (SELECT content_type.id FROM content_type WHERE label =:type_label)
+                (SELECT content_type.id FROM content_types WHERE label =:type_label)
                 )';
 
         try {
