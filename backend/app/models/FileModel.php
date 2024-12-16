@@ -82,6 +82,7 @@ class FileModel extends CoreModel
         //check MIME broader type and insert new type if not already existing
         $file_type = explode('/', $fileMimeType)[0];
 
+        //for this to work column need to have unique constraint
         $sql = 'INSERT INTO content_types(label) 
         VALUES(:label)
         ON DUPLICATE KEY UPDATE id = id';
