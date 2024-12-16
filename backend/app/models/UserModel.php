@@ -626,7 +626,7 @@ class UserModel extends CoreModel
                 $this->_req->bindParam('id', $user_id, PDO::PARAM_INT);
                 $this->_req->bindParam('username', $post['Username'], PDO::PARAM_STR);
                 $this->_req->bindParam('email', $post['Email'], PDO::PARAM_STR);
-                $this->_req->bindParam('password', $post['Password'], PDO::PARAM_STR);
+                $this->_req->bindValue('password', password_hash($post['Password'], PASSWORD_BCRYPT), PDO::PARAM_STR);
                 $this->_req->bindParam('avatar', $avatar_path, PDO::PARAM_STR);
 
                 if ($this->_req->execute()) {
