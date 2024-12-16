@@ -275,7 +275,7 @@ class UserController
                 if ($this->user->isLoggedIn($auth_token) && ($this->user->getCurrentUserId($auth_token) === $user_id || $this->user->getCurrentUserPower($auth_token) === ADMIN)) {
 
                     //recup file path after handling and pass it to update user
-                    if (isset($_FILES['Avatar'])) {
+                    if (isset($_FILES['Avatar']) && !empty($_FILES['Avatar']['name'])) {
                         $filePath = $this->file->createAvatarFile($user_id);
                         switch ($filePath) {
                             case FILE_UPLOAD_ERROR:

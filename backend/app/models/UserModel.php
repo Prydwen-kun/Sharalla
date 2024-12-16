@@ -576,7 +576,7 @@ class UserModel extends CoreModel
         SET username =:username,
         password = COALESCE(:password, password),
         email =:email,
-        avatar =:avatar
+        avatar = COALESCE(:avatar, avatar)
         WHERE id =:id
         ";
         //add update to profile private status after updating db struct
@@ -627,7 +627,11 @@ class UserModel extends CoreModel
                 $this->_req->bindParam('username', $post['Username'], PDO::PARAM_STR);
                 $this->_req->bindParam('email', $post['Email'], PDO::PARAM_STR);
                 $this->_req->bindValue('password', password_hash($post['Password'], PASSWORD_BCRYPT), PDO::PARAM_STR);
-                $this->_req->bindParam('avatar', $avatar_path, PDO::PARAM_STR);
+                if ($avatar_path !== 'No File') {
+                    $this->_req->bindParam('avatar', $avatar_path, PDO::PARAM_STR);
+                } else {
+                    $this->_req->bindValue('avatar', null, PDO::PARAM_NULL);
+                }
 
                 if ($this->_req->execute()) {
                     return RETURN_OK;
