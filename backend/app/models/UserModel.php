@@ -602,7 +602,14 @@ class UserModel extends CoreModel
             return USERNAME_LENGTH_ERROR;
         }
 
-        if (strlen($post['Password']) < 8 && $post['Password'] !== null) {
+        //handle empty string value from front-end
+        $pwd_empty = '';
+        if ($post['Password'] === '') {
+            $pwd_empty = null;
+        }
+
+
+        if (strlen($post['Password']) < 8 && $pwd_empty !== null) {
             return PWD_LENGTH_ERROR;
         }
 
@@ -610,7 +617,7 @@ class UserModel extends CoreModel
             return EMAIL_ERROR;
         }
 
-        if ($post['Password'] !== null && $post['Password'] !== $post['PasswordConfirm']) {
+        if ($pwd_empty !== null && $post['Password'] !== $post['PasswordConfirm']) {
             return PWD_CONFIRM_ERROR;
         }
 
