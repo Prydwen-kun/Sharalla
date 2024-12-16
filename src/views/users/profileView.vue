@@ -10,6 +10,7 @@ import UpdatePopup from '@/components/popup/profileUpdate.vue';
 const router = useRouter()
 
 //default value
+let avatar = ref('')
 
 onMounted(async () => {
   const getResponse = async () => {
@@ -38,6 +39,7 @@ onMounted(async () => {
       p_username.innerHTML = `${data.response.username}'s profile`
       p_last_online.innerHTML = data.response.last_login.slice(0, 10)
       p_signup_date.innerHTML = data.response.signup_date.slice(0, 10)
+      avatar.value = data.response.avatar
     } else {
       //handle error
       p_username.innerHTML = 'No user'
@@ -52,13 +54,35 @@ function popup() {
   popup_flag.value = !popup_flag.value
 }
 
-//event update to use => reset to need_update = false
-let need_update = ref(false)
+//event update
+async function data_update(){
+//request connected user data
+const response = await axios.post(
+      `${config.APIbaseUrl}${config.endpoints.getConnectedUserData}`
+    )
+    const data = await response.data
 
+    //retrieve elements
+    const p_username = document.getElementById('p_username')
+    const p_last_online = document.getElementById('p_last_online')
+    const p_signup_date = document.getElementById('p_signup_date')
+
+    if (data.response !== 'req_error' && data.response !== 'forbidden' && data.response !== 'no_cookie') {
+      p_username.innerHTML = `${data.response.username}'s profile`
+      p_last_online.innerHTML = data.response.last_login.slice(0, 10)
+      p_signup_date.innerHTML = data.response.signup_date.slice(0, 10)
+      avatar.value = data.response.avatar
+    } else {
+      //handle error
+      p_username.innerHTML = 'No user'
+      p_last_online.innerHTML = 'No user'
+      p_signup_date.innerHTML = 'No user'
+    }
+}
 </script>
 <template>
   <Suspense>
-    <UpdatePopup v-if="popup_flag" @closePopup="popup" />
+    <UpdatePopup v-if="popup_flag" @need_update="data_update" @closePopup="popup" />
   </Suspense>
   <div class="profile_container">
     <div class="profile_head">
@@ -69,7 +93,7 @@ let need_update = ref(false)
     </div>
     <div class="side_stats_container">
       <div class="stat_row">
-        <img src="" alt="avatar" class="p_avatar">
+        <img :src="avatar" alt="avatar" class="p_avatar">
       </div>
       <div class="stat_row">
         <div>Last Online</div>
