@@ -1,7 +1,7 @@
 <script setup>
 import config from '../../../config/config';
 import axios from 'axios';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 
 async function fetch_user() {
   const response = await axios.post(
@@ -14,6 +14,8 @@ async function fetch_user() {
 const user = await fetch_user()
 
 const emit = defineEmits(['closePopup', 'need_update'])
+
+let saved = ref(false)
 
 async function save_profile() {
   //recup input value to transmit
@@ -56,7 +58,8 @@ async function save_profile() {
       formData
     )
     const data = await response.data
-    console.log(data,Password)
+    saved.value = true
+    console.log(data.response, data.message)
     emit('need_update')
   } else {
     //can use alertString = alertArray.join() too
@@ -71,6 +74,10 @@ async function save_profile() {
 
 function close_profile() {
   emit('closePopup')
+}
+
+function onInputChange() {
+  saved.value = false
 }
 
 onMounted(() => {
@@ -94,7 +101,8 @@ onMounted(() => {
     <form action="" method="post" class="profile_form" id="profile_form" enctype="multipart/form-data">
       <div class="input_wrapper">
         <label for="Username">Username</label>
-        <input type="text" name="Username" id="Username" :value="user.username" :placeholder="user.username">
+        <input type="text" name="Username" id="Username" :value="user.username" :placeholder="user.username"
+          :onfocus="onInputChange">
       </div>
       <div class="input_wrapper">
         <label for="Email">Email</label>
@@ -121,7 +129,7 @@ onMounted(() => {
       <button @click="close_profile">Close</button>
     </div>
     <!-- Save confirmation -->
-
+    <div class="saved" v-if="saved">Saved</div>
   </div>
   <div class="blocker" @click="close_profile"></div>
 </template>
@@ -249,6 +257,11 @@ onMounted(() => {
   opacity: 0;
   height: inherit;
   width: inherit;
+}
+
+.saved {
+  color: rgb(1, 203, 1);
+  font-size: 2.5rem;
 }
 
 @media (max-width:1280px) {

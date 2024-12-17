@@ -157,7 +157,7 @@ function routeToUserView(id) {
         <h3 class="list_title">Users list</h3>
         <div id="ul_users" class="list_inject">
           <div v-for="user in users" :key="user.id" class="list_item" @click="routeToUserView(user.id)">
-            <img :src="user.avatar" height="40" width="40" :alt="user.avatar" />
+            <img :src="config.AvatarBaseUrl + user.avatar" height="40" width="40" :alt="user.avatar" />
             <p>{{ user.username }}</p>
           </div>
         </div>

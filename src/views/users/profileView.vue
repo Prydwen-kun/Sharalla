@@ -11,6 +11,7 @@ const router = useRouter()
 
 //default value
 let avatar = ref('')
+let rank = ref('')
 
 onMounted(async () => {
   const getResponse = async () => {
@@ -40,6 +41,7 @@ onMounted(async () => {
       p_last_online.innerHTML = data.response.last_login.slice(0, 10)
       p_signup_date.innerHTML = data.response.signup_date.slice(0, 10)
       avatar.value = data.response.avatar
+      rank.value = data.response.rank
     } else {
       //handle error
       p_username.innerHTML = 'No user'
