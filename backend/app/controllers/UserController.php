@@ -272,7 +272,7 @@ class UserController
             $user_id = $_GET['userId'];
             if (isset($_COOKIE['auth_token'])) {
                 $auth_token = $_COOKIE['auth_token'];
-                if ($this->user->isLoggedIn($auth_token) && ($this->user->getCurrentUserId($auth_token) === $user_id || $this->user->getCurrentUserPower($auth_token) === ADMIN)) {
+                if ($this->user->isLoggedIn($auth_token) && ($this->user->getCurrentUserId($auth_token) == $user_id || $this->user->getCurrentUserPower($auth_token) === ADMIN)) {
 
                     //recup file path after handling and pass it to update user
                     if (isset($_FILES['Avatar']) && !empty($_FILES['Avatar']['name'])) {
