@@ -2,7 +2,7 @@
 import axios from 'axios';
 import config from '../../../config/config';
 import { useRoute, useRouter } from 'vue-router';
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 //make API request to see if user not connected
 //redirect to login if true
@@ -10,6 +10,8 @@ const router = useRouter()
 const route = useRoute()
 //default value
 const userId = computed(() => route.params.id)
+let avatar = ref('')
+let admin = ref(false)
 
 onMounted(async () => {
   const getResponse = async () => {
@@ -24,12 +26,17 @@ onMounted(async () => {
     router.push('/login')
   } else {
     //request connected user data
+    const response0 = await axios.post(`${config.APIbaseUrl}${config.endpoints.getConnectedUserData}`)
+
+    const data0 = await response0.data
+    if (data0.response.rank === 'ADMIN') {
+      admin.value = true
+    }
 
     const response = await axios.post(
       `${config.APIbaseUrl}${config.endpoints.getUserData}${config.endpoints.GET.userId}${userId.value}`
     )
     const data = await response.data
-
     //retrieve elements
     const p_username = document.getElementById('p_username')
     const p_last_online = document.getElementById('p_last_online')
@@ -39,6 +46,7 @@ onMounted(async () => {
       p_username.innerHTML = `${data.response.username}'s profile`
       p_last_online.innerHTML = data.response.last_login.slice(0, 10)
       p_signup_date.innerHTML = data.response.signup_date.slice(0, 10)
+      avatar.value = data.response.avatar
     } else {
       //handle error
       p_username.innerHTML = 'No user'
@@ -55,12 +63,12 @@ onMounted(async () => {
     <div class="profile_head">
       <div class="userprofile_name" id="p_username"></div>
       <div class="profile_action">
-        <button class="modify_button">Modify</button>
+        <button v-if="admin" class="modify_button">Modify</button>
       </div>
     </div>
     <div class="side_stats_container">
       <div class="stat_row">
-        <img src="" alt="avatar" class="p_avatar">
+        <img :src="config.AvatarBaseUrl + avatar" alt="avatar" class="p_avatar">
       </div>
       <div class="stat_row">
         <div>Last Online</div>
