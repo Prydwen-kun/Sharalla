@@ -1,45 +1,63 @@
 <script setup>
+// NO AUTO FORMAT << character
 import config from '../../../../config/config';
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
 const router = useRouter()
+const emit = defineEmits(['update_filter', 'page_plus', 'page_minus', 'clear_filters'])
 
-function l_slider_update(){}
+onMounted(() => {
+
+})
+
+function list_f_update() {
+  emit('update_filter')
+}
+
+function p_plus() {
+  emit('page_plus')
+}
+function p_minus() {
+  emit('page_minus')
+}
+function clear_filt() {
+  emit('clear_filters')
+}
 </script>
 <template>
-   <div class="u_filter">
-        <div class="search_bar">
-          <input type="text" class="u_search" name="search" id="u_search" placeholder="Search...">
-          <button @click="l_slider_update" class="u_search_button">></button>
-        </div>
-      </div>
-      <div class="u_filter">
-        <div>Order by</div>
-        <div>
-          <select @change="l_slider_update" name="orderBy" id="orderBy" class="filter_select">
-            <option value="" disabled>---Select a filter---</option>
-            <option :value="value" v-for="(value, index) in config.filter" :key="index">{{ value }}</option>
-          </select>
-        </div>
-      </div>
-      <div class="u_filter">
-        <div id="displayed_num">Displayed</div>
-        <div><input @change="l_slider_update" id="l_slider" class="l_size_slider" type="range" min="5" max="100"
-            step="5" value="10" name="list_size"></div>
-      </div>
-      <div class="u_filter">
-        <p class="pagin_title">--Page--</p>
-        <div class="pagination">
-          <button class="page_button" @click="page_minus"><<</button>
-              <input type="number" class="page_input" name="page_number" id="page_number" value="1" min="1">
-              <button class="page_button" @click="page_plus">>></button>
-        </div>
-      </div>
-      <div class="u_filter c_button_container">
-        <button @click="clear_filters" class="clear_button">Clear</button>
-      </div>
+  <div class="u_filter">
+    <div class="search_bar">
+      <input type="text" class="u_search" name="search" id="u_search" placeholder="Search...">
+      <button @click="list_f_update" class="u_search_button">></button>
+    </div>
+  </div>
+  <div class="u_filter">
+    <div>Order by</div>
+    <div>
+      <select @change="list_f_update" name="orderBy" id="orderBy" class="filter_select">
+        <option value="" disabled>---Select a filter---</option>
+        <option :value="value" v-for="(value, index) in config.f_filter" :key="index">{{ value }}</option>
+      </select>
+    </div>
+  </div>
+  <div class="u_filter">
+    <div id="displayed_num">Displayed</div>
+    <div><input @change="list_f_update" id="l_slider" class="l_size_slider" type="range" min="5" max="100" step="5"
+        value="10" name="list_size"></div>
+  </div>
+  <div class="u_filter">
+    <p class="pagin_title">--Page--</p>
+    <div class="pagination">
+      <button class="page_button" @click="p_minus">Prev</button>
+      <input type="number" class="page_input" name="page_number" id="page_number" value="1" min="1">
+      <button class="page_button" @click="p_plus">Next</button>
+    </div>
+  </div>
+  <div class="u_filter c_button_container">
+    <button @click="clear_filt" class="clear_button">Clear</button>
+  </div>
 </template>
 <style scoped>
 .filter_select {
@@ -118,8 +136,8 @@ function l_slider_update(){}
   border-radius: 5px;
   background-color: var(--light-blue-black);
   color: var(--rose);
-  width: 4rem;
-  height: 3.5rem;
+  width: 4.5rem;
+  height: 4rem;
   padding: 0;
   display: flex;
   justify-content: center;

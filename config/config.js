@@ -13,6 +13,13 @@ const config = {
     updateUser: 'user&action=userUpdate',
     deleteUser: 'user&action=userDelete',
     logout: 'user&action=logout',
+    files: {
+      getFileList: 'file&action=getAllFiles',
+      getFileData: '',
+      updateFile: '',
+      deleteFile: '',
+      uploadFile: '',
+    },
     GET: {
       userId: '&userId=',
       order: '&order=',
@@ -29,6 +36,14 @@ const config = {
     idDESC: 'idDESC',
     usernameDESC: 'usernameDESC',
     last_loginDESC: 'last_loginDESC',
+  },
+  f_filter: {
+    id: 'id',
+    title: 'title',
+    size: 'size',
+    idDESC: 'idDESC',
+    titleDESC: 'titleDESC',
+    sizeDESC: 'sizeDESC',
   },
 }
 

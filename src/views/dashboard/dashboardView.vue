@@ -23,14 +23,14 @@ onMounted(async () => {
     router.push('/login')
   } else {
     //files list data request
-    const response2 = await axios.get(`${config.APIbaseUrl}${config.endpoints.getUserList}`)
+    const response2 = await axios.get(`${config.APIbaseUrl}${config.endpoints.files.getFileList}`)
     const data2 = response2.data
     if (data2.response === 'no_cookie' || data2.response === 'req_error' || data2.response === 'forbidden') {
       alert('You\'re not connected or an error occured !')
     } else {
       files.value = data2.response
     }
-
+    list_slider_created()
     const list_files = document.getElementById('list_files')
     if (files.value === undefined) {
       list_files.innerHTML = '<div class="list_item">No result...</div>'
@@ -39,28 +39,115 @@ onMounted(async () => {
   }
 })
 
+function list_slider_created() {
+  let l_size_slider = document.getElementById('l_slider')
+  let displayed_num = document.getElementById('displayed_num')
+  displayed_num.innerHTML = 'Displayed - ' + l_size_slider.value
+}
+
+async function list_update() {
+  let l_size_slider = document.getElementById('l_slider')
+  let displayed_num = document.getElementById('displayed_num')
+  displayed_num.innerHTML = 'Displayed - ' + l_size_slider.value
+  let orderBy = document.getElementById('orderBy')
+
+  //pagination
+  const page_input_ = document.getElementById('page_number')
+  let page_value = page_input_.value
+
+  //SearchBar data to send
+  const search = document.getElementById('u_search')
+  let search_value = search.value
+
+  //userlist data request
+  const response = await axios.get(
+    `${config.APIbaseUrl}${config.endpoints.files.getFileList}${config.endpoints.GET.l_size}${l_size_slider.value}${config.endpoints.GET.order}${orderBy.value}${config.endpoints.GET.page}${page_value}${config.endpoints.GET.search}${search_value}`)
+  const data = response.data
+  if (data.response === 'no_cookie' || data.response === 'req_error' || data.response === 'forbidden') {
+    alert('You\'re not connected or an error occured !')
+  } else {
+    files.value = data.response
+  }
+
+  return files.value
+}
+
+function clearFilters() {
+  //clear all values
+  const l_size_slider = document.getElementById('l_slider')
+  const displayed_num = document.getElementById('displayed_num')
+  const orderBy = document.getElementById('orderBy')
+  const page_input_ = document.getElementById('page_number')
+  const search = document.getElementById('u_search')
+
+  l_size_slider.value = 10
+  page_input_.value = 1
+  orderBy.value = 'id'
+  displayed_num.innerHTML = 'Displayed - ' + l_size_slider.value
+  search.value = ''
+
+  list_update()
+}
+
+async function nextPage() {
+  const page_input = document.getElementById('page_number')
+  page_input.value++
+  let update_return = null
+  update_return = await list_update()
+  if (update_return === undefined) {
+    page_input.value--
+    list_update()
+  }
+}
+
+function prevPage() {
+  const page_input = document.getElementById('page_number')
+  if (page_input > 1) {
+    page_input.value--
+  } else {
+    page_input.value = 1
+  }
+  list_update()
+}
 
 </script>
 <template>
   <div class="dashboard_container">
     <div class="f_filters">
-      <f_filters />
+      <f_filters @update_filter="list_update" @clear_filters="clearFilters" @page_plus="nextPage"
+        @page_minus="prevPage" />
     </div>
-    <div class="file_list">
+    <table class="file_list">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Size</th>
+          <th>Path</th>
+          <th>Upload Date</th>
+          <th>Uploader ID</th>
+          <th>Uploader</th>
+          <th>Extension</th>
+          <th>Type</th>
+        </tr>
+      </thead>
       <!-- v-for on file list -->
-      <div id="list_files" class="list_inject">
-        <div class="list_item">
-
-        </div>
-      </div>
-    </div>
+      <tbody id="list_files" class="list_inject">
+        <tr class="list_item" v-for="(file, key, index) in files" :key="index">
+          <td class="item_info" v-for="(info, key, index) in file" :key="index">
+            {{ info }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 <style scoped>
 .dashboard_container {
-  grid-column: 3/11;
+  grid-column: span 12;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   background-color: var(--light-blue-black);
   padding: 0.5rem;
   gap: 0.318rem;
@@ -71,19 +158,33 @@ onMounted(async () => {
   grid-column: span 1;
   background-color: var(--dark-blue-black);
   border-radius: 5px;
-  padding: 0.5rem;
+  padding: 1rem;
 }
 
 .file_list {
-  grid-column: span 4;
+  grid-column: span 5;
   background-color: var(--dark-blue-black);
   border-radius: 5px;
   padding: 0.5rem;
 }
 
+.list_inject {}
+
+.list_item {
+  background-color: var(--light-blue-black);
+}
+
+.item_info {
+  text-align: center;
+}
+
 @media (max-width:600px) {
   .dashboard_container {
     grid-column: span 12;
+  }
+
+  .f_filters {
+    padding: 0.5rem;
   }
 }
 </style>
