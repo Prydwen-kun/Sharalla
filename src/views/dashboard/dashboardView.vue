@@ -1,13 +1,14 @@
 <script setup>
-
 import axios from 'axios';
 import config from '../../../config/config';
 import { useRouter } from 'vue-router';
-import { onMounted } from 'vue';
-
+import { onMounted, ref } from 'vue';
+import f_filters from '@/components/files_dash/filters/f_filters.vue';
 //make API request to see if user not connected
 //redirect to login if true
 const router = useRouter()
+
+let files = ref({})
 
 onMounted(async () => {
   const getResponse = async () => {
@@ -21,7 +22,20 @@ onMounted(async () => {
   if (data.response !== 'connected') {
     router.push('/login')
   } else {
-    //user profile data request
+    //files list data request
+    const response2 = await axios.get(`${config.APIbaseUrl}${config.endpoints.getUserList}`)
+    const data2 = response2.data
+    if (data2.response === 'no_cookie' || data2.response === 'req_error' || data2.response === 'forbidden') {
+      alert('You\'re not connected or an error occured !')
+    } else {
+      files.value = data2.response
+    }
+
+    const list_files = document.getElementById('list_files')
+    if (files.value === undefined) {
+      list_files.innerHTML = '<div class="list_item">No result...</div>'
+    }
+
   }
 })
 
@@ -29,13 +43,16 @@ onMounted(async () => {
 </script>
 <template>
   <div class="dashboard_container">
-    <div class="filters">
-      <div>file filters</div>
+    <div class="f_filters">
+      <f_filters />
     </div>
     <div class="file_list">
-      <div>file</div>
-      <div>file</div>
-      <div>file</div>
+      <!-- v-for on file list -->
+      <div id="list_files" class="list_inject">
+        <div class="list_item">
+
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -50,7 +67,7 @@ onMounted(async () => {
   color: var(--rose);
 }
 
-.filters {
+.f_filters {
   grid-column: span 1;
   background-color: var(--dark-blue-black);
   border-radius: 5px;
