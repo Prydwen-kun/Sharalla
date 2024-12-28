@@ -362,8 +362,290 @@ class FileModel extends CoreModel
         }
         return null;
     }
+    public function getUserFileList($user_id, $orderBy = 'id', $limit = 10)
+    {
+        if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] >= 1) {
+            $page = $_GET['page'];
+        } else {
+            $page = 1;
+        }
+        $offset = ($page - 1) * $limit;
+
+        if (isset($_GET['search'])) {
+            $search = htmlspecialchars($_GET['search']);
+        } else {
+            $search = '';
+        }
+
+        $keyword = '%' . $search . '%';
+
+        switch ($orderBy) {
+            case 'id':
+                $sql = "SELECT files.id AS id,
+                files.title AS title,
+                files.description AS description,
+                files.size AS size,
+                files.path AS path,
+                files.upload_date AS upload_date,
+                files.uploader_id AS uploader_id,
+                users.username AS uploader,
+                extension.label AS extension,
+                content_types.label AS type
+            FROM files
+            LEFT JOIN users ON files.uploader_id = users.id
+            JOIN extension ON files.extension_id = extension.id
+            JOIN content_types ON files.type_id = content_types.id
+            WHERE title LIKE :keyword AND uploader_id =:user_id
+            ORDER BY id
+            LIMIT :list_limit OFFSET :offset";
+
+                try {
+                    if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                        $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
+                        $this->_req->bindParam('offset', $offset, PDO::PARAM_INT);
+                        $this->_req->bindParam('keyword', $keyword, PDO::PARAM_STR);
+                        $this->_req->bindParam('user_id', $user_id, PDO::PARAM_INT);
+                        if ($this->_req->execute()) {
+                            $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
+                            return $data;
+                        }
+                    }
+                } catch (PDOException $e) {
+                    die($e->getMessage());
+                }
+                break;
+            case 'title':
+                $sql = "SELECT files.id AS id,
+                files.title AS title,
+                files.description AS description,
+                files.size AS size,
+                files.path AS path,
+                files.upload_date AS upload_date,
+                files.uploader_id AS uploader_id,
+                users.username AS uploader,
+                extension.label AS extension,
+                content_types.label AS type
+            FROM files
+            LEFT JOIN users ON files.uploader_id = users.id
+            JOIN extension ON files.extension_id = extension.id
+            JOIN content_types ON files.type_id = content_types.id
+            WHERE title LIKE :keyword AND uploader_id =:user_id
+            ORDER BY title
+            LIMIT :list_limit OFFSET :offset";
+
+                try {
+                    if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                        $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
+                        $this->_req->bindParam('offset', $offset, PDO::PARAM_INT);
+                        $this->_req->bindParam('keyword', $keyword, PDO::PARAM_STR);
+                        $this->_req->bindParam('user_id', $user_id, PDO::PARAM_INT);
+                        if ($this->_req->execute()) {
+                            $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
+                            return $data;
+                        }
+                    }
+                } catch (PDOException $e) {
+                    die($e->getMessage());
+                }
+                break;
+            case 'size':
+                $sql = "SELECT files.id AS id,
+                files.title AS title,
+                files.description AS description,
+                files.size AS size,
+                files.path AS path,
+                files.upload_date AS upload_date,
+                files.uploader_id AS uploader_id,
+                users.username AS uploader,
+                extension.label AS extension,
+                content_types.label AS type
+            FROM files
+            LEFT JOIN users ON files.uploader_id = users.id
+            JOIN extension ON files.extension_id = extension.id
+            JOIN content_types ON files.type_id = content_types.id
+            WHERE title LIKE :keyword AND uploader_id =:user_id
+            ORDER BY size
+            LIMIT :list_limit OFFSET :offset";
+
+                try {
+                    if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                        $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
+                        $this->_req->bindParam('offset', $offset, PDO::PARAM_INT);
+                        $this->_req->bindParam('keyword', $keyword, PDO::PARAM_STR);
+                        $this->_req->bindParam('user_id', $user_id, PDO::PARAM_INT);
+                        if ($this->_req->execute()) {
+                            $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
+                            return $data;
+                        }
+                    }
+                } catch (PDOException $e) {
+                    die($e->getMessage());
+                }
+                break;
+            case 'idDESC':
+                $sql = "SELECT files.id AS id,
+                files.title AS title,
+                files.description AS description,
+                files.size AS size,
+                files.path AS path,
+                files.upload_date AS upload_date,
+                files.uploader_id AS uploader_id,
+                users.username AS uploader,
+                extension.label AS extension,
+                content_types.label AS type
+            FROM files
+            LEFT JOIN users ON files.uploader_id = users.id
+            JOIN extension ON files.extension_id = extension.id
+            JOIN content_types ON files.type_id = content_types.id
+            WHERE title LIKE :keyword AND uploader_id =:user_id
+            ORDER BY id DESC
+            LIMIT :list_limit OFFSET :offset";
+
+                try {
+                    if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                        $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
+                        $this->_req->bindParam('offset', $offset, PDO::PARAM_INT);
+                        $this->_req->bindParam('keyword', $keyword, PDO::PARAM_STR);
+                        $this->_req->bindParam('user_id', $user_id, PDO::PARAM_INT);
+                        if ($this->_req->execute()) {
+                            $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
+                            return $data;
+                        }
+                    }
+                } catch (PDOException $e) {
+                    die($e->getMessage());
+                }
+                break;
+            case 'titleDESC':
+                $sql = "SELECT files.id AS id,
+                files.title AS title,
+                files.description AS description,
+                files.size AS size,
+                files.path AS path,
+                files.upload_date AS upload_date,
+                files.uploader_id AS uploader_id,
+                users.username AS uploader,
+                extension.label AS extension,
+                content_types.label AS type
+            FROM files
+            LEFT JOIN users ON files.uploader_id = users.id
+            JOIN extension ON files.extension_id = extension.id
+            JOIN content_types ON files.type_id = content_types.id
+            WHERE title LIKE :keyword AND uploader_id =:user_id
+            ORDER BY title DESC
+            LIMIT :list_limit OFFSET :offset";
+
+                try {
+                    if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                        $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
+                        $this->_req->bindParam('offset', $offset, PDO::PARAM_INT);
+                        $this->_req->bindParam('keyword', $keyword, PDO::PARAM_STR);
+                        $this->_req->bindParam('user_id', $user_id, PDO::PARAM_INT);
+                        if ($this->_req->execute()) {
+                            $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
+                            return $data;
+                        }
+                    }
+                } catch (PDOException $e) {
+                    die($e->getMessage());
+                }
+                break;
+            case 'sizeDESC':
+                $sql = "SELECT files.id AS id,
+                files.title AS title,
+                files.description AS description,
+                files.size AS size,
+                files.path AS path,
+                files.upload_date AS upload_date,
+                files.uploader_id AS uploader_id,
+                users.username AS uploader,
+                extension.label AS extension,
+                content_types.label AS type
+            FROM files
+            LEFT JOIN users ON files.uploader_id = users.id
+            JOIN extension ON files.extension_id = extension.id
+            JOIN content_types ON files.type_id = content_types.id
+            WHERE title LIKE :keyword AND uploader_id =:user_id
+            ORDER BY size DESC
+            LIMIT :list_limit OFFSET :offset";
+
+                try {
+                    if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                        $this->_req->bindParam('list_limit', $limit, PDO::PARAM_INT);
+                        $this->_req->bindParam('offset', $offset, PDO::PARAM_INT);
+                        $this->_req->bindParam('keyword', $keyword, PDO::PARAM_STR);
+                        $this->_req->bindParam('user_id', $user_id, PDO::PARAM_INT);
+                        if ($this->_req->execute()) {
+                            $data = $this->_req->fetchAll(PDO::FETCH_ASSOC);
+                            return $data;
+                        }
+                    }
+                } catch (PDOException $e) {
+                    die($e->getMessage());
+                }
+                break;
+        }
+        return null;
+    }
     public function createFile() {}
     public function readFile() {}
     public function updateFile() {}
-    public function deleteFile() {}
+    public function countEntries()
+    {
+        try {
+            $sql = "SELECT COUNT(*) AS entries FROM files";
+            if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                if ($this->_req->execute()) {
+                    $data = $this->_req->fetch(PDO::FETCH_ASSOC);
+                    return $data['entries'];
+                }
+                return REQ_PREP_ERROR;
+            }
+            return REQ_ERROR;
+        } catch (PDOException $e) {
+            die($e->getMessage());
+        }
+    }
+    public function getUploaderId($file_id)
+    {
+        try {
+            $sql = "SELECT files.uploader_id AS uploader_id
+                    FROM files
+                    WHERE files.id =:file_id";
+
+            if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                $this->_req->bindParam('file_id', $file_id, PDO::PARAM_INT);
+                if ($this->_req->execute()) {
+                    $data = $this->_req->fetch(PDO::FETCH_ASSOC);
+                    return $data['uploader_id'];
+                }
+                return false;
+            }
+            return false;
+        } catch (PDOException $e) {
+            die($e->getMessage());
+        }
+    }
+    public function deleteFile($file_id)
+    {
+        //check in controller
+        $sql = "DELETE FROM file_tags WHERE file_tags.file_id =:file_id;
+                DELETE FROM liked_content WHERE liked_content.file_id =:file_id;
+                DELETE FROM bookmarks WHERE bookmarks.file_id =:file_id;
+                DELETE FROM comments WHERE comments.file_id =:file_id;
+                DELETE FROM files WHERE files.id =:file_id;";
+
+        try {
+            if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                $this->_req->bindParam('file_id', $file_id, PDO::PARAM_INT);
+                if ($this->_req->execute()) {
+                    return RETURN_OK;
+                }
+                return REQ_ERROR;
+            }
+            return REQ_PREP_ERROR;
+        } catch (PDOException $e) {
+            die($e->getMessage());
+        }
+    }
 }

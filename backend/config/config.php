@@ -46,7 +46,7 @@ define('POST_EMPTY', 30);
 define('CREDENTIALS_ERROR', 16);
 //request error
 define('REQ_ERROR', 35);
-
+define('REQ_PREP_ERROR', 36);
 //function OK
 define('RETURN_OK', 201);
 
