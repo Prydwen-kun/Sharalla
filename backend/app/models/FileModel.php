@@ -599,10 +599,12 @@ class FileModel extends CoreModel
                     files.upload_date AS upload_date,
                     files.uploader_id AS uploader_id,
                     users.username AS uploader,
-                    files.extension_id AS extension,
-                    files.type_id AS type
+                    extension.label AS extension,
+                    content_types.label AS type
                     FROM files
                     JOIN users ON files.uploader_id = users.id
+                    JOIN extension ON files.extension_id = extension.id
+                    JOIN content_types ON files.type_id = content_types.id
                     WHERE files.id =:file_id
                     ";
 
