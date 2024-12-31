@@ -15,10 +15,12 @@ const config = {
     logout: 'user&action=logout',
     files: {
       getFileList: 'file&action=getAllFiles',
-      getFileData: '',
+      getFileData: 'file&action=getFile',
+      getCurrentUserFiles: 'file&action=getConnectedUserFiles',
       updateFile: '',
-      deleteFile: '',
+      deleteFile: 'file&action=deleteFile',
       uploadFile: '',
+      getEntriesNumber: 'file&action=getEntriesNumber',
     },
     GET: {
       userId: '&userId=',
@@ -26,6 +28,7 @@ const config = {
       l_size: '&l_size=',
       page: '&page=',
       search: '&search=',
+      fileId: '&fileId=',
     },
   },
   AvatarBaseUrl: 'http://localhost/Sharalla/backend/',

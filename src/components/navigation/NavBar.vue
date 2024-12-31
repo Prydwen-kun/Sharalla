@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import config from '../../../config/config';
 import NavItem from './navbarItem/NavItem.vue'
 import SearchBar from './navbarItem/SearchBar.vue';
@@ -7,19 +7,24 @@ import BurgerMenu from './navbarItem/BurgerMenu.vue';
 import UserIcon from './navbarItem/UserIcon.vue';
 import axios from 'axios';
 
-onMounted(async () => {
+let user = ref({})
+let usernameGreet = ref('')
+
+async function getConnectedUserData() {
   const response = await axios.post(
     `${config.APIbaseUrl}${config.endpoints.getConnectedUserData}`
   )
   const data = await response.data
-  const usernameGreet = document.getElementById('userGreet')
+  user.value = data.response
 
   if (data.response !== 'req_error' && data.response !== 'forbidden' && data.response !== 'no_cookie') {
-    usernameGreet.innerHTML = data.response.username
+    usernameGreet.value = data.response.username
   } else {
-    usernameGreet.innerHTML = 'Not connected'
+    usernameGreet.value = 'Not connected'
   }
-})
+}
+
+getConnectedUserData()
 </script>
 
 <template>
@@ -28,8 +33,9 @@ onMounted(async () => {
       <BurgerMenu :grid-span="'1/2'" />
       <NavItem :link-title="'Home'" :link="'/'" :grid-span="'2/3'" />
       <SearchBar />
-      <p class="usernameGreet" id="userGreet">TEST</p>
-      <UserIcon :link-title="'User Account'" :link="'/profile'" :grid-span="'11/12'" />
+      <p class="usernameGreet" id="userGreet">{{ usernameGreet }}</p>
+      <UserIcon :link-title="'User Account'" :link="'/profile'" :grid-span="'11/12'"
+        :icon="config.AvatarBaseUrl + user.avatar" />
     </ul>
   </nav>
 </template>

@@ -4,6 +4,7 @@ const props = defineProps({
   linkTitle: String,
   link: String,
   gridSpan: String,
+  icon: String,
 }
 )
 
@@ -12,7 +13,7 @@ const props = defineProps({
 <template>
   <li class="navItem" :style="{ '--gridSpan': gridSpan }">
     <router-link :to="link" class="nav-link">
-      <img src="" alt="User avatar" :title="linkTitle" class="userIcon" height="40" width="40">
+      <img :src="icon" alt="User avatar" :title="linkTitle" class="userIcon" height="40" width="40">
     </router-link>
   </li>
 </template>

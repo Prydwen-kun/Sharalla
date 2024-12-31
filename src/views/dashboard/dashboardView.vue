@@ -110,6 +110,10 @@ function prevPage() {
   list_update()
 }
 
+function routeToFile(fileId) {
+  router.push({ name: 'Files', params: { id: fileId } })
+}
+
 </script>
 <template>
   <div class="dashboard_container">
@@ -134,9 +138,11 @@ function prevPage() {
       </thead>
       <!-- v-for on file list -->
       <tbody id="list_files" class="list_inject">
-        <tr class="list_item" v-for="(file, key, index) in files" :key="index">
+        <tr class="list_item" v-for="(file, key, index) in files" :key="index" @click="routeToFile(file.id)">
           <td class="item_info" v-for="(info, key, index) in file" :key="index">
-            {{ info }}
+            <div v-if="key === 'size'">{{ Math.floor(info / 1024) }}KB</div>
+            <div v-else-if="key === 'description'">{{ info.slice(0, 10) + '...' }}</div>
+            <div v-else>{{ info }}</div>
           </td>
         </tr>
       </tbody>
@@ -172,6 +178,12 @@ function prevPage() {
 
 .list_item {
   background-color: var(--light-blue-black);
+}
+
+.list_item:hover {
+  cursor: pointer;
+  background-color: var(--dark-blue-black);
+  border: 1px solid white;
 }
 
 .item_info {
