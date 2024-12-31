@@ -158,6 +158,7 @@ function routeToFile(fileId) {
   padding: 0.5rem;
   gap: 0.318rem;
   color: var(--rose);
+  overflow-x: auto;
 }
 
 .f_filters {

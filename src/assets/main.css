@@ -3,7 +3,7 @@
 #app {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: 12rem calc(100vh - 12rem);
+  grid-template-rows: 8rem calc(100vh - 8rem);
   max-width: 100%;
   min-height: 100vh;
   margin: 0 auto;
@@ -20,7 +20,7 @@ a,
 
 /* patchwork for the time being until the weird thing is found */
 body {
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
 }
 
 /* WebKit Browsers */
