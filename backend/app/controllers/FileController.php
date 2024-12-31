@@ -102,7 +102,44 @@ class FileController
             response('no_cookie', 'Invalid cookie !');
         }
     }
-    public function getFile() {}
+    public function getFile()
+    {
+        if (isset($_COOKIE['auth_token'])) {
+            $auth_token = $_COOKIE['auth_token'];
+            if ($this->user->isLoggedIn($auth_token)) {
+                if (isset($_GET['fileId']) && is_numeric($_GET['fileId'])) {
+                    $file_id = $_GET['fileId'];
+                    $data = $this->file->readFile($file_id);
+
+                    switch ($data) {
+                        case REQ_PREP_ERROR:
+                            response('req_prep_error', 'req_prep_error');
+                            break;
+                        case REQ_ERROR:
+                            response('req_error', 'Request error');
+                            break;
+                        case null:
+                            response('no_result', 'No result found');
+                            break;
+                        case false:
+                            response('fetch_error', 'Db fetch error');
+                            break;
+                        default:
+                            $fileObject = new File($data);
+                            $file = object_to_array($fileObject);
+                            response($file, 'File');
+                            break;
+                    }
+                } else {
+                    response('f_id_error', 'No or wrong file id');
+                }
+            } else {
+                response('forbidden', 'Sign in to use this ressource !');
+            }
+        } else {
+            response('no_cookie', 'Invalid cookie !');
+        }
+    }
     public function deleteFile()
     {
         //receive file id to delete

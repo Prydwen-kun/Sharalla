@@ -588,7 +588,39 @@ class FileModel extends CoreModel
         return null;
     }
     public function createFile() {}
-    public function readFile() {}
+    public function readFile($file_id)
+    {
+        try {
+            $sql = "SELECT files.id AS id,
+                    files.title AS title,
+                    files.description AS description,
+                    files.size AS size,
+                    files.path AS path,
+                    files.upload_date AS upload_date,
+                    files.uploader_id AS uploader_id,
+                    users.username AS uploader,
+                    files.extension_id AS extension,
+                    files.type_id AS type
+                    FROM files
+                    JOIN users ON files.uploader_id = users.id
+                    WHERE files.id =:file_id
+                    ";
+
+            if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                $this->_req->bindParam('file_id', $file_id, PDO::PARAM_INT);
+                if ($this->_req->execute()) {
+                    $data = $this->_req->fetch(PDO::FETCH_ASSOC);
+                    return $data;
+                } else {
+                    return REQ_PREP_ERROR;
+                }
+            } else {
+                return REQ_ERROR;
+            }
+        } catch (PDOException $e) {
+            die($e->getMessage());
+        }
+    }
     public function updateFile() {}
     public function countEntries()
     {
