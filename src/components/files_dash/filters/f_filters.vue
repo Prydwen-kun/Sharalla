@@ -8,8 +8,21 @@ import { useRouter } from 'vue-router';
 const router = useRouter()
 const emit = defineEmits(['update_filter', 'page_plus', 'page_minus', 'clear_filters'])
 
-onMounted(() => {
+let pages = ref(0)
+let results = ref(0)
 
+async function getPageNumber() {
+  const response = await axios.post(`${config.APIbaseUrl}${config.endpoints.files.getEntriesNumber}`)
+  const data = response.data
+  const entries = data.response
+  results.value = entries
+
+  const display = document.getElementById('l_slider').value
+  pages.value = Math.ceil(entries / display)
+}
+
+onMounted(() => {
+  getPageNumber()
 })
 
 function list_f_update() {
@@ -48,7 +61,8 @@ function clear_filt() {
         value="10" name="list_size"></div>
   </div>
   <div class="u_filter">
-    <p class="pagin_title">--Page--</p>
+    <p class="pagin_title">{{ results }} entries</p>
+    <p class="pagin_title">{{ pages }} pages</p>
     <div class="pagination">
       <button class="page_button" @click="p_minus">Prev</button>
       <input type="number" class="page_input" name="page_number" id="page_number" value="1" min="1">

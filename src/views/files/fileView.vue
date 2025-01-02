@@ -9,6 +9,17 @@ const route = useRoute()
 const fileId = computed(() => route.params.id)
 let file = ref({})
 
+async function isConnected() {
+  const response0 = await axios.post(`${config.APIbaseUrl}${config.endpoints.isConnected}`)
+  const data = await response0.data
+  if (data.response !== 'connected') {
+    router.push('/login')
+  } else {
+    return true
+  }
+}
+const connected = isConnected()
+
 async function getFileData() {
   const response = await axios.post(`${config.APIbaseUrl}${config.endpoints.files.getFileData}${config.endpoints.GET.fileId}${fileId.value}`)
 

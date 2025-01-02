@@ -145,6 +145,9 @@ function routeToFile(fileId) {
             <div v-else>{{ info }}</div>
           </td>
         </tr>
+        <tr class="list_item" v-if="files === undefined">
+          <td class="item_info">No result...</td>
+        </tr>
       </tbody>
     </table>
   </div>
