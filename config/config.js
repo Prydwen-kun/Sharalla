@@ -19,7 +19,7 @@ const config = {
       getCurrentUserFiles: 'file&action=getConnectedUserFiles',
       updateFile: '',
       deleteFile: 'file&action=deleteFile',
-      uploadFile: '',
+      uploadFile: 'file&action=uploadFile',
       getEntriesNumber: 'file&action=getEntriesNumber',
     },
     GET: {
