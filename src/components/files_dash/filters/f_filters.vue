@@ -9,33 +9,45 @@ const router = useRouter()
 const emit = defineEmits(['update_filter', 'page_plus', 'page_minus', 'clear_filters'])
 
 let pages = ref(0)
-let results = ref(0)
+let entries = ref(0)
+let displayed_num = ref(0)
+
+const props = defineProps({
+  results: Number
+})
 
 async function getPageNumber() {
   const response = await axios.post(`${config.APIbaseUrl}${config.endpoints.files.getEntriesNumber}`)
   const data = response.data
-  const entries = data.response
-  results.value = entries
+  const entries_count = data.response
+  entries.value = entries_count
 
   const display = document.getElementById('l_slider').value
-  pages.value = Math.ceil(entries / display)
+  pages.value = Math.ceil(props.results / display)
 }
 
-onMounted(() => {
-  getPageNumber()
+onMounted(async () => {
+  displayed_num.value = document.getElementById('l_slider').value
+  await getPageNumber()
 })
 
 function list_f_update() {
+  displayed_num.value = document.getElementById('l_slider').value
+  getPageNumber()
   emit('update_filter')
 }
 
 function p_plus() {
+  getPageNumber()
   emit('page_plus')
 }
 function p_minus() {
+  getPageNumber()
   emit('page_minus')
 }
 function clear_filt() {
+  displayed_num.value = 10
+  getPageNumber()
   emit('clear_filters')
 }
 </script>
@@ -56,12 +68,12 @@ function clear_filt() {
     </div>
   </div>
   <div class="u_filter">
-    <div id="displayed_num">Displayed</div>
+    <div id="displayed_num">Displayed - {{ displayed_num }}</div>
     <div><input @change="list_f_update" id="l_slider" class="l_size_slider" type="range" min="5" max="100" step="5"
         value="10" name="list_size"></div>
   </div>
   <div class="u_filter">
-    <p class="pagin_title">{{ results }} entries</p>
+    <p class="pagin_title">{{ results }} out of {{ entries }} entries</p>
     <p class="pagin_title">{{ pages }} pages</p>
     <div class="pagination">
       <button class="page_button" @click="p_minus">Prev</button>
