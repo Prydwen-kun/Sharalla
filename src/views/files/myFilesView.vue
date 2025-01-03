@@ -4,13 +4,16 @@ import { onMounted, ref } from 'vue';
 import config from '../../../config/config';
 import { useRouter } from 'vue-router';
 import f_filters from '@/components/files_dash/filters/f_filters.vue';
-
+import deleteFileConfirm from '@/components/popup/deleteFileConfirm.vue';
 const router = useRouter()
 
 let files = ref({})
 let results = ref(0)
 let totalResults = ref(0)
 let loaded = ref(false)
+//for popup v-if
+let conf_popup = ref(false)
+let file_id_ref = ref(0)
 
 async function isConnected() {
   const response0 = await axios.post(`${config.APIbaseUrl}${config.endpoints.isConnected}`)
@@ -125,16 +128,20 @@ function routeToFile(fileId) {
 }
 
 async function delete_myfile(event, fileId) {
-  event.stopPropagation()
-
+  if (event !== undefined) {
+    event.stopPropagation()
+  }
+  file_id_ref.value = fileId
+  conf_popup.value = !conf_popup.value
 }
 
 async function delete_confirm(fileId) {
   const delete_response = await (await axios.post(
     `${config.APIbaseUrl}${config.endpoints.files.deleteFile}${config.endpoints.GET.fileId}${fileId}`
   )).data.response
-  if (delete_response === true) {
-    list_update()
+  if (delete_response == 'delete_ok') {
+    await delete_myfile(undefined, fileId)
+    await list_update()
     alert('File deleted')
   } else {
     alert('Deletion Error occured')
@@ -143,6 +150,7 @@ async function delete_confirm(fileId) {
 
 </script>
 <template>
+  <deleteFileConfirm v-if="conf_popup" @closePopup="delete_myfile" @deleteConfirm="delete_confirm(file_id_ref)" />
   <div class="dashboard_container">
     <h2 class="section_title">
       <p class="myfiles_title">My Files</p>
@@ -150,7 +158,7 @@ async function delete_confirm(fileId) {
     </h2>
     <div class="f_filters">
       <f_filters v-if="loaded" @update_filter="list_update" @clear_filters="clearFilters" @page_plus="nextPage"
-        @page_minus="prevPage" :results="results" :totalResult="totalResults"/>
+        @page_minus="prevPage" :results="results" :totalResult="totalResults" />
     </div>
     <table class="file_list">
       <thead>
