@@ -143,6 +143,27 @@ class FileModel extends CoreModel
 
     }
 
+    public function getResultsCount()
+    {
+        $sql = "SELECT COUNT(files.title) AS results
+        FROM files
+        WHERE title LIKE :keyword";
+
+        try {
+            if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                $this->_req->bindParam('keyword', $keyword, PDO::PARAM_STR);
+                if ($this->_req->execute()) {
+                    $data = $this->_req->fetch(PDO::FETCH_ASSOC);
+                    return $data['results'];
+                }
+                return false;
+            }
+            return false;
+        } catch (PDOException $e) {
+            die($e->getMessage());
+        }
+    }
+
     public function getAllFiles($orderBy = 'id', $limit = 10)
     {
         if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] >= 1) {
@@ -587,7 +608,147 @@ class FileModel extends CoreModel
         }
         return null;
     }
-    public function createFile() {}
+    public function createFile(int $user_id, string $title_post = '')
+    {
+        //CHECK UPLOAD INTEGRITY
+        if ($_FILES['Upload']['error'] != UPLOAD_ERR_OK) {
+            return FILE_UPLOAD_ERROR;
+        }
+
+        if (isset($_POST['Description']) && !empty($_POST['Description'])) {
+            $description = $_POST['Description'];
+        } else {
+            $description = 'No description...';
+        }
+
+        $target_dir = UPLOAD_DIR;
+        $upload_name = $_FILES['Upload']['name'];
+        $target_file_ext = strtolower(pathinfo($upload_name, PATHINFO_EXTENSION));
+
+        $target_directory = $target_dir . 'Files/' . $user_id . '/';
+
+        $title = $title_post;
+
+        if ($title === '') {
+            //if file exist rand title and retest
+            do {
+                $rand_title = rand(1000, 99999999);
+                $target_file = $target_dir . 'Files/' . $user_id . '/' . $rand_title . '.' . $target_file_ext;
+                $title = $rand_title;
+            } while (file_exists($target_file));
+        } else {
+            $target_file = $target_dir . 'Files/' . $user_id . '/' . $title . '.' . $target_file_ext;
+            if (file_exists($target_file)) {
+                do {
+                    $rand_title = rand(1000, 99999999);
+                    $target_file = $target_dir . 'Files/' . $user_id . '/' . $title . $rand_title . '.' . $target_file_ext;
+                    $title = $rand_title;
+                } while (file_exists($target_file));
+            }
+        }
+
+        //check if dir exist
+        if (!is_dir($target_directory)) {
+            mkdir($target_directory, 0777, true);
+        }
+
+        //replace file since it's supposed to be unique
+        //test size info first
+        if ($_FILES['Upload']['size'] >= _2GB_UPLOAD_LIMIT) {
+            return FILE_SIZE_ERROR;
+        }
+
+        //test tmp file size second
+        $temp_filepath = $_FILES['Upload']['tmp_name'];
+        $fileSize = filesize($temp_filepath);
+        if ($fileSize === false || $fileSize >= _2GB_UPLOAD_LIMIT) {
+            return FILE_SIZE_ERROR;
+        }
+
+        $fileMimeType = mime_content_type($temp_filepath);
+
+        if ($fileMimeType === false) {
+            return FILE_EXT_ERROR;
+        }
+
+        //Si toute la valid passe move_file =>
+        move_uploaded_file($temp_filepath, $target_file);
+
+        //req check if ext exist in ext table
+        $sql = 'INSERT INTO extension(label) 
+                VALUES(:label)
+                ON DUPLICATE KEY UPDATE id = id';
+
+        try {
+            if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                $this->_req->bindParam('label', $target_file_ext, PDO::PARAM_STR);
+                if (!$this->_req->execute()) {
+                    return REQ_ERROR;
+                }
+            } else {
+                return REQ_ERROR;
+            }
+        } catch (PDOException $e) {
+            die($e->getMessage());
+        }
+        //if not create new insert
+
+        //check MIME broader type and insert new type if not already existing
+        $file_type = explode('/', $fileMimeType)[0];
+
+        //for this to work column need to have unique constraint
+        $sql = 'INSERT INTO content_types(label) 
+        VALUES(:label)
+        ON DUPLICATE KEY UPDATE id = id';
+
+        try {
+            if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                $this->_req->bindParam('label', $file_type, PDO::PARAM_STR);
+                if (!$this->_req->execute()) {
+                    return REQ_ERROR;
+                }
+            } else {
+                return REQ_ERROR;
+            }
+        } catch (PDOException $e) {
+            die($e->getMessage());
+        }
+        //insert file table
+        $sql =
+            'INSERT INTO files(id, title, description, size, path,upload_date, uploader_id, extension_id, type_id)
+            VALUES(
+                DEFAULT,
+                :title,
+                :description,
+                :size,
+                :path,
+                DEFAULT,
+                :uploader_id,
+                (SELECT extension.id FROM extension WHERE label =:ext_label),
+                (SELECT content_types.id FROM content_types WHERE label =:type_label)
+                )';
+
+        try {
+            if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                //bind param
+                $this->_req->bindParam('title', $title, PDO::PARAM_STR);
+                $this->_req->bindParam('description', $description, PDO::PARAM_STR);
+                $this->_req->bindParam('size', $fileSize, PDO::PARAM_INT);
+                $this->_req->bindParam('path', $target_file, PDO::PARAM_STR);
+                $this->_req->bindParam('uploader_id', $user_id, PDO::PARAM_STR);
+                $this->_req->bindParam('ext_label', $target_file_ext, PDO::PARAM_STR);
+                $this->_req->bindParam('type_label', $file_type, PDO::PARAM_STR);
+
+                if ($this->_req->execute()) {
+                    return RETURN_OK;
+                }
+                return REQ_ERROR;
+            }
+            return REQ_ERROR;
+        } catch (PDOException $e) {
+            die($e->getMessage());
+        }
+    }
     public function readFile($file_id)
     {
         try {

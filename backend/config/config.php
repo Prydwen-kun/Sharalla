@@ -60,6 +60,7 @@ define('ORIGIN_DOMAIN', 'http://localhost:5173');
 #for files upload
 #target directory
 define('UPLOAD_DIR', 'files/');
+define('_2GB_UPLOAD_LIMIT',2000000000);
 
 //FILES FUNCTION RETURN CODE[plage 100-200]
 define('FILE_SIZE_ERROR', 100);

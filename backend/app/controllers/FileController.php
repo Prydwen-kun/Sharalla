@@ -10,7 +10,68 @@ class FileController
         $this->user = new UserModel();
     }
 
-    public function uploadFile() {}
+    public function uploadFile()
+    {
+        if (isset($_COOKIE['auth_token'])) {
+            $auth_token = $_COOKIE['auth_token'];
+            if ($this->user->isLoggedIn($auth_token)) {
+                if (isset($_FILES['Upload']) && !empty($_FILES['Upload']['name'])) {
+                    $user_id = $this->user->getCurrentUserId($auth_token);
+                    if (isset($_POST['Title'])) {
+                        $title = $_POST['Title'];
+
+                        switch ($this->file->createFile($user_id, $title)) {
+                            case FILE_UPLOAD_ERROR:
+                                response('file_upload_error');
+                                break;
+                            case FILE_SIZE_ERROR:
+                                response('file_size_error');
+                                break;
+                            case FILE_EXT_ERROR:
+                                response('file_ext_error');
+                                break;
+                            case REQ_ERROR:
+                                response('req_error');
+                                break;
+                            case RETURN_OK:
+                                response('upload_ok');
+                                break;
+                            default:
+                                response('error');
+                                break;
+                        }
+                    } else {
+                        switch ($this->file->createFile($user_id)) {
+                            case FILE_UPLOAD_ERROR:
+                                response('file_upload_error');
+                                break;
+                            case FILE_SIZE_ERROR:
+                                response('file_size_error');
+                                break;
+                            case FILE_EXT_ERROR:
+                                response('file_ext_error');
+                                break;
+                            case REQ_ERROR:
+                                response('req_error');
+                                break;
+                            case RETURN_OK:
+                                response('upload_ok');
+                                break;
+                            default:
+                                response('error');
+                                break;
+                        }
+                    }
+                } else {
+                    response('no_upload');
+                }
+            } else {
+                response('forbidden', 'Sign in to use this ressource !');
+            }
+        } else {
+            response('no_cookie', 'Invalid cookie !');
+        }
+    }
     public function updateFile() {}
     public function getAllFiles()
     {
@@ -37,8 +98,13 @@ class FileController
                     foreach ($FileObjectList as $object) {
                         $array_to_json[] = object_to_array($object);
                     }
-
-                    response($array_to_json, 'Files Data list');
+                    //array count available under param0
+                    $results_count = $this->file->getResultsCount();
+                    if ($results_count !== false) {
+                        response($array_to_json, 'Files Data list', $results_count);
+                    } else {
+                        response($array_to_json, 'Files Data list', 'count_error');
+                    }
                 } else {
                     response('req_error', 'Request error !');
                 }
