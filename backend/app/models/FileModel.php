@@ -143,8 +143,46 @@ class FileModel extends CoreModel
 
     }
 
+    public function getUserFileCount(int $user_id)
+    {
+        if (isset($_GET['search'])) {
+            $search = htmlspecialchars($_GET['search']);
+        } else {
+            $search = '';
+        }
+
+        $keyword = '%' . $search . '%';
+
+        $sql = "SELECT COUNT(files.title) AS results
+        FROM files
+        WHERE title LIKE :keyword AND files.uploader_id =:user_id";
+
+        try {
+            if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                $this->_req->bindParam('keyword', $keyword, PDO::PARAM_STR);
+                $this->_req->bindParam('user_id', $user_id, PDO::PARAM_INT);
+                if ($this->_req->execute()) {
+                    $data = $this->_req->fetch(PDO::FETCH_ASSOC);
+                    return $data['results'];
+                }
+                return false;
+            }
+            return false;
+        } catch (PDOException $e) {
+            die($e->getMessage());
+        }
+    }
+
     public function getResultsCount()
     {
+        if (isset($_GET['search'])) {
+            $search = htmlspecialchars($_GET['search']);
+        } else {
+            $search = '';
+        }
+
+        $keyword = '%' . $search . '%';
+
         $sql = "SELECT COUNT(files.title) AS results
         FROM files
         WHERE title LIKE :keyword";

@@ -143,7 +143,13 @@ class FileController
                         $array_to_json[] = object_to_array($object);
                     }
 
-                    response($array_to_json, 'Files Data list');
+                    //array count available under param0
+                    $results_count = $this->file->getUserFileCount($connectedUserId);
+                    if ($results_count !== false) {
+                        response($array_to_json, 'Files Data list', $results_count);
+                    } else {
+                        response($array_to_json, 'Files Data list', 'count_error');
+                    }
                 } else {
                     response('req_error', 'Request error !');
                 }
