@@ -10,7 +10,9 @@ const router = useRouter()
 
 let files = ref({})
 let results = ref(0)
+let totalResults = ref(0)
 let loaded = ref(false)
+
 onMounted(async () => {
   const getResponse = async () => {
     return await axios.get(
@@ -30,6 +32,7 @@ onMounted(async () => {
       alert('You\'re not connected or an error occured !')
     } else {
       files.value = data2.response
+      totalResults.value = data2.param0
       loaded.value = true
       if (files.value !== undefined) {
         results.value = Object.keys(files.value).length
@@ -65,6 +68,7 @@ async function list_update() {
     alert('You\'re not connected or an error occured !')
   } else {
     files.value = data.response
+    totalResults.value = data.param0
     if (files.value !== undefined) {
       results.value = Object.keys(files.value).length
     } else {
@@ -121,7 +125,7 @@ function routeToFile(fileId) {
   <div class="dashboard_container">
     <div class="f_filters">
       <f_filters v-if="loaded" @update_filter="list_update" @clear_filters="clearFilters" @page_plus="nextPage" @page_minus="prevPage"
-        :results="results" />
+        :results="results" :totalResult="totalResults" />
     </div>
     <table class="file_list">
       <thead>

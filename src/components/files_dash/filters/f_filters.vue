@@ -9,11 +9,13 @@ const router = useRouter()
 const emit = defineEmits(['update_filter', 'page_plus', 'page_minus', 'clear_filters'])
 
 let pages = ref(0)
+let currentPage = ref(0)
 let entries = ref(0)
 let displayed_num = ref(0)
 
 const props = defineProps({
-  results: Number
+  results: Number,
+  totalResult: Number
 })
 
 async function getPageNumber() {
@@ -21,13 +23,14 @@ async function getPageNumber() {
   const data = response.data
   const entries_count = data.response
   entries.value = entries_count
-
+  currentPage.value = document.getElementById('page_number').value
   const display = document.getElementById('l_slider').value
-  pages.value = Math.ceil(props.results / display)
+  pages.value = Math.ceil(props.totalResult / display)
 }
 
 onMounted(async () => {
   displayed_num.value = document.getElementById('l_slider').value
+  currentPage.value = document.getElementById('page_number').value
   await getPageNumber()
 })
 
@@ -73,7 +76,9 @@ function clear_filt() {
         value="10" name="list_size"></div>
   </div>
   <div class="u_filter">
-    <p class="pagin_title">{{ results }} out of {{ entries }} entries</p>
+    <p class="pagin_title">{{ displayed_num * (currentPage - 1) + 1 }}-{{ displayed_num * (currentPage - 1) + results }}
+      out of {{
+        totalResult }}</p>
     <p class="pagin_title">{{ pages }} pages</p>
     <div class="pagination">
       <button class="page_button" @click="p_minus">Prev</button>
