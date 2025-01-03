@@ -9,7 +9,8 @@ import f_filters from '@/components/files_dash/filters/f_filters.vue';
 const router = useRouter()
 
 let files = ref({})
-
+let results = ref(0)
+let loaded = ref(false)
 onMounted(async () => {
   const getResponse = async () => {
     return await axios.get(
@@ -29,8 +30,13 @@ onMounted(async () => {
       alert('You\'re not connected or an error occured !')
     } else {
       files.value = data2.response
+      loaded.value = true
+      if (files.value !== undefined) {
+        results.value = Object.keys(files.value).length
+      } else {
+        results.value = 0
+      }
     }
-    list_slider_created()
     const list_files = document.getElementById('list_files')
     if (files.value === undefined) {
       list_files.innerHTML = '<div class="list_item">No result...</div>'
@@ -39,16 +45,8 @@ onMounted(async () => {
   }
 })
 
-function list_slider_created() {
-  let l_size_slider = document.getElementById('l_slider')
-  let displayed_num = document.getElementById('displayed_num')
-  displayed_num.innerHTML = 'Displayed - ' + l_size_slider.value
-}
-
 async function list_update() {
   let l_size_slider = document.getElementById('l_slider')
-  let displayed_num = document.getElementById('displayed_num')
-  displayed_num.innerHTML = 'Displayed - ' + l_size_slider.value
   let orderBy = document.getElementById('orderBy')
 
   //pagination
@@ -67,6 +65,12 @@ async function list_update() {
     alert('You\'re not connected or an error occured !')
   } else {
     files.value = data.response
+    if (files.value !== undefined) {
+      results.value = Object.keys(files.value).length
+    } else {
+      results.value = 0
+    }
+
   }
 
   return files.value
@@ -75,7 +79,6 @@ async function list_update() {
 function clearFilters() {
   //clear all values
   const l_size_slider = document.getElementById('l_slider')
-  const displayed_num = document.getElementById('displayed_num')
   const orderBy = document.getElementById('orderBy')
   const page_input_ = document.getElementById('page_number')
   const search = document.getElementById('u_search')
@@ -83,7 +86,6 @@ function clearFilters() {
   l_size_slider.value = 10
   page_input_.value = 1
   orderBy.value = 'id'
-  displayed_num.innerHTML = 'Displayed - ' + l_size_slider.value
   search.value = ''
 
   list_update()
@@ -118,8 +120,8 @@ function routeToFile(fileId) {
 <template>
   <div class="dashboard_container">
     <div class="f_filters">
-      <f_filters @update_filter="list_update" @clear_filters="clearFilters" @page_plus="nextPage"
-        @page_minus="prevPage" />
+      <f_filters v-if="loaded" @update_filter="list_update" @clear_filters="clearFilters" @page_plus="nextPage" @page_minus="prevPage"
+        :results="results" />
     </div>
     <table class="file_list">
       <thead>
