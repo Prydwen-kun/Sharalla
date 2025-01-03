@@ -85,7 +85,7 @@ async function page_plus() {
 
 function page_minus() {
   const page_input = document.getElementById('page_number')
-  if (page_input > 1) {
+  if (page_input.value > 1) {
     page_input.value--
   } else {
     page_input.value = 1
