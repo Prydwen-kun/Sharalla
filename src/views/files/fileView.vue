@@ -33,19 +33,62 @@ getFileData()
   <main class="main_content">
     <header class="content_header">{{ file.title }}</header>
     <section class="content_display">
-      <img v-if="file.type === 'image'" :src="config.AvatarBaseUrl + file.path" :alt="file.title">
+      <img class="img_content" v-if="file.type === 'image'" :src="config.AvatarBaseUrl + file.path" :alt="file.title">
     </section>
     <footer class="content_footer">
       <div class="file_info">
-        <p>Title: {{ file.title }}</p>
-        <p>Size: {{ Math.floor(file.size / 1024) }}KB</p>
-        <p>Extension: {{ file.extension }}</p>
-        <p>File Type: {{ file.type }}</p>
-        <p>Upload date: {{ file.upload_date }}</p>
-        <p>Uploaded by: {{ file.uploader }}</p>
+        <p class="info_title">Title</p>
+        <p> {{ file.title }}</p>
+
+        <p class="info_title">Size</p>
+        <p>{{ Math.floor(file.size / 1024) }}KB</p>
+
+        <p class="info_title">Extension</p>
+        <p>{{ file.extension }}</p>
+
+        <p class="info_title">File Type</p>
+        <p>{{ file.type }}</p>
+
+        <p class="info_title">Upload date</p>
+        <p>{{ file.upload_date }}</p>
+
+        <p class="info_title">Uploaded by</p>
+        <p>{{ file.uploader }}</p>
       </div>
-      <div class="file_description">{{ file.description }}</div>
-      <div class="comments">comments</div>
+      <div class="file_description">
+        <div class="info_title">Description</div>
+        <div>{{ file.description }} Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi tempora odit, itaque
+          repellat, officiis consequatur excepturi laboriosam maiores eaque facilis voluptates libero vitae quis optio
+          voluptas hic fugiat nesciunt cumque.</div>
+      </div>
+      <!-- create comment component later -->
+      <div class="comments">
+        <div class="info_title">Comments</div>
+        <div class="comment_input">
+          <input type="text" name="comment" id="comment" placeholder="Type comment...">
+          <button class="send_button">Send</button>
+        </div>
+        <div class="comment_section">
+          <div class="comment">
+            <div class="comment_header">
+              <img src="" class="comment_avatar" alt="Avatar">
+              <div>User1234</div>
+            </div>
+            <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, explicabo. Pariatur enim quaerat nisi.
+              Aspernatur suscipit, saepe non ex natus minus voluptate quidem alias sequi eveniet enim animi iure sed!
+            </div>
+          </div>
+          <div class="comment">
+            <div class="comment_header">
+              <img src="" class="comment_avatar" alt="Avatar">
+              <div>User1234</div>
+            </div>
+            <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, explicabo. Pariatur enim quaerat nisi.
+              Aspernatur suscipit, saepe non ex natus minus voluptate quidem alias sequi eveniet enim animi iure sed!
+            </div>
+          </div>
+        </div>
+      </div>
     </footer>
   </main>
 </template>
@@ -73,11 +116,17 @@ getFileData()
 .content_display {
   background-color: var(--light-blue-black);
   border-radius: 5px;
-  width: 100%;
+  max-width: 100%;
   padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  object-fit: contain;
+}
+
+.img_content {
+  object-fit: contain;
+  max-width: 100%;
 }
 
 .content_footer {
@@ -94,23 +143,108 @@ getFileData()
 }
 
 .file_info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1 1 98%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  flex: 1 1 100%;
   background-color: var(--dark-blue-black);
   border-radius: 5px;
   padding: 0.5rem;
-  gap: 0.5rem;
+  gap: 1rem;
+}
+
+.file_info>* {
+  grid-column: span 1;
+}
+
+.info_title {
+  border-right: 2px solid var(--rose);
+  border-bottom: 2px solid var(--rose);
+  border-radius: 5px;
+  padding: 5px;
+  font-weight: 600;
 }
 
 .file_description {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  flex: 1 1 98%;
+  align-items: start;
+  flex: 1 1 100%;
   border-radius: 5px;
   background-color: var(--dark-blue-black);
+  padding: 1rem;
+}
+
+.comments {
+  background-color: var(--dark-blue-black);
+  padding: 1rem;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.comment_input {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.comment_input>input {
+  flex: 1 1 auto;
+  background-color: var(--dark-blue-black);
+  height: 4rem;
+  border: none;
+  border-bottom: 2px solid var(--rose);
+  outline: none;
+  padding: 0.5rem;
+}
+
+.comment_input>input:focus {
+  background-color: var(--light-blue-black);
+  color: var(--rose);
+  border: none;
+  border-radius: 2rem;
+}
+
+.comment_input>input::placeholder {
+  color: var(--rose-inactive);
+}
+
+.send_button {
+  width: 8rem;
+  height: 4rem;
+  font-weight: 600;
+  color: var(--rose);
+  background-color: var(--dark-blue-black);
+  border: 2px solid var(--rose);
+  border-radius: 2rem;
+}
+
+.send_button:hover {
+  background-color: var(--light-rose);
+  color: var(--white-mute);
+}
+
+.comment_section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.comment {}
+
+.comment_header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.comment_avatar {
+  background-color: var(--white-mute);
+  height: 4rem;
+  width: 4rem;
+  border-radius: 2rem;
 }
 </style>
