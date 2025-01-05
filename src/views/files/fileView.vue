@@ -34,6 +34,10 @@ getFileData()
     <header class="content_header">{{ file.title }}</header>
     <section class="content_display">
       <img class="img_content" v-if="file.type === 'image'" :src="config.AvatarBaseUrl + file.path" :alt="file.title">
+      <video v-if="file.type === 'video'" class="video_content" controls poster="">
+        <source :src="config.AvatarBaseUrl + file.path" :type="'video/' + file.extension" />
+        <a :href="config.AvatarBaseUrl + file.path">Fallback download link</a>
+      </video>
     </section>
     <footer class="content_footer">
       <div class="file_info">
@@ -125,6 +129,11 @@ getFileData()
 }
 
 .img_content {
+  object-fit: contain;
+  max-width: 100%;
+}
+
+.video_content{
   object-fit: contain;
   max-width: 100%;
 }
