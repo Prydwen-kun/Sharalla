@@ -34,11 +34,11 @@ class UserModel extends CoreModel
             return PWD_CONFIRM_ERROR;
         }
 
-        if (strlen($post['Username']) < 3) {
+        if (strlen($post['Username']) < 3 || strlen($post['Username']) > 255) {
             return USERNAME_LENGTH_ERROR;
         }
 
-        if (strlen($post['Password']) < 8) {
+        if (strlen($post['Password']) < 8 || strlen($post['Password']) > 255) {
             return PWD_LENGTH_ERROR;
         }
 

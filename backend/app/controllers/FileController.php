@@ -30,6 +30,12 @@ class FileController
                             case FILE_EXT_ERROR:
                                 response('file_ext_error');
                                 break;
+                            case FILE_TITLE_SIZE_ERR:
+                                response('file_title_size_err');
+                                break;
+                            case FILE_DESC_SIZE_ERR:
+                                response('file_desc_size_err');
+                                break;
                             case REQ_ERROR:
                                 response('req_error');
                                 break;

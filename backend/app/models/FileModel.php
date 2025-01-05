@@ -659,6 +659,15 @@ class FileModel extends CoreModel
             $description = 'No description...';
         }
 
+        //TEST TITLE AND DESC SIZE
+        if (strlen($title_post) > 255) {
+            return FILE_TITLE_SIZE_ERR;
+        }
+
+        if (strlen($description) > 2000) {
+            return FILE_DESC_SIZE_ERR;
+        }
+
         $target_dir = UPLOAD_DIR;
         $upload_name = $_FILES['Upload']['name'];
         $target_file_ext = strtolower(pathinfo($upload_name, PATHINFO_EXTENSION));
