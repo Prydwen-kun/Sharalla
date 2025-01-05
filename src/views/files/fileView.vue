@@ -34,10 +34,17 @@ getFileData()
     <header class="content_header">{{ file.title }}</header>
     <section class="content_display">
       <img class="img_content" v-if="file.type === 'image'" :src="config.AvatarBaseUrl + file.path" :alt="file.title">
-      <video v-if="file.type === 'video'" class="video_content" controls poster="">
+      <video v-else-if="file.type === 'video'" class="video_content" controls poster="">
         <source :src="config.AvatarBaseUrl + file.path" :type="'video/' + file.extension" />
         <a :href="config.AvatarBaseUrl + file.path">Fallback download link</a>
       </video>
+      <audio v-else-if="file.type === 'audio'" class="audio_content" controls>
+        <source :src="config.AvatarBaseUrl + file.path" :type="'audio/' + file.extension" />
+      </audio>
+      <embed v-else-if="file.type === 'application' && file.extension === 'pdf'" :src="config.AvatarBaseUrl + file.path"
+        :type="'application/pdf'" class="pdf_content">
+      <embed v-else-if="file.type === 'application'" :src="config.AvatarBaseUrl + file.path"
+        :type="'application/' + file.extension" class="text_content">
     </section>
     <footer class="content_footer">
       <div class="file_info">
@@ -133,9 +140,20 @@ getFileData()
   max-width: 100%;
 }
 
-.video_content{
+.video_content {
   object-fit: contain;
   max-width: 100%;
+}
+
+.audio_content {
+  max-width: 100%;
+  color: var(--rose);
+  background-color: var(--dark-blue-black);
+}
+
+.pdf_content {
+  width: 98vw;
+  height: 80vh;
 }
 
 .content_footer {
@@ -159,10 +177,12 @@ getFileData()
   border-radius: 5px;
   padding: 0.5rem;
   gap: 1rem;
+  max-width: 100%;
 }
 
 .file_info>* {
   grid-column: span 1;
+  overflow: hidden;
 }
 
 .info_title {
@@ -255,5 +275,17 @@ getFileData()
   height: 4rem;
   width: 4rem;
   border-radius: 2rem;
+}
+
+@media (max-width:600px) {
+  .file_info {
+    padding: 2px;
+    gap: 2px;
+    max-width: 100%;
+  }
+
+  .pdf_content {
+    width: 98vw;
+  }
 }
 </style>
