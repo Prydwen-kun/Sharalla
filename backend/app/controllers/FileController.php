@@ -225,8 +225,9 @@ class FileController
             $auth_token = $_COOKIE['auth_token'];
             if ($this->user->isLoggedIn($auth_token)) {
                 if (isset($_GET['fileId']) && is_numeric($_GET['fileId'])) {
-                    if ($this->file->downloadFile() !== false) {
-                        
+                    $file = $this->file->downloadFile();
+                    if ($file !== false) {
+                        response($file, 'File data');
                     } else {
                         response('no_file');
                     }

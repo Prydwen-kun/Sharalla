@@ -940,7 +940,7 @@ class FileModel extends CoreModel
             ob_clean();
             flush();
             // Read the file and output its contents
-            return readfile($file_path);
+            return file_get_contents($file_path);
         } else if (file_exists($file_path) && $file_type === 'image') {
             // Set the appropriate content-type header
             $mime_type = mime_content_type($file_path);
@@ -956,7 +956,7 @@ class FileModel extends CoreModel
             ob_clean();
             flush();
             // Read the file and output its contents
-            readfile($file_path);
+            return file_get_contents($file_path);
         } else {
             return false;
         }
