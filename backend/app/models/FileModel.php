@@ -894,7 +894,7 @@ class FileModel extends CoreModel
     public function getFilePathFromId($file_id)
     {
         try {
-            $sql = "SELECT files.path AS file_path
+            $sql = "SELECT files.path AS file_path,
                     content_types.label AS file_type
                     FROM files
                     JOIN content_types ON files.type_id = content_types.id
@@ -925,7 +925,7 @@ class FileModel extends CoreModel
         $file_path = $file_spec['file_path'];
         $file_type = $file_spec['file_type'];
 
-        if (file_exists($file_path) && $file_type === 'text') {
+        if (file_exists($file_path) && $file_type !== 'image') {
             // Set headers to indicate a file download 
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
