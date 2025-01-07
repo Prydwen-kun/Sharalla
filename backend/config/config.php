@@ -69,3 +69,6 @@ define('FILE_TITLE_SIZE_ERR', 102);
 define('FILE_DESC_SIZE_ERR', 103);
 define('FILE_UPLOAD_ERROR', 147);
 define('FILE_OK', 199);
+
+//COMMENT MODEL RETURN CODE[plage 300-400]
+define('COMMENT_EMPTY', 301);
