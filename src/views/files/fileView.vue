@@ -86,9 +86,7 @@ async function download(file_id, file_name, file_type, file_ext) {
       </div>
       <div class="file_description">
         <div class="info_title">Description</div>
-        <div>{{ file.description }} Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi tempora odit, itaque
-          repellat, officiis consequatur excepturi laboriosam maiores eaque facilis voluptates libero vitae quis optio
-          voluptas hic fugiat nesciunt cumque.</div>
+        <div>{{ file.description }}</div>
       </div>
       <!-- create comment component later -->
       <div class="comments">
