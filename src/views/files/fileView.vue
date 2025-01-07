@@ -43,8 +43,9 @@ getFileData()
       </audio>
       <embed v-else-if="file.type === 'application' && file.extension === 'pdf'" :src="config.AvatarBaseUrl + file.path"
         :type="'application/pdf'" class="pdf_content">
-      <embed v-else-if="file.type === 'application'" :src="config.AvatarBaseUrl + file.path"
-        :type="'application/' + file.extension" class="text_content">
+      <a :href="config.AvatarBaseUrl + file.path" class="download_content" download>Download File
+        <div class="down_arrow">=></div>
+      </a>
     </section>
     <footer class="content_footer">
       <div class="file_info">
@@ -130,9 +131,11 @@ getFileData()
   max-width: 100%;
   padding: 0.5rem;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   object-fit: contain;
+  gap: 1rem;
 }
 
 .img_content {
@@ -154,6 +157,38 @@ getFileData()
 .pdf_content {
   width: 98vw;
   height: 80vh;
+}
+
+.download_content {
+  border: 2px solid var(--rose);
+  border-radius: 2rem;
+  height: 4rem;
+  background-color: var(--dark-blue-black);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  gap: 0.5rem;
+}
+
+.download_content:hover {
+  cursor: pointer;
+  color: var(--white-mute);
+  background-color: var(--light-rose);
+
+  .down_arrow {
+    border-right: 3px solid var(--white-mute);
+  }
+}
+
+.down_arrow {
+  border-right: 3px solid var(--rose);
+  font-weight: 800;
+  transform: rotate(90deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .content_footer {
