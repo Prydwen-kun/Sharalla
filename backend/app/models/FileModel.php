@@ -946,6 +946,9 @@ class FileModel extends CoreModel
             header('Content-Type: ' . $mime_type);
             // Change this to the appropriate MIME type for your image 
             header('Content-Length: ' . filesize($file_path));
+            header('Content-Disposition: attachment; filename="' . basename($file_path) . '"');
+            header('Cache-Control: public, max-age=86400');
+            header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT');
             // Clear system output buffer 
             ob_clean();
             flush();
