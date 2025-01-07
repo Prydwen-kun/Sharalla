@@ -44,8 +44,10 @@ onMounted(() => {
         if (data.response === 'user_created') {
           //user created
           console.log('User created !')
-
+          alert('Account created !')
           router.push('/login')
+        } else if (data.response === 'username_taken_error') {
+          alert('Username taken !')
         } else {
           //error
           alert('Error creating user !')
