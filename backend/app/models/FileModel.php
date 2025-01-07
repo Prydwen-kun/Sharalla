@@ -895,14 +895,16 @@ class FileModel extends CoreModel
     {
         try {
             $sql = "SELECT files.path AS file_path
+                    content_types.label AS file_type
                     FROM files
+                    JOIN content_types ON files.type_id = content_types.id
                     WHERE files.id =:file_id";
 
             if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
                 $this->_req->bindParam('file_id', $file_id, PDO::PARAM_INT);
                 if ($this->_req->execute()) {
                     $data = $this->_req->fetch(PDO::FETCH_ASSOC);
-                    return $data['file_path'];
+                    return $data;
                 }
                 return false;
             }
@@ -914,14 +916,16 @@ class FileModel extends CoreModel
     public function downloadFile()
     {
         $file_id = $_GET['fileId'];
+        $file_spec = $this->getFilePathFromId($file_id);
 
-        $file_path = $this->getFilePathFromId($file_id);
-
-        if ($file_path === false) {
+        if ($file_spec === false) {
             return false;
         }
 
-        if (file_exists($file_path)) {
+        $file_path = $file_spec['file_path'];
+        $file_type = $file_spec['file_type'];
+
+        if (file_exists($file_path) && $file_type === 'text') {
             // Set headers to indicate a file download 
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
@@ -936,6 +940,17 @@ class FileModel extends CoreModel
             flush();
             // Read the file and output its contents
             return readfile($file_path);
+        } else if (file_exists($file_path) && $file_type === 'image') {
+            // Set the appropriate content-type header
+            $mime_type = mime_content_type($file_path);
+            header('Content-Type: ' . $mime_type);
+            // Change this to the appropriate MIME type for your image 
+            header('Content-Length: ' . filesize($file_path));
+            // Clear system output buffer 
+            ob_clean();
+            flush();
+            // Read the file and output its contents
+            readfile($file_path);
         } else {
             return false;
         }
