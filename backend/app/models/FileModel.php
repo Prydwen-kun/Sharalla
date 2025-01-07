@@ -926,9 +926,10 @@ class FileModel extends CoreModel
         $file_type = $file_spec['file_type'];
 
         if (file_exists($file_path) && $file_type !== 'image') {
+            $mime_type = mime_content_type($file_path);
             // Set headers to indicate a file download 
             header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
+            header('Content-Type: ' . $mime_type);
             header('Content-Disposition: attachment; filename="' . basename($file_path) . '"');
             header('Content-Transfer-Encoding: binary');
             header('Expires: 0');
@@ -943,12 +944,14 @@ class FileModel extends CoreModel
         } else if (file_exists($file_path) && $file_type === 'image') {
             // Set the appropriate content-type header
             $mime_type = mime_content_type($file_path);
+            header('Content-Description: File Transfer');
             header('Content-Type: ' . $mime_type);
-            // Change this to the appropriate MIME type for your image 
-            header('Content-Length: ' . filesize($file_path));
             header('Content-Disposition: attachment; filename="' . basename($file_path) . '"');
-            header('Cache-Control: public, max-age=86400');
-            header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT');
+            header('Content-Transfer-Encoding: binary');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($file_path));
             // Clear system output buffer 
             ob_clean();
             flush();
