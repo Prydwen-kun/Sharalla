@@ -11,6 +11,7 @@ import UserView from '@/views/users/userView.vue'
 import FileView from '@/views/files/fileView.vue'
 import UploadView from '@/views/files/uploadView.vue'
 import MyFilesView from '@/views/files/myFilesView.vue'
+import UserUpdateView from '@/views/admin/userUpdateView.vue'
 
 const routes = [
   { path: '/', name: 'Signup', component: Signup },
@@ -27,6 +28,7 @@ const routes = [
   { path: '/files/:id', name: 'Files', component: FileView },
   { path: '/upload', name: 'Upload', component: UploadView },
   { path: '/myFiles', name: 'MyFiles', component: MyFilesView },
+  { path: '/admin/:id', name: 'Admin', component: UserUpdateView },
   //catch-all route for 404 need to stay as last route
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
 ]

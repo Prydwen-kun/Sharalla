@@ -12,6 +12,7 @@ const route = useRoute()
 const userId = computed(() => route.params.id)
 let avatar = ref('')
 let admin = ref(false)
+let user = ref({})
 
 onMounted(async () => {
   const getResponse = async () => {
@@ -37,6 +38,8 @@ onMounted(async () => {
       `${config.APIbaseUrl}${config.endpoints.getUserData}${config.endpoints.GET.userId}${userId.value}`
     )
     const data = await response.data
+
+    user.value = data.response
     //retrieve elements
     const p_username = document.getElementById('p_username')
     const p_last_online = document.getElementById('p_last_online')
@@ -56,6 +59,10 @@ onMounted(async () => {
   }
 })
 
+async function modify(user_id) {
+  //router push to user modify interface
+  router.push({ name: 'Admin', params: { id: user_id } })
+}
 
 </script>
 <template>
@@ -63,7 +70,7 @@ onMounted(async () => {
     <div class="profile_head">
       <div class="userprofile_name" id="p_username"></div>
       <div class="profile_action">
-        <button v-if="admin" class="modify_button">Modify</button>
+        <button v-if="admin" @click="modify(user.id)" class="modify_button">Modify</button>
       </div>
     </div>
     <div class="side_stats_container">
