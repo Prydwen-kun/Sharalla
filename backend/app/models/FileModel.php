@@ -890,4 +890,33 @@ class FileModel extends CoreModel
             die($e->getMessage());
         }
     }
+
+    public function downloadFile()
+    {
+        $file_path = $_POST['file_path'];
+
+        // if (!preg_match('/^\/files/', $file_path)) {
+        //     return false;
+        // }
+
+        if (file_exists($file_path)) {
+            // Set headers to indicate a file download 
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename="' . basename($file_path) . '"');
+            header('Content-Transfer-Encoding: binary');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($file_path));
+            // Clear system output buffer
+            ob_clean();
+            flush();
+            // Read the file and output its contents
+            readfile($file_path);
+            exit;
+        } else {
+            return false;
+        }
+    }
 }

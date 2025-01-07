@@ -218,6 +218,28 @@ class FileController
             response('no_cookie', 'Invalid cookie !');
         }
     }
+
+    public function downloadFile()
+    {
+        if (isset($_COOKIE['auth_token'])) {
+            $auth_token = $_COOKIE['auth_token'];
+            if ($this->user->isLoggedIn($auth_token)) {
+                if (isset($_POST['file_path'])) {
+                    if($this->file->downloadFile()){
+                        
+                    }else{
+                        response('no_file');
+                    }
+                } else {
+                    response('no_req');
+                }
+            } else {
+                response('forbidden');
+            }
+        } else {
+            response('no_cookie');
+        }
+    }
     public function deleteFile()
     {
         //receive file id to delete
