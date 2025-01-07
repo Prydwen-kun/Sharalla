@@ -224,10 +224,11 @@ class FileController
         if (isset($_COOKIE['auth_token'])) {
             $auth_token = $_COOKIE['auth_token'];
             if ($this->user->isLoggedIn($auth_token)) {
-                if (isset($_POST['file_path'])) {
-                    if($this->file->downloadFile()){
-                        
-                    }else{
+                if (isset($_GET['fileId']) && is_numeric($_GET['fileId'])) {
+                    $file = $this->file->downloadFile();
+                    if ($file !== false) {
+                        response($file, 'file_array');
+                    } else {
                         response('no_file');
                     }
                 } else {

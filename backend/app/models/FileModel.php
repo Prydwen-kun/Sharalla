@@ -891,9 +891,35 @@ class FileModel extends CoreModel
         }
     }
 
+    public function getFilePathFromId($file_id)
+    {
+        try {
+            $sql = "SELECT files.path AS file_path
+                    FROM files
+                    WHERE files.id =:file_id";
+
+            if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+                $this->_req->bindParam('file_id', $file_id, PDO::PARAM_INT);
+                if ($this->_req->execute()) {
+                    $data = $this->_req->fetch(PDO::FETCH_ASSOC);
+                    return $data['file_path'];
+                }
+                return false;
+            }
+            return false;
+        } catch (PDOException $e) {
+            die($e->getMessage());
+        }
+    }
     public function downloadFile()
     {
-        $file_path = $_POST['file_path'];
+        $file_id = $_GET['fileId'];
+
+        $file_path = $this->getFilePathFromId($file_id);
+
+        if($file_path === false){
+            return false;
+        }
 
         // if (!preg_match('/^\/files/', $file_path)) {
         //     return false;
@@ -901,20 +927,12 @@ class FileModel extends CoreModel
 
         if (file_exists($file_path)) {
             // Set headers to indicate a file download 
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename="' . basename($file_path) . '"');
-            header('Content-Transfer-Encoding: binary');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
-            header('Pragma: public');
-            header('Content-Length: ' . filesize($file_path));
+
             // Clear system output buffer
             ob_clean();
             flush();
             // Read the file and output its contents
-            readfile($file_path);
-            exit;
+            return file($file_path);
         } else {
             return false;
         }
