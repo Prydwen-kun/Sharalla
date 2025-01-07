@@ -21,6 +21,7 @@ const config = {
       deleteFile: 'file&action=deleteFile',
       uploadFile: 'file&action=uploadFile',
       getEntriesNumber: 'file&action=getEntriesNumber',
+      download: 'file&action=downloadFile',
     },
     GET: {
       userId: '&userId=',

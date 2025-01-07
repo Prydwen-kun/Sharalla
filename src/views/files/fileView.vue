@@ -28,6 +28,11 @@ async function getFileData() {
 }
 
 getFileData()
+
+async function download(file_id) {
+  const response = await axios.post(`${config.APIbaseUrl}${config.endpoints.files.download}${config.endpoints.GET.fileId}${file_id}`)
+  console.log(response.data.message)
+}
 </script>
 <template>
   <main class="main_content">
@@ -43,7 +48,7 @@ getFileData()
       </audio>
       <embed v-else-if="file.type === 'application' && file.extension === 'pdf'" :src="config.AvatarBaseUrl + file.path"
         :type="'application/pdf'" class="pdf_content">
-      <a :href="config.AvatarBaseUrl + file.path" class="download_content" download>Download File
+      <a class="download_content" @click="download(file.id)">Download File
         <div class="down_arrow">=></div>
       </a>
     </section>
