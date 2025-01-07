@@ -29,9 +29,17 @@ async function getFileData() {
 
 getFileData()
 
-async function download(file_id) {
-  const response = await axios.post(`${config.APIbaseUrl}${config.endpoints.files.download}${config.endpoints.GET.fileId}${file_id}`)
-  console.log(response.data.message)
+async function download(file_id, file_name) {
+  try {
+    const response = await axios.post(`${config.APIbaseUrl}${config.endpoints.files.download}${config.endpoints.GET.fileId}${file_id}`, { responseType: 'blob' })
+
+    const url = window.URL.createObjectURL(new Blob([response.data])); const link = document.createElement('a');
+    link.href = url; link.setAttribute('download', file_name);
+    // Set the default filename
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) { console.error('Error downloading file:', error); }
 }
 </script>
 <template>
@@ -48,7 +56,7 @@ async function download(file_id) {
       </audio>
       <embed v-else-if="file.type === 'application' && file.extension === 'pdf'" :src="config.AvatarBaseUrl + file.path"
         :type="'application/pdf'" class="pdf_content">
-      <a class="download_content" @click="download(file.id)">Download File
+      <a class="download_content" @click="download(file.id, file.title)">Download File
         <div class="down_arrow">=></div>
       </a>
     </section>
