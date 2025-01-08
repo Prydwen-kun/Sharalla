@@ -37,7 +37,7 @@ class CommentModel extends CoreModel
     public function createComment(int $user_id, int $file_id)
     {
 
-        if (strlen($_POST['comment']) <= 0) {
+        if (!strlen($_POST['comment']) <= 0) {
             $comment = $_POST['comment'];
         } else {
             return COMMENT_EMPTY;
