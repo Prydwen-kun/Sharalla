@@ -590,7 +590,7 @@ class UserModel extends CoreModel
         }
     }
 
-    public function updateUser($user_id, $avatar_path = 'No file')
+    public function updateUser($user_id, $avatar_path = 'No file', $current_rank = USER)
     {
         $sql = "UPDATE users
         SET username =:username,
@@ -610,9 +610,20 @@ class UserModel extends CoreModel
         if (!isset($post['Username'], $post['Email'], $post['Password'], $post['PasswordConfirm'])) {
             return POST_EMPTY;
         }
-        if ($this->userExist($post['Username']) && $this->getCurrentUser($_COOKIE['auth_token'])['username'] !== $post['Username']) {
-            return USERNAME_TAKEN_ERROR;
+
+        switch ($current_rank) {
+            case USER:
+                if ($this->userExist($post['Username']) && $this->getCurrentUser($_COOKIE['auth_token'])['username'] !== $post['Username']) {
+                    return USERNAME_TAKEN_ERROR;
+                }
+                break;
+            case ADMIN:
+                if ($this->userExist($post['Username']) && $this->getUser($user_id, true)['username'] !== $post['Username']) {
+                    return USERNAME_TAKEN_ERROR;
+                }
+                break;
         }
+
 
         if ($post['Password'] !== $post['PasswordConfirm']) {
             return PWD_CONFIRM_ERROR;

@@ -299,7 +299,11 @@ class UserController
             if (isset($_COOKIE['auth_token'])) {
                 $auth_token = $_COOKIE['auth_token'];
                 if ($this->user->isLoggedIn($auth_token) && ($this->user->getCurrentUserId($auth_token) == $user_id || $this->user->getCurrentUserPower($auth_token) === ADMIN)) {
-
+                    if ($this->user->getCurrentUserPower($auth_token) === ADMIN) {
+                        $current_rank = ADMIN;
+                    } else {
+                        $current_rank = USER;
+                    }
                     //recup file path after handling and pass it to update user
                     if (isset($_FILES['Avatar']) && !empty($_FILES['Avatar']['name'])) {
                         $filePath = $this->file->createAvatarFile($user_id);
@@ -323,7 +327,7 @@ class UserController
                         $filePath = 'No File';
                     }
 
-                    switch ($this->user->updateUser($user_id, $filePath)) {
+                    switch ($this->user->updateUser($user_id, $filePath, $current_rank)) {
                         case RETURN_OK:
                             response('update_success', 'User updated');
                             break;
