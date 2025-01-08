@@ -17,7 +17,7 @@ let saved = ref(false)
 
 async function fetch_user() {
   const response2 = await axios.post(
-    `${config.APIbaseUrl}${config.endpoints.getUserData}${config.endpoints.GET.userId}${props.userId}`)
+    `${config.APIbaseUrl}${config.endpoints.getUserAdmin}${config.endpoints.GET.userId}${props.userId}`)
   const data2 = await response2.data
   return data2.response
 }

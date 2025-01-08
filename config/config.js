@@ -9,6 +9,7 @@ const config = {
     isUserConnected: 'user&action=isUserConnected',
     getConnectedUserData: 'user&action=getConnectedUserData',
     getUserData: 'user&action=getUserData',
+    getUserAdmin: 'user&action=getUserAdmin',
     getUserList: 'user&action=getUserList',
     updateUser: 'user&action=userUpdate',
     deleteUser: 'user&action=userDelete',
