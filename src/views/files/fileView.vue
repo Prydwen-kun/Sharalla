@@ -46,6 +46,19 @@ async function download(file_id, file_name, file_type, file_ext) {
 
   } catch (error) { console.error('Error downloading file:', error); }
 }
+
+function download_fallback(file) {
+  try {
+    const link = document.createElement('a');
+    link.href = config.AvatarBaseUrl + file.path;
+    link.setAttribute('download', file.title + '.' + file.extension);
+    // Set the default filename
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+  } catch (error) { console.error('Error downloading file:', error); }
+}
 </script>
 <template>
   <main class="main_content">

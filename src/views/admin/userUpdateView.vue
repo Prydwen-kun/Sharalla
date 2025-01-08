@@ -3,13 +3,14 @@ import axios from 'axios';
 import config from '../../../config/config';
 import { useRoute, useRouter } from 'vue-router';
 import { computed, onMounted, ref } from 'vue';
+import AdminPanel from '@/components/admin/adminPanel.vue';
 
 const router = useRouter()
 const route = useRoute()
 
 const userId = computed(() => route.params.id)
 let admin = ref(false)
-let user = ref({})
+
 
 onMounted(async () => {
   const getResponse = async () => {
@@ -29,6 +30,7 @@ onMounted(async () => {
     const data0 = await response0.data
     if (data0.response.rank === 'ADMIN') {
       admin.value = true
+
     } else {
       router.push('/dashboard')
     }
@@ -38,9 +40,12 @@ onMounted(async () => {
 
 </script>
 <template>
-  <section class="admin_view">
+  <Suspense>
+    <section class="admin_view">
+      <AdminPanel :user-id="userId" />
+    </section>
+  </Suspense>
 
-  </section>
 </template>
 <style scoped>
 .admin_view {
