@@ -282,11 +282,11 @@ class UserModel extends CoreModel
         }
     }
 
-    public function getUser($user_id)
+    public function getUser($user_id, bool $is_admin = false)
     {
-        //if profile private only admin should be able to access
-        $query =
-            "SELECT users.id AS id,
+        if (!$is_admin) { //if profile private only admin should be able to access
+            $query =
+                "SELECT users.id AS id,
                 username,
                 last_login,
                 ranks.label AS rank,
@@ -295,12 +295,32 @@ class UserModel extends CoreModel
             FROM users
             LEFT JOIN ranks ON users.rank = ranks.id
             WHERE users.id = :user_id";
-        $this->_req = $this->getDb()->prepare($query);
+            $this->_req = $this->getDb()->prepare($query);
 
-        if ($this->_req->execute(['user_id' => $user_id])) {
-            return $this->_req->fetch(PDO::FETCH_ASSOC);
-        } else {
-            return null;
+            if ($this->_req->execute(['user_id' => $user_id])) {
+                return $this->_req->fetch(PDO::FETCH_ASSOC);
+            } else {
+                return null;
+            }
+        } else if ($is_admin) {
+            $query =
+                "SELECT users.id AS id,
+                username,
+                email,
+                last_login,
+                ranks.label AS rank,
+                users.avatar AS avatar,
+                users.signup_date AS signup_date
+            FROM users
+            LEFT JOIN ranks ON users.rank = ranks.id
+            WHERE users.id = :user_id";
+            $this->_req = $this->getDb()->prepare($query);
+
+            if ($this->_req->execute(['user_id' => $user_id])) {
+                return $this->_req->fetch(PDO::FETCH_ASSOC);
+            } else {
+                return null;
+            }
         }
     }
 

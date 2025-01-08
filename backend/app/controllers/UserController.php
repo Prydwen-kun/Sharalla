@@ -172,6 +172,32 @@ class UserController
         }
     }
 
+    public function getUserAdmin()
+    {
+        if (isset($_GET['userId']) && is_numeric($_GET['userId'])) {
+            $user_id = $_GET['userId'];
+            if (isset($_COOKIE['auth_token'])) {
+                $auth_token = $_COOKIE['auth_token'];
+                if ($this->user->isLoggedIn($auth_token) && $this->user->getCurrentUserPower($auth_token) === ADMIN) {
+                    $data = $this->user->getUser($user_id, true);
+                    if ($data !== null) {
+                        $user = new User($data);
+                        $response_array_to_json = object_to_array($user);
+                        response($response_array_to_json, 'User data');
+                    } else {
+                        response('req_error', 'Request error !');
+                    }
+                } else {
+                    response('forbidden', 'Sign in to use this ressource !');
+                }
+            } else {
+                response('no_cookie', 'No cookie');
+            }
+        } else {
+            response('get_error', 'Invalid GET params !');
+        }
+    }
+
     public function getUserList()
     {
         $orderTags = ['id', 'username', 'last_login', 'idDESC', 'usernameDESC', 'last_loginDESC'];
