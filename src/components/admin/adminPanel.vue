@@ -103,6 +103,24 @@ function return_to_profile(userId) {
 function onInputChange() {
   saved.value = false
 }
+
+async function deleteUser(userId) {
+  const delete_confirm = document.getElementById('delete_prompt').value
+  if (delete_confirm !== 'DELETE') {
+    alert('Please enter "DELETE" in all CAPS to confirm user deletion !')
+    return
+  } else {
+    const response_delete = await axios.post(`${config.APIbaseUrl}${config.endpoints.deleteUser}${config.endpoints.GET.userId}${userId}`)
+    const data = await response_delete.data
+    if (data.response === 'delete_success') {
+      alert('User deleted')
+      router.push('/friend')
+    } else {
+      alert('Error occured deleting user :' + `${userId}`)
+    }
+  }
+
+}
 </script>
 <template>
   <div class="popup">
@@ -137,6 +155,11 @@ function onInputChange() {
       <button @click="save_admin(userId)">Save</button>
       <button @click="return_to_profile(userId)">Return</button>
     </div>
+    <div class="delete_prompt">
+      <input type="text" id="delete_prompt" name="delete_prompt" placeholder="Type DELETE to delete user">
+      <button @click="deleteUser(userId)">DELETE</button>
+    </div>
+
     <!-- Save confirmation -->
     <div class="saved" v-if="saved">Saved</div>
   </div>
@@ -252,5 +275,40 @@ function onInputChange() {
 .saved {
   color: rgb(1, 203, 1);
   font-size: 2.5rem;
+}
+
+.delete_prompt {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.delete_prompt>button {
+  border: 2px solid red;
+  color: red;
+  background-color: var(--dark-blue-black);
+  min-height: 4rem;
+  padding: 0.5rem;
+  border-radius: 3px;
+}
+
+.delete_prompt>button:hover {
+  background-color: var(--dark-rose);
+  color: var(--white-mute);
+  border: 3px solid var(--dark-blue-black);
+  border-radius: 3px;
+  transition: all 0.25s ease-in;
+}
+
+#delete_prompt {
+  height: 4rem;
+  outline: none;
+  background-color: var(--dark-blue-black);
+  color: red;
+  font-size: 2rem;
+}
+
+#delete_prompt::placeholder {
+  color: rgb(146, 65, 65);
 }
 </style>
