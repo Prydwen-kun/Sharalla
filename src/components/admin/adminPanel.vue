@@ -83,8 +83,9 @@ async function save_admin(userId) {
     )
     const data = await response.data
     saved.value = true
-    console.log(data.response, data.message)
-    emit('need_update')
+    user.value = await fetch_user()
+    user_avatar.value = await ('background-image: url(' + config.AvatarBaseUrl + user.value.avatar + ');')
+    console.log(data.response)
   } else {
     //can use alertString = alertArray.join() too
     let alertString = ''
