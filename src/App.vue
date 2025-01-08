@@ -12,12 +12,14 @@ axios.defaults.withCredentials = true
 
 <template>
   <header>
-    <NavBar :key="navbar_key"/>
+    <NavBar :key="navbar_key" />
     <TagBar />
   </header>
 
   <main class="content-view">
-    <RouterView />
+    <Suspense>
+      <RouterView />
+    </Suspense>
   </main>
 </template>
 

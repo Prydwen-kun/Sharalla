@@ -1,33 +1,57 @@
 <script setup>
 import axios from 'axios';
 import config from '../../../config/config';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 let comments = ref({})
 let sent_status = ref('')
+let comment_loaded = ref(false)
+
+const props = defineProps({
+  file_id: Number
+})
+
+const emit = defineEmits(['need_update'])
 
 async function sendComment() {
   const comment_input = document.getElementById('comment')
   const comment = comment_input.value
-
-  const response = await axios.post(``, { comment: comment })
+  if (comment.length <= 0) {
+    alert('Comment empty')
+    return
+  }
+  const response = await axios.post(`${config.APIbaseUrl}${config.endpoints.files.sendComment}${config.endpoints.GET.fileId}${props.file_id}`, { comment: comment }, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
   const data = await response.data
+  console.log(data.response)
   if (data.response === 'comment_ok') {
     sent_status.value = 'Sent'
+    comment_input.value = ''
+    await retrieveComments()
   } else {
     sent_status.value = 'Error sending comment'
   }
 }
 
 async function retrieveComments() {
-  const response = await axios.post(``)
+  const response = await axios.post(`${config.APIbaseUrl}${config.endpoints.files.getComments}${config.endpoints.GET.fileId}${props.file_id}`)
   const data = await response.data
 
-  if (data.param0 === 'comment_ok') {
+  if (data.message === 'Comment List') {
     comments.value = data.response
+
   } else {
     comments.value = { Comment: 'No comments...' }
   }
+}
+
+await retrieveComments()
+
+function reset_sentStatus() {
+  sent_status.value = ''
 }
 
 </script>
@@ -35,27 +59,17 @@ async function retrieveComments() {
   <div class="comments">
     <div class="info_title">Comments</div>
     <div class="comment_input">
-      <input type="text" name="comment" id="comment" placeholder="Type comment...">
+      <input @change="reset_sentStatus" type="text" name="comment" id="comment" placeholder="Type comment...">
       <button class="send_button" @click="sendComment">Send</button>
+      <div>{{ sent_status }}</div>
     </div>
     <div class="comment_section">
-      <div class="comment">
+      <div v-for="(comment, key, index) in comments" :key="index" class="comment">
         <div class="comment_header">
           <img src="" class="comment_avatar" alt="Avatar">
-          <div>User1234</div>
+          <div>{{ comment.author }}</div>
         </div>
-        <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, explicabo. Pariatur enim quaerat nisi.
-          Aspernatur suscipit, saepe non ex natus minus voluptate quidem alias sequi eveniet enim animi iure sed!
-        </div>
-      </div>
-      <div class="comment">
-        <div class="comment_header">
-          <img src="" class="comment_avatar" alt="Avatar">
-          <div>User1234</div>
-        </div>
-        <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, explicabo. Pariatur enim quaerat nisi.
-          Aspernatur suscipit, saepe non ex natus minus voluptate quidem alias sequi eveniet enim animi iure sed!
-        </div>
+        <div>{{ comment.content }}</div>
       </div>
     </div>
   </div>
@@ -63,6 +77,7 @@ async function retrieveComments() {
 <style scoped>
 .comments {
   background-color: var(--dark-blue-black);
+  width: 100%;
   padding: 1rem;
   border-radius: 5px;
   display: flex;
@@ -84,6 +99,7 @@ async function retrieveComments() {
   border-bottom: 2px solid var(--rose);
   outline: none;
   padding: 0.5rem;
+  color: var(--rose);
 }
 
 .comment_input>input:focus {

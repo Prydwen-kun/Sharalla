@@ -23,6 +23,8 @@ const config = {
       uploadFile: 'file&action=uploadFile',
       getEntriesNumber: 'file&action=getEntriesNumber',
       download: 'file&action=downloadFile',
+      getComments: 'comment&action=getFileComment',
+      sendComment: 'comment&action=sendComment',
     },
     GET: {
       userId: '&userId=',

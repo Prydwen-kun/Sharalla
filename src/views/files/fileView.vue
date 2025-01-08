@@ -28,7 +28,7 @@ async function getFileData() {
   file.value = data.response
 }
 
-getFileData()
+await getFileData()
 
 async function download(file_id, file_name, file_type, file_ext) {
   try {
@@ -103,7 +103,9 @@ function download_fallback(file) {
         <div>{{ file.description }}</div>
       </div>
       <!-- create comment component later -->
-      <CommentSection />
+      <Suspense>
+        <CommentSection :file_id="file.id" />
+      </Suspense>
     </footer>
   </main>
 </template>
