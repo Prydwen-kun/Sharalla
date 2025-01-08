@@ -548,15 +548,26 @@ class UserModel extends CoreModel
 
     public function deleteUser($user_id)
     {
+        // Need to check how to save request stack to resume it in case of DB outage
         //FIRST UPDATE ALL CONTENT CONCERNED BY THE USER
         $sql = "UPDATE files
         SET files.uploader_id = (SELECT users.id FROM users WHERE users.username =:admin_name)
         WHERE files.uploader_id =:user_id;";
+        //move message and other info into an archive table later
+        //when searching for user message if user doesn't exist check
+        // the archive table for archived deleted user if still does not exist
+        // return null or error
         //NEXT DELETE RELEVANT TABLES
         $sql = $sql .
             "DELETE
         FROM friends
         WHERE friends.user_id = :user_id;
+
+        DELETE FROM followed WHERE followed.user_id =:user_id;
+
+        DELETE FROM message WHERE message.sender_id =:user_id;
+
+        DELETE FROM status WHERE status.user_id =:user_id;
 
         DELETE
         FROM liked_content

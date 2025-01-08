@@ -10,7 +10,29 @@ class CommentModel extends CoreModel
         }
     }
 
-    public function getComment(int $file_id) {}
+    public function getComment(int $file_id)
+    {
+        $sql = "SELECT comments.id AS id,
+                comments.content AS content,
+                comments.author_id AS author_id,
+                users.username AS author,
+                comments.file_id AS file_id,
+                comments.post_date AS post_date
+                FROM comments
+                JOIN users ON users.id = comments.author_id
+                WHERE comments.file_id =:file_id
+                ORDER BY post_date DESC";
+        if (($this->_req = $this->getDb()->prepare($sql)) !== false) {
+            $this->_req->bindValue('file_id', $file_id, PDO::PARAM_INT);
+            if ($this->_req->execute()) {
+                return $this->_req->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                return null;
+            }
+        } else {
+            return REQ_ERROR;
+        }
+    }
 
     public function createComment(int $user_id, int $file_id)
     {
