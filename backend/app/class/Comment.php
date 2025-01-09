@@ -7,6 +7,7 @@ class Comment
     private $author;
     private $file_id;
     private $post_date;
+    private $avatar;
 
     public function __construct(array $data)
     {
@@ -141,6 +142,26 @@ class Comment
     public function setPost_date($post_date)
     {
         $this->post_date = $post_date;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of avatar
+     */ 
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    /**
+     * Set the value of avatar
+     *
+     * @return  self
+     */ 
+    public function setAvatar($avatar)
+    {
+        $this->avatar = $avatar;
 
         return $this;
     }

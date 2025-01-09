@@ -17,7 +17,8 @@ class CommentModel extends CoreModel
                 comments.author_id AS author_id,
                 users.username AS author,
                 comments.file_id AS file_id,
-                comments.post_date AS post_date
+                comments.post_date AS post_date,
+                users.avatar AS avatar
                 FROM comments
                 JOIN users ON users.id = comments.author_id
                 WHERE comments.file_id =:file_id
