@@ -20,7 +20,7 @@ class CommentController
                 if (isset($_GET['fileId']) && is_numeric($_GET['fileId'])) {
                     $file_id = $_GET['fileId'];
                     $data = $this->comment->getComment($file_id);
-                    if ($data !== null && $data !== REQ_ERROR) {
+                    if ($data !== null && $data !== REQ_ERROR && $data !== []) {
                         foreach ($data as $comment) {
                             $CommentObjectList[] = new Comment($comment);
                         }
@@ -29,7 +29,7 @@ class CommentController
                         }
 
                         response($array_to_json, 'Comment List');
-                    } else if ($data === null) {
+                    } else if ($data === []) {
                         response('no_comment');
                     } else {
                         response('req_error');
