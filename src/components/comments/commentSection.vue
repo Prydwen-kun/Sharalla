@@ -3,7 +3,7 @@ import axios from 'axios';
 import config from '../../../config/config';
 import { onMounted, ref } from 'vue';
 
-let comments = ref({})
+let comments = ref(Object)
 let sent_status = ref('')
 let comment_loaded = ref(false)
 
@@ -39,10 +39,9 @@ async function sendComment() {
 async function retrieveComments() {
   const response = await axios.post(`${config.APIbaseUrl}${config.endpoints.files.getComments}${config.endpoints.GET.fileId}${props.file_id}`)
   const data = await response.data
-
+  console.log(data.response)
   if (data.message === 'Comment List') {
     comments.value = data.response
-
   } else {
     comments.value = { Comment: 'No comments...' }
   }
@@ -63,15 +62,21 @@ function reset_sentStatus() {
       <button class="send_button" @click="sendComment">Send</button>
       <div>{{ sent_status }}</div>
     </div>
-    <div class="comment_section">
+    <div v-if="comments.Comment !== 'No comments...'" class="comment_section">
       <div v-for="(comment, key, index) in comments" :key="index" class="comment">
         <div class="comment_header">
-          <img src="" class="comment_avatar" alt="Avatar">
-          <div>{{ comment.author }}</div>
+          <img :src="config.AvatarBaseUrl + comment.avatar" class="comment_avatar" alt="Avatar">
+          <div class="comment_user">
+            <div>{{ comment.author }}</div>
+            <div>
+              {{ Object.keys(comments).length !== 0 ? comment.post_date.split(' ').reverse().toString().replace(',', ' '):'' }}
+            </div>
+          </div>
         </div>
         <div>{{ comment.content }}</div>
       </div>
     </div>
+    <div v-else>No comment...</div>
   </div>
 </template>
 <style scoped>
@@ -140,6 +145,12 @@ function reset_sentStatus() {
   display: flex;
   flex-direction: row;
   align-items: center;
+  gap: 1rem;
+}
+
+.comment_user {
+  display: flex;
+  flex-direction: row;
   gap: 1rem;
 }
 
