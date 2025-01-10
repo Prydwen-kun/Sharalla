@@ -929,7 +929,7 @@ class FileModel extends CoreModel
             $mime_type = mime_content_type($file_path);
             // Set headers to indicate a file download 
             header('Content-Description: File Transfer');
-            header('Content-Type: ' . $mime_type);
+            header('Content-Type: application/octet-stream');
             header('Content-Disposition: attachment; filename="' . basename($file_path) . '"');
             header('Content-Transfer-Encoding: binary');
             header('Expires: 0');
@@ -948,7 +948,7 @@ class FileModel extends CoreModel
             // Set the appropriate content-type header
             $mime_type = mime_content_type($file_path);
             header('Content-Description: File Transfer');
-            header('Content-Type: ' . $mime_type);
+            header('Content-Type: application/octet-stream');
             header('Content-Disposition: attachment; filename="' . basename($file_path) . '"');
             header('Content-Transfer-Encoding: binary');
             header('Expires: 0');

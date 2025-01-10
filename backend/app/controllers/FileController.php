@@ -227,7 +227,7 @@ class FileController
                 if (isset($_GET['fileId']) && is_numeric($_GET['fileId'])) {
                     $file = $this->file->downloadFile();
                     if ($file !== false) {
-                        echo base64_encode($file);
+                        echo $file;
                     } else {
                         response('no_file');
                     }
