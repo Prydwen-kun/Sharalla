@@ -35,7 +35,10 @@ async function download(file_id, file_name, file_type, file_ext) {
 
     const response = await axios.post(`${config.APIbaseUrl}${config.endpoints.files.download}${config.endpoints.GET.fileId}${file_id}`, { responseType: 'blob' })
     const data = await response.data
-    const url = window.URL.createObjectURL(new Blob([data]), { type: file_type + '/' + file_ext });
+
+    const data_blob = new Blob([data], { type: file_type + '/' + file_ext })
+    
+    const url = window.URL.createObjectURL(data_blob);
     const link = document.createElement('a');
     link.href = url;
     link.setAttribute('download', file_name + '.' + file_ext);
