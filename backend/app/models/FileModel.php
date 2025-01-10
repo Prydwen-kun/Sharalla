@@ -940,7 +940,10 @@ class FileModel extends CoreModel
             ob_clean();
             flush();
             // Read the file and output its contents
-            return fread(fopen($file_path, "rb"), filesize($file_path));
+            $handle = fopen($file_path, "rb");
+            $file_content = fread($handle, filesize($file_path));
+            fclose($handle);
+            return $file_content;
         } else if (file_exists($file_path) && $file_type === 'image') {
             // Set the appropriate content-type header
             $mime_type = mime_content_type($file_path);
@@ -956,7 +959,10 @@ class FileModel extends CoreModel
             ob_clean();
             flush();
             // Read the file and output its contents
-            return fread(fopen($file_path, "rb"), filesize($file_path));
+            $handle = fopen($file_path, "rb");
+            $file_content = fread($handle, filesize($file_path));
+            fclose($handle);
+            return $file_content;
         } else {
             return false;
         }
