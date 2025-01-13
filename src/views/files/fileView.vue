@@ -80,6 +80,12 @@ function download_fallback(file) {
       </audio>
       <embed v-else-if="file.type === 'application' && file.extension === 'pdf'" :src="config.AvatarBaseUrl + file.path"
         :type="'application/pdf'" class="pdf_content">
+      <div v-else-if="file.type === 'application' && file.extension !== 'pdf'">
+        <p>{{ file.title }}</p>
+        <p>Extension : {{ file.extension }}</p>
+      </div>
+      <embed v-else :src="config.AvatarBaseUrl + file.path" :type="file.type + '/' + file.extension"
+        class="pdf_content">
       <a class="download_content" @click="download(file.id, file.title, file.type, file.extension)">Download File
         <div class="down_arrow">=></div>
       </a>
