@@ -26,7 +26,7 @@ async function sendComment() {
     }
   })
   const data = await response.data
-  console.log(data.response)
+  
   if (data.response === 'comment_ok') {
     sent_status.value = 'Sent'
     comment_input.value = ''
@@ -39,7 +39,7 @@ async function sendComment() {
 async function retrieveComments() {
   const response = await axios.post(`${config.APIbaseUrl}${config.endpoints.files.getComments}${config.endpoints.GET.fileId}${props.file_id}`)
   const data = await response.data
-  console.log(data.response)
+
   if (data.message === 'Comment List') {
     comments.value = data.response
   } else {

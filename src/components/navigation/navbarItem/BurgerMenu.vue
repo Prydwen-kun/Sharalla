@@ -133,9 +133,9 @@ function logout() {
 
 .shadow_blocker {
   display: none;
-  position: absolute;
+  position: fixed;
   z-index: 98;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.31);
 }
